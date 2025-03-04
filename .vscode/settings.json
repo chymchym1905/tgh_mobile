@@ -16,5 +16,6 @@
     "editor.rulers": [150]
   },
   "dart.lineLength": 120,
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "liveServer.settings.port": 5501
 }

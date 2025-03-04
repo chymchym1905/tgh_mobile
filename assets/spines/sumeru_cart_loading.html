@@ -1,0 +1,62 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spine Animation to GIF</title>
+    <script src="pixi.min.js"></script>
+    <script src="pixi-spine-4.1.umd.js"></script>
+    <style>
+      body {
+        margin: 0; /* Remove default margins */
+        overflow: hidden; /* Prevent scrollbars */
+      }
+      canvas {
+        display: block; /* Remove unwanted margins around canvas */
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      const app = new PIXI.Application({
+        width: window.innerWidth,
+        height: window.innerHeight,
+        // transparent: true,
+        backgroundColor: "blue",
+        antialias: true,
+        resolution: window.devicePixelRatio, // Ensure high-DPI scaling
+        autoDensity: true, // Prevent blurry rendering
+      });
+
+      document.body.appendChild(app.view);
+
+      // Resize function to update PIXI app when window resizes
+      window.addEventListener("resize", () => {
+        app.renderer.resize(window.innerWidth, window.innerHeight);
+      });
+
+      (async () => {
+        await app.loader
+          .add("spine", "Eff_UI_SumeruBirthFloatToyLoading_Spine01.skel")
+          .load((loader, resources) => {
+            const spine = new PIXI.spine.Spine(resources.spine.spineData);
+            if (spine) {
+              const scaleFactor = Math.min(
+                window.innerWidth / 1100, // Scale relative to width
+                window.innerHeight / 1100 // Scale relative to height
+              );
+              spine.scale.set(scaleFactor); // Apply uniform scaling
+              spine.x = app.screen.width / 2;
+              spine.y = app.screen.height / 2 + spine.height / 2;
+            }
+            app.stage.addChild(spine);
+            spine.state.setAnimation(0, "In", true);
+            spine.state.addListener({
+              complete: (entry) => {
+                spine.state.setAnimation(0, "Loop", true);
+              },
+            });
+          });
+      })();
+    </script>
+  </body>
+</html>
