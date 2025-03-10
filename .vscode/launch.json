@@ -24,18 +24,25 @@
       "deviceId": "5200f76cb40a35e3",
       "args": ["--debug"]
     },
-
     {
       "name": "iPhone",
       "request": "launch",
       "type": "dart",
-      "deviceId": "a1e11a41a0f0a7348db11fadcf5437eb404463cd"
+      "deviceId": "a1e11a41a0f0a7348db11fadcf5437eb404463cd",
+      "args": ["--debug"]
+    },
+    {
+      "name": "Web",
+      "request": "launch",
+      "type": "dart",
+      "deviceId": "chrome",
+      "args": ["--debug"]
     }
   ],
   "compounds": [
     {
       "name": "All Devices",
-      "configurations": ["Android", "iPhone"]
+      "configurations": ["Android", "iPhone", "Web"]
     }
   ]
 }
