@@ -36,19 +36,27 @@ dependencies:
   cupertino_icons: ^1.0.8
   logger: ^2.5.0
   flutter_widget_from_html: ^0.16.0
+  animated_bottom_navigation_bar: ^1.4.0
+  lottie: ^3.2.0
+  flutter_svg: ^2.0.17
+  flutter_riverpod: ^2.6.1
+  riverpod_annotation: ^2.6.1
+  json_annotation: ^4.9.0
+  freezed: ^2.5.7
+  mockito: ^5.4.4
+  shared_preferences: ^2.5.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_launcher_icons: "^0.14.3"
   rename_app: ^1.6.2
-
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
   flutter_lints: ^4.0.0
+  json_serializable: ^6.9.0
+  build_runner: ^2.4.13
+  custom_lint: ^0.7.0
+  riverpod_generator: ^2.6.3
+  riverpod_lint: ^2.6.3
 
 flutter_launcher_icons:
   android: true
@@ -71,36 +79,10 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/images/
     - assets/icons/
-    - assets/fonts/
     - assets/gifs/
-
-  # An image asset can refer to one or more resolution-specific "variants", see
-  # https://flutter.dev/to/resolution-aware-images
-
-  # For details regarding adding assets from package dependencies, see
-  # https://flutter.dev/to/asset-from-package
-
-  # To add custom fonts to your application, add a fonts section here,
-  # in this "flutter" section. Each entry in this list should have a
-  # "family" key with the font family name, and a "fonts" key with a
-  # list giving the asset and other descriptors for the font. For
-  # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
-  #
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/to/font-from-package
+    - assets/appicon/
+    - assets/images/
   fonts:
     - family: HyWenHei
       fonts:
