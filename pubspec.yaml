@@ -81,7 +81,7 @@ flutter:
   assets:
     - assets/icons/
     - assets/gifs/
-    - assets/appicon/
+    - assets/appicons/
     - assets/images/
   fonts:
     - family: HyWenHei
