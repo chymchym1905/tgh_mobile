@@ -1,17 +1,24 @@
-import 'dart:io';
-
 import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart';
 import '../../imports.dart';
 
 ThemeData light = ThemeData(
     brightness: Brightness.light,
-    colorScheme: ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 205, 179, 124)),
+    colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 205, 179, 124)),
     appBarTheme: AppBarTheme(
       // backgroundColor: Color.fromARGB(255, 255, 255, 255),
       // foregroundColor: Color.fromRGBO(0, 0, 0, 1),
       systemOverlayStyle: SystemUiOverlayStyle(
-          statusBarBrightness: Platform.isIOS ? Brightness.light : Brightness.dark,
-          statusBarIconBrightness: Platform.isIOS ? Brightness.light : Brightness.dark,
+          statusBarBrightness: kIsWeb
+              ? Brightness.light
+              : defaultTargetPlatform == TargetPlatform.iOS
+                  ? Brightness.light
+                  : Brightness.dark,
+          statusBarIconBrightness: kIsWeb
+              ? Brightness.light
+              : defaultTargetPlatform == TargetPlatform.iOS
+                  ? Brightness.light
+                  : Brightness.dark,
           statusBarColor: Colors.transparent,
           systemNavigationBarColor: Colors.transparent,
           systemNavigationBarIconBrightness: Brightness.dark),
@@ -45,13 +52,21 @@ ThemeData light = ThemeData(
 
 ThemeData dark = ThemeData(
     brightness: Brightness.dark,
-    colorScheme: ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 205, 179, 124), brightness: Brightness.dark),
+    colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 205, 179, 124), brightness: Brightness.dark),
     appBarTheme: AppBarTheme(
       // backgroundColor: Color.fromARGB(255, 38, 38, 38),
       // foregroundColor: Color.fromRGBO(255, 255, 255, 1),
       systemOverlayStyle: SystemUiOverlayStyle(
-          statusBarBrightness: Platform.isIOS ? Brightness.dark : Brightness.light,
-          statusBarIconBrightness: Platform.isIOS ? Brightness.dark : Brightness.light,
+          statusBarBrightness: kIsWeb
+              ? Brightness.dark
+              : defaultTargetPlatform == TargetPlatform.iOS
+                  ? Brightness.dark
+                  : Brightness.light,
+          statusBarIconBrightness: kIsWeb
+              ? Brightness.dark
+              : defaultTargetPlatform == TargetPlatform.iOS
+                  ? Brightness.dark
+                  : Brightness.light,
           statusBarColor: Colors.transparent,
           systemNavigationBarColor: Colors.transparent,
           systemNavigationBarIconBrightness: Brightness.light),

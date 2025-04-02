@@ -8,6 +8,14 @@ import 'main/observer.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  if (kIsWeb) {
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle.light.copyWith(
+        statusBarColor: Colors.black,
+        statusBarBrightness: Brightness.light,
+      ),
+    );
+  }
   // SystemChrome.setSystemUIOverlayStyle(
   //   SystemUiOverlayStyle.light.copyWith(
   //     statusBarColor: Colors.black,

@@ -5,8 +5,8 @@ import '../imports.dart';
 part 'shared_pref.g.dart';
 
 @riverpod
-LocalStorage sharedPrefsService(Ref ref) {
-  final sharedPrefsService = LocalStorage();
+StorageService sharedPrefsService(Ref ref) {
+  final sharedPrefsService = SharedPrefsService();
   sharedPrefsService.init();
   return sharedPrefsService;
 }

@@ -12,4 +12,5 @@ export './screens/index.dart';
 export './widgets/spines/index.dart';
 export './constant/index.dart';
 export 'shared/shared_pref.dart';
+export 'shared/storage_interface.dart';
 export 'theme/theme.dart';
