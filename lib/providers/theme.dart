@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../imports.dart';
+import '../shared/shared_pref.dart';
 import 'shared_pref.dart';
 
 part 'theme.g.dart';

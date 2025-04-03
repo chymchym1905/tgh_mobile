@@ -44,6 +44,7 @@ class _HomeScreenMobileState extends State<HomeScreenMobile> {
           onPressed: () {
             ref.read(themeNotifierProvider.notifier).toggleTheme();
           },
+          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
           child: const Icon(Icons.add),
           shape: CircleBorder(),
           mini: true,

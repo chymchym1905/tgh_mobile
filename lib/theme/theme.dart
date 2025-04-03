@@ -4,7 +4,8 @@ import '../../imports.dart';
 
 ThemeData light = ThemeData(
     brightness: Brightness.light,
-    colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 205, 179, 124)),
+    colorScheme: ColorScheme.fromSeed(
+        seedColor: const Color.fromARGB(255, 205, 179, 124), dynamicSchemeVariant: DynamicSchemeVariant.fidelity),
     appBarTheme: AppBarTheme(
       // backgroundColor: Color.fromARGB(255, 255, 255, 255),
       // foregroundColor: Color.fromRGBO(0, 0, 0, 1),

@@ -31,32 +31,45 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
+  # UI Components
   cupertino_icons: ^1.0.8
-  logger: ^2.5.0
-  flutter_widget_from_html: ^0.16.0
   animated_bottom_navigation_bar: ^1.4.0
-  lottie: ^3.2.0
   flutter_svg: ^2.0.17
+  lottie: ^3.2.0
+  flutter_widget_from_html: ^0.16.0
+
+  # State Management
   flutter_riverpod: ^2.6.1
   riverpod_annotation: ^2.6.1
+
+  # Data Handling
   json_annotation: ^4.9.0
-  freezed: ^2.5.7
-  mockito: ^5.4.4
+  freezed_annotation: ^2.4.4
   shared_preferences: ^2.5.3
+  fpdart: ^1.1.1
+  dio: ^5.8.0+1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_launcher_icons: "^0.14.3"
-  rename_app: ^1.6.2
-  flutter_lints: ^4.0.0
-  json_serializable: ^6.9.0
+
+  # Code Generation
   build_runner: ^2.4.13
-  custom_lint: ^0.7.0
+  json_serializable: ^6.9.0
+  freezed: ^2.5.7
   riverpod_generator: ^2.6.3
+
+  # Linting and Analysis
+  flutter_lints: ^4.0.0
+  custom_lint: ^0.7.0
   riverpod_lint: ^2.6.3
+
+  # Testing
+  mockito: ^5.4.4
+
+  # App Configuration
+  flutter_launcher_icons: ^0.14.3
+  rename_app: ^1.6.2
 
 flutter_launcher_icons:
   android: true
@@ -81,7 +94,7 @@ flutter:
   assets:
     - assets/icons/
     - assets/gifs/
-    - assets/appicons/
+    - assets/appicon/
     - assets/images/
   fonts:
     - family: HyWenHei
