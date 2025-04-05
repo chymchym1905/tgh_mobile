@@ -25,7 +25,9 @@ jobs:
         run: flutter pub get
 
       - name: Run tests
-        run: flutter test --coverage -r github
+        run: |
+          dart run build_runner build -d
+          flutter test --coverage -r github
 
       # - name: Upload coverage reports to Codecov
       #   uses: codecov/codecov-action@v5
