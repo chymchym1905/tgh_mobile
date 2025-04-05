@@ -1,7 +1,8 @@
 import 'dart:developer';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tgh_mobile/shared/network_request_providers/dps.dart';
+import 'package:tgh_mobile/imports.dart';
+import 'package:tgh_mobile/shared/network.dart';
 
 ProviderContainer createContainer({
   ProviderContainer? parent,
@@ -21,8 +22,17 @@ void main() {
   group('DpsProvider Tests', () {
     late ProviderContainer container;
 
-    setUp(() {
-      container = createContainer();
+    setUp(() async {
+      WidgetsFlutterBinding.ensureInitialized();
+      // Must have line to run test
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      container = createContainer(
+        overrides: [
+          sharedPrefInstanceProvider.overrideWithValue(prefs),
+          dioNetworkServiceProvider.overrideWithValue(DioNetworkService(Dio())),
+        ],
+      );
     });
 
     test('fetchCompetitorDps returns valid dps entries', () async {
@@ -78,6 +88,14 @@ void main() {
     });
 
     test('fetchDpsAgent returns agent dps entries', () async {
+      // First ensure we have a valid auth token
+      final authNotifier = container.read(authNotifierProvider.notifier);
+      // Wait for the auth state to be authenticated
+
+      await authNotifier.login('leyeuttoteuhau-8698@yopmail.com', 'SecurePassword123\\');
+      final authState = await container.read(authNotifierProvider.future);
+      expect(authState, isA<AuthStateAuthenticated>());
+
       final api = container.read(dpsApiProvider);
       final result = await api.fetchDpsAgent(
         'created_at',

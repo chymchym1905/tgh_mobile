@@ -41,7 +41,7 @@ String generateRandomAlias([String? exclude]) {
 }
 
 void main() {
-  group('CompetitorProvider Tests', () {
+  group('CompetitorProvider Tests - Sequential Flow', () {
     late ProviderContainer container;
     var competitorId = '';
     final testAlias = generateRandomAlias();
@@ -49,9 +49,8 @@ void main() {
     developer.log('Test Alias: $testAlias');
     developer.log('Test Updated Alias: $testUpdatedAlias');
 
-    setUp(() async {
+    setUpAll(() async {
       WidgetsFlutterBinding.ensureInitialized();
-      // Must have line to run test
       SharedPreferences.setMockInitialValues({});
       container = createContainer(
         overrides: [
@@ -59,15 +58,15 @@ void main() {
           dioNetworkServiceProvider.overrideWithValue(DioNetworkService(Dio())),
         ],
       );
+      // Ensure authentication is done once for all tests
       await container
           .read(authNotifierProvider.notifier)
           .login('leyeuttoteuhau-8698@yopmail.com', 'SecurePassword123\\');
-    });
-
-    test('createCompetitor creates new competitor', () async {
       final authState = await container.read(authNotifierProvider.future);
       expect(authState, isA<AuthStateAuthenticated>());
+    });
 
+    test('1. Create and link new competitor profile to a user', () async {
       /// Create and link competitor profile to a user
       final api = container.read(competitorApiProvider);
       final result = await api.createCompetitor({
@@ -89,10 +88,7 @@ void main() {
       );
     });
 
-    test('unsetCompetitor removes competitor link', () async {
-      final authState = await container.read(authNotifierProvider.future);
-      expect(authState, isA<AuthStateAuthenticated>());
-
+    test('2. Unlink competitor profile from a user', () async {
       /// Unlink competitor profile from a user
       final api = container.read(userApiProvider);
       final result = await api.unsetCompetitor();
@@ -105,10 +101,7 @@ void main() {
       );
     });
 
-    test('Relink the competitor profile to the user', () async {
-      final authState = await container.read(authNotifierProvider.future);
-      expect(authState, isA<AuthStateAuthenticated>());
-
+    test('3. Relink the same competitor profile to the user again', () async {
       /// Link competitor profile to the user again
       final api = container.read(userApiProvider);
       final result = await api.updateCompetitorForCurrentUser({
@@ -125,10 +118,7 @@ void main() {
       );
     });
 
-    test('Update the competitor profile', () async {
-      final authState = await container.read(authNotifierProvider.future);
-      expect(authState, isA<AuthStateAuthenticated>());
-
+    test('4. Update the competitor profile', () async {
       /// Modify competitor profile
       final api = container.read(competitorApiProvider);
       final result = await api.updateCompetitorInfo({
@@ -155,7 +145,7 @@ void main() {
       );
     });
 
-    test('getCompetitorByAlias fetches competitor profile', () async {
+    test('5. getCompetitorByAlias fetches competitor profile', () async {
       final api = container.read(competitorApiProvider);
       final result = await api.getCompetitorByAlias(testUpdatedAlias);
 
