@@ -22,7 +22,9 @@ void main() async {
   //     statusBarBrightness: Brightness.light,
   //   ),
   // );
-  runApp(ProviderScope(observers: [Observers()], child: Root()));
+  final prefs = await SharedPreferences.getInstance();
+  runApp(ProviderScope(
+      overrides: [sharedPrefInstanceProvider.overrideWithValue(prefs)], observers: [Observers()], child: const Root()));
 }
 
 class Root extends ConsumerWidget {
@@ -37,6 +39,6 @@ class Root extends ConsumerWidget {
         theme: light,
         darkTheme: dark,
         themeMode: theme,
-        home: HomeScreen());
+        home: const HomeScreen());
   }
 }

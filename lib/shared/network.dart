@@ -2,15 +2,19 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+
 import 'exception.dart';
 import 'package:fpdart/fpdart.dart';
 import '../imports.dart';
 
 abstract class NetworkService {
-  Future<Either<AppException, Response>> get(String path, {Map<String, dynamic>? queryParameters});
-  Future<Either<AppException, Response>> post(String path, {Map<String, dynamic>? body});
-  Future<Either<AppException, Response>> put(String path, {Map<String, dynamic>? body});
-  Future<Either<AppException, Response>> delete(String path);
+  Map<String, dynamic> get headers;
+  void updateHeaders(String authToken);
+  void removeAuthHeader();
+  Future<Either<AppException, Response<T>>> get<T>(String path, {Map<String, dynamic>? queryParameters});
+  Future<Either<AppException, Response<T>>> post<T>(String path, {Map<String, dynamic>? body});
+  Future<Either<AppException, Response<T>>> put<T>(String path, {Map<String, dynamic>? body});
+  Future<Either<AppException, Response<T>>> delete<T>(String path);
 }
 
 class DioNetworkService with NetworkException implements NetworkService {
@@ -25,66 +29,78 @@ class DioNetworkService with NetworkException implements NetworkService {
           error: true,
           request: true,
           requestHeader: true,
-          responseHeader: true,
           logPrint: (o) => log(o.toString())));
     }
   }
 
   @override
-  Future<Either<AppException, Response>> get(String path, {Map<String, dynamic>? queryParameters}) async {
-    return await handleException(() => _dio.get(path, queryParameters: queryParameters), endpoint: path).run();
+  Map<String, dynamic> get headers => _dio.options.headers;
+
+  @override
+  void updateHeaders(String authToken) {
+    _dio.options.headers.addEntries([MapEntry('Authorization', authToken)]);
   }
 
   @override
-  Future<Either<AppException, Response>> post(String path, {Map<String, dynamic>? body}) async {
-    return await handleException(() => _dio.post(path, data: body), endpoint: path).run();
+  void removeAuthHeader() {
+    _dio.options.headers.remove('Authorization');
   }
 
   @override
-  Future<Either<AppException, Response>> put(String path, {Map<String, dynamic>? body}) async {
-    return await handleException(() => _dio.put(path, data: body), endpoint: path).run();
+  Future<Either<AppException, Response<T>>> get<T>(String path, {Map<String, dynamic>? queryParameters}) async {
+    return await handleException(() => _dio.get<T>(path, queryParameters: queryParameters), endpoint: path).run();
   }
 
   @override
-  Future<Either<AppException, Response>> delete(String path) async {
-    return await handleException(() => _dio.delete(path), endpoint: path).run();
+  Future<Either<AppException, Response<T>>> post<T>(String path, {Map<String, dynamic>? body}) async {
+    return await handleException(() => _dio.post<T>(path, data: body), endpoint: path).run();
+  }
+
+  @override
+  Future<Either<AppException, Response<T>>> put<T>(String path, {Map<String, dynamic>? body}) async {
+    return await handleException(() => _dio.put<T>(path, data: body), endpoint: path).run();
+  }
+
+  @override
+  Future<Either<AppException, Response<T>>> delete<T>(String path) async {
+    return await handleException(() => _dio.delete<T>(path), endpoint: path).run();
   }
 }
 
 mixin NetworkException {
-  TaskEither<AppException, Response> handleException(Future<Response> Function() func, {String endpoint = ''}) =>
-      TaskEither<AppException, Response>.tryCatch(
+  TaskEither<AppException, Response<T>> handleException<T>(
+    Future<Response<T>> Function() func, {
+    String endpoint = '',
+  }) =>
+      TaskEither<AppException, Response<T>>.tryCatch(
         () => func(),
         (e, stackTrace) {
-          String message = '';
-          String identifier = '';
-          int statusCode = 0;
           log(e.runtimeType.toString());
-          switch (e.runtimeType) {
-            case SocketException _:
-              e as SocketException;
-              message = 'Unable to connect to the server.';
-              statusCode = 0;
-              identifier = 'Socket Exception ${e.message}\n at  $endpoint';
-              break;
 
-            case DioException _:
-              e as DioException;
-              message = e.response?.data?['message'] as String;
-              statusCode = 1;
-              identifier = 'DioException ${e.message} \nat  $endpoint';
-              break;
+          switch (e) {
+            case DioException():
+              final response = e.response;
+              return AppException(
+                message: response?.data.toString() ?? e.message ?? 'Server error',
+                code: response?.statusCode?.toString() ?? 'Unknown HTTP Status Code',
+                identifier: 'DioException: ${e.type} at $endpoint',
+                data: response?.data.toString(),
+              );
+
+            case SocketException():
+              return AppException(
+                message: 'Unable to connect to the server.',
+                code: '1',
+                identifier: 'Socket Exception: ${e.message} at $endpoint',
+              );
 
             default:
-              message = 'Unknown error occurred';
-              statusCode = 2;
-              identifier = 'Unknown error ${e.toString()}\n at $endpoint';
+              return AppException(
+                message: 'Unknown error occurred',
+                code: '0',
+                identifier: 'Unknown error: ${e.toString()} at $endpoint',
+              );
           }
-          return AppException(
-            message: message,
-            code: statusCode.toString(),
-            identifier: identifier,
-          );
         },
       );
 }

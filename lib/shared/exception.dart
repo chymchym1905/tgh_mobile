@@ -8,6 +8,13 @@ class AppException implements Exception {
 
   @override
   String toString() {
-    return 'AppException(message: $message, code: $code, data: $data, identifier: $identifier)';
+    return '''
+{
+  "code": "$code",
+  "message": "$message",
+  ${data != null ? '"data": "$data",' : ''}
+  ${identifier != null ? '"identifier": "$identifier",' : ''}
+}
+''';
   }
 }

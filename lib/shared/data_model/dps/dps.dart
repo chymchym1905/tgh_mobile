@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'character_ceiling.dart';
-import 'competitor.dart';
+import '../character_ceiling/character_ceiling.dart';
+import '../competitor/competitor.dart';
 
 part 'dps.freezed.dart';
 part 'dps.g.dart';

@@ -6,8 +6,27 @@ part of 'shared_pref.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+String _$sharedPrefInstanceHash() =>
+    r'b746207b923d272540e224a4ef6fcd00b2330280';
+
+/// See also [sharedPrefInstance].
+@ProviderFor(sharedPrefInstance)
+final sharedPrefInstanceProvider =
+    AutoDisposeProvider<SharedPreferences>.internal(
+  sharedPrefInstance,
+  name: r'sharedPrefInstanceProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$sharedPrefInstanceHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef SharedPrefInstanceRef = AutoDisposeProviderRef<SharedPreferences>;
 String _$sharedPrefsServiceHash() =>
-    r'53141409012ddaec0b84b6e3e1defb1c8e9fef40';
+    r'672c22cc868f2cf8c1689d0a306583edf9b7ed5a';
 
 /// See also [sharedPrefsService].
 @ProviderFor(sharedPrefsService)

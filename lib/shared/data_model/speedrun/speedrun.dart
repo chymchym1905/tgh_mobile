@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'competitor.dart';
+import '../competitor/competitor.dart';
 
 part 'speedrun.freezed.dart';
 part 'speedrun.g.dart';
