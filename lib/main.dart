@@ -1,5 +1,5 @@
 import 'package:flutter/services.dart';
-import 'package:tgh_mobile/providers/index.dart';
+import 'package:tgh_mobile/app_state_providers/index.dart';
 
 import 'imports.dart';
 import 'package:flutter/foundation.dart';

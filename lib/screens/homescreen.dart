@@ -1,4 +1,4 @@
-import 'package:tgh_mobile/providers/theme.dart';
+import 'package:tgh_mobile/app_state_providers/theme.dart';
 
 import '../imports.dart';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
@@ -45,9 +45,9 @@ class _HomeScreenMobileState extends State<HomeScreenMobile> {
             ref.read(themeNotifierProvider.notifier).toggleTheme();
           },
           backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-          child: const Icon(Icons.add),
           shape: CircleBorder(),
           mini: true,
+          child: const Icon(Icons.add),
         );
       }),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

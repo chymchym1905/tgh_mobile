@@ -11,7 +11,7 @@ export 'package:shared_preferences/shared_preferences.dart';
 export './screens/index.dart';
 export './widgets/spines/index.dart';
 export './constant/index.dart';
-export './providers/index.dart';
+export 'app_state_providers/index.dart';
 export './shared/api/index.dart';
 export './shared/data_model/index.dart';
 export './shared/network_request_providers/index.dart';

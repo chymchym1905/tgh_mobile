@@ -1,10 +1,7 @@
-import 'dart:async';
-
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../imports.dart';
 import '../shared/shared_pref.dart';
-import 'shared_pref.dart';
 
 part 'theme.g.dart';
 
@@ -22,8 +19,8 @@ class ThemeNotifier extends _$ThemeNotifier {
     ref.read(sharedPrefsServiceProvider).set(APP_THEME_STORAGE_KEY, state?.name);
   }
 
-  Future<void> getCurrentTheme(StorageService storage) async {
-    final theme = await storage.get(APP_THEME_STORAGE_KEY);
+  void getCurrentTheme(StorageService storage) {
+    final theme = storage.get(APP_THEME_STORAGE_KEY);
     final value = ThemeMode.values.byName('${theme ?? 'light'}');
     state = value;
   }

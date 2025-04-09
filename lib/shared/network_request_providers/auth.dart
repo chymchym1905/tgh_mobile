@@ -3,8 +3,8 @@ import 'package:tgh_mobile/shared/api/index.dart';
 import 'package:tgh_mobile/shared/shared_pref.dart';
 
 import '../../imports.dart';
-import '../../providers/dio.dart';
-import '../../providers/shared_pref.dart';
+import '../../app_state_providers/dio.dart';
+import '../../app_state_providers/shared_pref.dart';
 import '../exception.dart';
 
 part 'auth.g.dart';

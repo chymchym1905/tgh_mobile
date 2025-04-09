@@ -6,7 +6,7 @@ abstract class StorageService {
   Object? get(String key);
   Future<bool> set(String key, dynamic data);
   Future<void> clear();
-  Future<bool> has(String key);
+  bool has(String key);
   Future<bool> remove(String key);
 }
 
@@ -34,7 +34,7 @@ class SharedPrefsService implements StorageService {
   }
 
   @override
-  Future<bool> has(String key) async {
+  bool has(String key) {
     final prefs = _instance;
     return prefs.containsKey(key);
   }

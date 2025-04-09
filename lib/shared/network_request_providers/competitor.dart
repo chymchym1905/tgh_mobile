@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../providers/dio.dart';
+import '../../app_state_providers/dio.dart';
 import '../api/index.dart';
 
 part 'competitor.g.dart';
