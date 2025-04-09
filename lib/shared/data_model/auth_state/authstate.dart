@@ -8,7 +8,6 @@ part 'authstate.freezed.dart';
 @freezed
 abstract class AuthState with _$AuthState {
   const factory AuthState.initial() = AuthStateInitial;
-  const factory AuthState.loading() = AuthStateLoading;
   const factory AuthState.authenticated(User user, String authToken) = AuthStateAuthenticated;
   const factory AuthState.error(AppException exception) = AuthStateError;
   const factory AuthState.loggedOut() = AuthStateLoggedOut;

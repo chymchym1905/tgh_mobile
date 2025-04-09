@@ -4,3 +4,4 @@ export 'competitor.dart';
 export 'feed.dart';
 export 'auth.dart';
 export 'user.dart';
+export 'gameasset.dart';

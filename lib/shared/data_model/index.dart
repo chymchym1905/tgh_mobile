@@ -5,3 +5,6 @@ export 'dps/dps.dart';
 export 'speedrun/speedrun.dart';
 export 'feed/feed.dart';
 export 'auth_state/authstate.dart';
+export 'game_asset/character.dart';
+export 'game_asset/weapon.dart';
+export 'game_asset/artifact.dart';

@@ -31,14 +31,37 @@ class HomeScreenMobile extends StatefulWidget {
 
 class _HomeScreenMobileState extends State<HomeScreenMobile> {
   int _bottomNavIndex = 0;
+  Widget _tabBuilder(int index, bool isActive, double width, double height) {
+    switch (index) {
+      case 0:
+        return isActive
+            ? Lottie.asset(Theme.of(context).extension<ThemeAssets>()!.homeLottieJson,
+                height: height, width: width, repeat: false)
+            : SvgPicture.asset(Theme.of(context).extension<ThemeAssets>()!.homeIconSvg, height: height, width: width);
+      case 1:
+        return isActive
+            ? Lottie.asset(Theme.of(context).extension<ThemeAssets>()!.lbLottieJson,
+                height: height, width: width, repeat: false)
+            : SvgPicture.asset(Theme.of(context).extension<ThemeAssets>()!.lbIconSvg, height: height, width: width);
+      case 2:
+        return isActive
+            ? Lottie.asset(Theme.of(context).extension<ThemeAssets>()!.trophyLottieJson,
+                height: height, width: width, repeat: false)
+            : SvgPicture.asset(Theme.of(context).extension<ThemeAssets>()!.trophyIconSvg, height: height, width: width);
+      default:
+        return isActive
+            ? Lottie.asset(Theme.of(context).extension<ThemeAssets>()!.profileLottieJson,
+                height: height, width: width, repeat: false)
+            : SvgPicture.asset(Theme.of(context).extension<ThemeAssets>()!.profileIconSvg,
+                height: height, width: width);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Home'), centerTitle: true),
-      body: Center(
-          child: Container(
-              // child: Image.asset('assets/images/circleavatar.webp')
-              child: SvgPicture.asset(Theme.of(context).extension<ThemeAssets>()!.lbIconSvg, height: 300, width: 300))),
+      body: Center(child: _tabBuilder(_bottomNavIndex, false, 300, 300)),
       floatingActionButton: Consumer(builder: (context, ref, child) {
         return FloatingActionButton(
           onPressed: () {
@@ -52,30 +75,7 @@ class _HomeScreenMobileState extends State<HomeScreenMobile> {
       }),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: AnimatedBottomNavigationBar.builder(
-        tabBuilder: (index, isActive) {
-          switch (index) {
-            case 0:
-              return isActive
-                  ? Lottie.asset(Theme.of(context).extension<ThemeAssets>()!.homeLottieJson,
-                      height: 20, width: 20, repeat: false)
-                  : SvgPicture.asset(Theme.of(context).extension<ThemeAssets>()!.homeIconSvg, height: 20, width: 20);
-            case 1:
-              return isActive
-                  ? Lottie.asset(Theme.of(context).extension<ThemeAssets>()!.lbLottieJson,
-                      height: 20, width: 20, repeat: false)
-                  : SvgPicture.asset(Theme.of(context).extension<ThemeAssets>()!.lbIconSvg, height: 20, width: 20);
-            case 2:
-              return isActive
-                  ? Lottie.asset(Theme.of(context).extension<ThemeAssets>()!.trophyLottieJson,
-                      height: 20, width: 20, repeat: false)
-                  : SvgPicture.asset(Theme.of(context).extension<ThemeAssets>()!.trophyIconSvg, height: 20, width: 20);
-            default:
-              return isActive
-                  ? Lottie.asset(Theme.of(context).extension<ThemeAssets>()!.profileLottieJson,
-                      height: 20, width: 20, repeat: false)
-                  : SvgPicture.asset(Theme.of(context).extension<ThemeAssets>()!.profileIconSvg, height: 20, width: 20);
-          }
-        },
+        tabBuilder: (index, isActive) => _tabBuilder(index, isActive, 20, 20),
         itemCount: 4,
         backgroundColor: Theme.of(context).colorScheme.surface,
         // splashColor: Theme.of(context).colorScheme.onPrimaryContainer,

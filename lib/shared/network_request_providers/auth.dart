@@ -1,11 +1,9 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:tgh_mobile/shared/api/index.dart';
 import 'package:tgh_mobile/shared/shared_pref.dart';
 
 import '../../imports.dart';
-import '../../app_state_providers/dio.dart';
-import '../../app_state_providers/shared_pref.dart';
 import '../exception.dart';
+import '../network.dart';
 
 part 'auth.g.dart';
 
@@ -13,17 +11,18 @@ part 'auth.g.dart';
 class AuthNotifier extends _$AuthNotifier {
   late AuthApi _authApi;
   late StorageService _sharedPrefs;
+  late NetworkService _dioNetworkService;
 
   @override
-  FutureOr<AuthState> build() async {
-    final dioNetworkService = ref.watch(dioNetworkServiceProvider);
-    _authApi = AuthApi(dioNetworkService);
+  Future<AuthState> build() async {
+    _dioNetworkService = ref.watch(dioNetworkServiceProvider);
+    _authApi = AuthApi(_dioNetworkService);
     _sharedPrefs = ref.watch(sharedPrefsServiceProvider);
 
     final localAuthToken = _sharedPrefs.get(APP_AUTH_TOKEN_STORAGE_KEY) as String?;
 
     if (localAuthToken != null) {
-      dioNetworkService.updateHeaders(localAuthToken);
+      _dioNetworkService.updateHeaders(localAuthToken);
       final currentUser = await _authApi.checkAuth();
       return currentUser.fold(
         (failure) => const AuthStateInitial(),
@@ -33,38 +32,45 @@ class AuthNotifier extends _$AuthNotifier {
     return const AuthStateInitial();
   }
 
-  Future<void> login(String email, String password) async {
+  Future<AuthState> login(String email, String password) async {
     state = const AsyncValue.loading();
-    final dioNetworkService = ref.read(dioNetworkServiceProvider);
     final result = await _authApi.login(email, password);
-
-    result.fold(
-      (failure) => state =
-          AsyncValue.error(AuthStateError(AppException(message: failure.toString(), code: '1')), StackTrace.current),
+    return result.fold(
+      (failure) {
+        final exception = AppException(message: failure.toString(), code: '1');
+        state = AsyncValue.error(AuthStateError(exception), StackTrace.current);
+        return AuthState.error(exception);
+      },
       (success) async {
-        final localAuthToken = dioNetworkService.headers['Authorization'] as String?;
+        final localAuthToken = _dioNetworkService.headers['Authorization'] as String?;
         if (localAuthToken != null) {
           await _sharedPrefs.set(APP_AUTH_TOKEN_STORAGE_KEY, localAuthToken);
         }
-        state = AsyncValue.data(AuthState.authenticated(success, localAuthToken ?? ''));
+        final value = AuthState.authenticated(success, localAuthToken ?? '');
+        state = AsyncValue.data(value);
+        return value;
       },
     );
   }
 
-  Future<void> checkAuth() async {
+  Future<AuthState> checkAuth() async {
     state = const AsyncValue.loading();
-    final dioNetworkService = ref.read(dioNetworkServiceProvider);
     final result = await _authApi.checkAuth();
 
-    result.fold(
-      (failure) => state =
-          AsyncValue.error(AuthStateError(AppException(message: failure.toString(), code: '1')), StackTrace.current),
+    return result.fold(
+      (failure) {
+        final exception = AppException(message: failure.toString(), code: '1');
+        state = AsyncValue.error(AuthStateError(exception), StackTrace.current);
+        return AuthState.error(exception);
+      },
       (success) async {
-        final localAuthToken = dioNetworkService.headers['Authorization'] as String?;
+        final localAuthToken = _dioNetworkService.headers['Authorization'] as String?;
         if (localAuthToken != null) {
           await _sharedPrefs.set(APP_AUTH_TOKEN_STORAGE_KEY, localAuthToken);
         }
-        state = AsyncValue.data(AuthState.authenticated(success, localAuthToken ?? ''));
+        final value = AuthState.authenticated(success, localAuthToken ?? '');
+        state = AsyncValue.data(value);
+        return value;
       },
     );
   }

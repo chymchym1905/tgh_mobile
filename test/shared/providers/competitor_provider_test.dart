@@ -59,16 +59,15 @@ void main() {
         ],
       );
       // Ensure authentication is done once for all tests
-      await container
+      final authState = await container
           .read(authNotifierProvider.notifier)
           .login('leyeuttoteuhau-8698@yopmail.com', 'SecurePassword123\\');
-      final authState = await container.read(authNotifierProvider.future);
       expect(authState, isA<AuthStateAuthenticated>());
     });
 
     test('1. Create and link new competitor profile to a user', () async {
       /// Create and link competitor profile to a user
-      final api = container.read(competitorApiProvider);
+      final api = container.read(userApiProvider);
       final result = await api.createCompetitor({
         'alias': testAlias,
         'discord_tag': 'chymchym1905',
