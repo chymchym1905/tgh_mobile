@@ -100,10 +100,14 @@ void main() {
 
     test('fetchDpsAgent returns agent dps entries', () async {
       // First ensure we have a valid auth token
-      final authNotifier = container.read(authNotifierProvider.notifier);
-      await authNotifier.login('leyeuttoteuhau-8698@yopmail.com', 'SecurePassword123\\');
-      final authState = await container.read(authNotifierProvider.future);
-      expect(authState, isA<AuthStateAuthenticated>());
+      final authStates = List<AsyncValue<AuthState>>.empty(growable: true);
+      final authStateSubscription = container.listen(authNotifierProvider, (previous, next) => authStates.add(next));
+      await container
+          .read(authNotifierProvider.notifier)
+          .login('leyeuttoteuhau-8698@yopmail.com', 'SecurePassword123\\');
+      log(authStates.toString());
+      expect(authStates.last.value, isA<AuthStateAuthenticated>());
+      authStateSubscription.close();
 
       final states = <AsyncValue<List<DPS>>>[];
       final provider = fetchDpsAgentProvider(
