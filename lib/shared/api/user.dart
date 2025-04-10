@@ -1,12 +1,13 @@
 import 'package:fpdart/fpdart.dart';
+import 'package:tgh_mobile/imports.dart';
 import '../exception.dart';
-import '../data_model/user/user.dart';
 import '../network.dart';
 
 abstract class UserApiBase {
-  Future<Either<AppException, User>> createCompetitor(Map<String, dynamic> data);
-  Future<Either<AppException, User?>> updateCompetitorForCurrentUser(Map<String, dynamic> updatedInfo);
-  Future<Either<AppException, void>> unsetCompetitor();
+  Future<Either<AppException, User>> createCompetitor(Map<String, dynamic> data, {CancelToken? cancelToken});
+  Future<Either<AppException, User?>> updateCompetitorForCurrentUser(Map<String, dynamic> updatedInfo,
+      {CancelToken? cancelToken});
+  Future<Either<AppException, void>> unsetCompetitor({CancelToken? cancelToken});
 }
 
 class UserApi implements UserApiBase {
@@ -15,9 +16,9 @@ class UserApi implements UserApiBase {
   UserApi(this._networkService);
 
   @override
-  Future<Either<AppException, User>> createCompetitor(Map<String, dynamic> data) async {
+  Future<Either<AppException, User>> createCompetitor(Map<String, dynamic> data, {CancelToken? cancelToken}) async {
     const url = '/users/create-competitor';
-    final response = await _networkService.put(url, body: data);
+    final response = await _networkService.put(url, body: data, cancelToken: cancelToken);
 
     return response.fold(
       (exception) => left(exception),
@@ -35,11 +36,10 @@ class UserApi implements UserApiBase {
   }
 
   @override
-  Future<Either<AppException, User?>> updateCompetitorForCurrentUser(
-    Map<String, dynamic> updatedInfo,
-  ) async {
+  Future<Either<AppException, User?>> updateCompetitorForCurrentUser(Map<String, dynamic> updatedInfo,
+      {CancelToken? cancelToken}) async {
     const url = '/users/update-current';
-    final response = await _networkService.put(url, body: updatedInfo);
+    final response = await _networkService.put(url, body: updatedInfo, cancelToken: cancelToken);
 
     return response.fold(
       (exception) => left(exception),
@@ -59,9 +59,9 @@ class UserApi implements UserApiBase {
   }
 
   @override
-  Future<Either<AppException, void>> unsetCompetitor() async {
+  Future<Either<AppException, void>> unsetCompetitor({CancelToken? cancelToken}) async {
     const url = '/users/unset-current';
-    final response = await _networkService.put(url, body: {"field": "competitor"});
+    final response = await _networkService.put(url, body: {"field": "competitor"}, cancelToken: cancelToken);
 
     return response.fold(
       (exception) => left(exception),

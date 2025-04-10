@@ -1,6 +1,6 @@
 import 'package:fpdart/fpdart.dart';
+import 'package:tgh_mobile/imports.dart';
 import '../exception.dart';
-import '../data_model/dps/dps.dart';
 import '../network.dart';
 
 abstract class DpsApiBase {
@@ -12,6 +12,7 @@ abstract class DpsApiBase {
     int limit, {
     bool? approved,
     Map<String, dynamic>? queryParam,
+    CancelToken? cancelToken,
   });
 
   Future<Either<AppException, List<DPS>>> fetchDps(
@@ -21,6 +22,7 @@ abstract class DpsApiBase {
     int limit, {
     bool? approved,
     Map<String, dynamic>? queryParam,
+    CancelToken? cancelToken,
   });
 
   Future<Either<AppException, List<DPS>>> fetchDpsAgent(
@@ -30,6 +32,7 @@ abstract class DpsApiBase {
     int limit, {
     bool? approved,
     Map<String, dynamic>? queryParam,
+    CancelToken? cancelToken,
   });
 }
 
@@ -47,17 +50,20 @@ class DpsApi implements DpsApiBase {
     int limit, {
     bool? approved,
     Map<String, dynamic>? queryParam,
+    CancelToken? cancelToken,
   }) async {
     const url = '/dps-entries/all';
-    final response = await _networkService.get(url, queryParameters: {
-      'competitor': competitorId,
-      'sortBy': sortBy,
-      'sortDir': sortDir,
-      'limit': limit,
-      'page': page,
-      'approved': approved ?? true,
-      ...queryParam ?? {},
-    });
+    final response = await _networkService.get(url,
+        queryParameters: {
+          'competitor': competitorId,
+          'sortBy': sortBy,
+          'sortDir': sortDir,
+          'limit': limit,
+          'page': page,
+          'approved': approved ?? true,
+          ...queryParam ?? {},
+        },
+        cancelToken: cancelToken);
 
     return response.fold(
       (exception) => left(exception),
@@ -83,16 +89,19 @@ class DpsApi implements DpsApiBase {
     int limit, {
     bool? approved,
     Map<String, dynamic>? queryParam,
+    CancelToken? cancelToken,
   }) async {
     const url = '/dps-entries/all-detailed';
-    final response = await _networkService.get(url, queryParameters: {
-      'sortBy': sortBy,
-      'sortDir': sortDir,
-      'page': page,
-      'limit': limit,
-      'approved': approved ?? true,
-      ...queryParam ?? {},
-    });
+    final response = await _networkService.get(url,
+        queryParameters: {
+          'sortBy': sortBy,
+          'sortDir': sortDir,
+          'page': page,
+          'limit': limit,
+          'approved': approved ?? true,
+          ...queryParam ?? {},
+        },
+        cancelToken: cancelToken);
 
     return response.fold(
       (exception) => left(exception),
@@ -118,16 +127,19 @@ class DpsApi implements DpsApiBase {
     int limit, {
     bool? approved,
     Map<String, dynamic>? queryParam,
+    CancelToken? cancelToken,
   }) async {
     const url = '/dps-entries/agent-all';
-    final response = await _networkService.get(url, queryParameters: {
-      'sortBy': sortBy,
-      'sortDir': sortDir,
-      'page': page,
-      'limit': limit,
-      'approved': approved ?? true,
-      ...queryParam ?? {},
-    });
+    final response = await _networkService.get(url,
+        queryParameters: {
+          'sortBy': sortBy,
+          'sortDir': sortDir,
+          'page': page,
+          'limit': limit,
+          'approved': approved ?? true,
+          ...queryParam ?? {},
+        },
+        cancelToken: cancelToken);
 
     return response.fold(
       (exception) => left(exception),

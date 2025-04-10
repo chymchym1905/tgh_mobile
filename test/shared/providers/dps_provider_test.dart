@@ -36,89 +36,103 @@ void main() {
     });
 
     test('fetchCompetitorDps returns valid dps entries', () async {
-      final api = container.read(dpsApiProvider);
-      final result = await api.fetchCompetitorDps(
-        '621336b43e8e7f7628dce587',
-        'created_at',
-        'desc',
-        0,
-        10,
+      final states = <AsyncValue<List<DPS>>>[];
+      final provider = fetchCompetitorDpsProvider(
+        competitorId: '621336b43e8e7f7628dce587',
+        sortBy: 'created_at',
+        sortDir: 'desc',
+        page: 0,
+        limit: 10,
         approved: true,
       );
-
-      result.fold(
-        (failure) => fail('API call failed: ${failure.toString()}'),
-        (dpsEntries) {
-          expect(dpsEntries, isNotNull);
-          for (final dps in dpsEntries) {
-            expect(dps.id, isNotEmpty);
-            expect(dps.competitor.alias, equals('chymchym1905'));
-            log('DPS ID: ${dps.id}');
-            log('Enenmy: ${dps.enemy}');
-            log('Video: ${dps.videolink}');
-          }
-        },
+      final subscription = container.listen(
+        provider,
+        (previous, next) => states.add(next),
+        fireImmediately: true,
       );
+
+      final dpsEntries = await container.read(provider.future);
+      subscription.close();
+
+      log(states.toString());
+      expect(dpsEntries, isA<List<DPS>>());
+      expect(dpsEntries, isNotEmpty);
+
+      for (final dps in dpsEntries) {
+        expect(dps.id, isNotEmpty);
+        expect(dps.competitor.alias, equals('chymchym1905'));
+        expect(dps.enemy, isNotNull);
+        expect(dps.videolink, isNotNull);
+      }
     });
 
     test('fetchDps returns paginated dps entries', () async {
-      final api = container.read(dpsApiProvider);
-      final result = await api.fetchDps(
-        'created_at',
-        'desc',
-        0,
-        5,
+      final states = <AsyncValue<List<DPS>>>[];
+      final provider = fetchDpsProvider(
+        sortBy: 'created_at',
+        sortDir: 'desc',
+        page: 0,
+        limit: 5,
         approved: true,
         queryParam: {'dps_category': 'Overworld'},
       );
-
-      result.fold(
-        (failure) => fail('API call failed: ${failure.toString()}'),
-        (dpsEntries) {
-          expect(dpsEntries.length, lessThanOrEqualTo(5));
-          for (final dps in dpsEntries) {
-            expect(dps.approved, isTrue);
-            log('DPS ID: ${dps.id}');
-            log('Created at: ${dps.createdAt}');
-            log('Enenmy: ${dps.enemy}');
-            log('Video: ${dps.videolink}');
-          }
-        },
+      final subscription = container.listen(
+        provider,
+        (previous, next) => states.add(next),
+        fireImmediately: true,
       );
+
+      final dpsEntries = await container.read(provider.future);
+      subscription.close();
+
+      log(states.toString());
+      expect(dpsEntries, isA<List<DPS>>());
+      expect(dpsEntries.length, lessThanOrEqualTo(5));
+
+      for (final dps in dpsEntries) {
+        expect(dps.approved, isTrue);
+        expect(dps.id, isNotEmpty);
+        expect(dps.createdAt, isNotNull);
+        expect(dps.enemy, isNotNull);
+        expect(dps.videolink, isNotNull);
+      }
     });
 
     test('fetchDpsAgent returns agent dps entries', () async {
       // First ensure we have a valid auth token
       final authNotifier = container.read(authNotifierProvider.notifier);
-      // Wait for the auth state to be authenticated
-
       await authNotifier.login('leyeuttoteuhau-8698@yopmail.com', 'SecurePassword123\\');
       final authState = await container.read(authNotifierProvider.future);
       expect(authState, isA<AuthStateAuthenticated>());
 
-      final api = container.read(dpsApiProvider);
-      final result = await api.fetchDpsAgent(
-        'created_at',
-        'desc',
-        0,
-        10,
+      final states = <AsyncValue<List<DPS>>>[];
+      final provider = fetchDpsAgentProvider(
+        sortBy: 'created_at',
+        sortDir: 'desc',
+        page: 0,
+        limit: 10,
         approved: true,
         queryParam: {'dps_category': 'Weekly Boss'},
       );
-
-      result.fold(
-        (failure) => fail('API call failed: ${failure.toString()}'),
-        (dpsEntries) {
-          expect(dpsEntries, isNotNull);
-          for (final dps in dpsEntries) {
-            expect(dps.id, isNotEmpty);
-            log('Agent DPS ID: ${dps.id}');
-            log('Category: ${dps.dpsCategory}');
-            log('Enenmy: ${dps.enemy}');
-            log('Video: ${dps.videolink}');
-          }
-        },
+      final subscription = container.listen(
+        provider,
+        (previous, next) => states.add(next),
+        fireImmediately: true,
       );
+
+      final dpsEntries = await container.read(provider.future);
+      subscription.close();
+
+      log(states.toString());
+      expect(dpsEntries, isA<List<DPS>>());
+      expect(dpsEntries, isNotEmpty);
+
+      for (final dps in dpsEntries) {
+        expect(dps.id, isNotEmpty);
+        expect(dps.dpsCategory, isNotNull);
+        expect(dps.enemy, isNotNull);
+        expect(dps.videolink, isNotNull);
+      }
     });
   });
 }

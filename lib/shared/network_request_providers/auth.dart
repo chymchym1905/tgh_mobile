@@ -23,7 +23,8 @@ class AuthNotifier extends _$AuthNotifier {
 
     if (localAuthToken != null) {
       _dioNetworkService.updateHeaders(localAuthToken);
-      final currentUser = await _authApi.checkAuth();
+      final cancelToken = await ref.cancelToken();
+      final currentUser = await _authApi.checkAuth(cancelToken: cancelToken);
       return currentUser.fold(
         (failure) => const AuthStateInitial(),
         (success) => AuthState.authenticated(success, localAuthToken),
@@ -34,7 +35,8 @@ class AuthNotifier extends _$AuthNotifier {
 
   Future<AuthState> login(String email, String password) async {
     state = const AsyncValue.loading();
-    final result = await _authApi.login(email, password);
+    final cancelToken = await ref.cancelToken();
+    final result = await _authApi.login(email, password, cancelToken: cancelToken);
     return result.fold(
       (failure) {
         final exception = AppException(message: failure.toString(), code: '1');
@@ -55,7 +57,8 @@ class AuthNotifier extends _$AuthNotifier {
 
   Future<AuthState> checkAuth() async {
     state = const AsyncValue.loading();
-    final result = await _authApi.checkAuth();
+    final cancelToken = await ref.cancelToken();
+    final result = await _authApi.checkAuth(cancelToken: cancelToken);
 
     return result.fold(
       (failure) {

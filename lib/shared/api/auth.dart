@@ -1,11 +1,11 @@
 import 'package:fpdart/fpdart.dart';
+import 'package:tgh_mobile/imports.dart';
 import '../exception.dart';
 import '../network.dart';
-import '../data_model/user/user.dart';
 
 abstract class AuthApiBase {
-  Future<Either<AppException, User>> login(String email, String password);
-  Future<Either<AppException, User>> checkAuth();
+  Future<Either<AppException, User>> login(String email, String password, {CancelToken? cancelToken});
+  Future<Either<AppException, User>> checkAuth({CancelToken? cancelToken});
   void updateAuthToken(String token);
 }
 
@@ -20,7 +20,7 @@ class AuthApi implements AuthApiBase {
   }
 
   @override
-  Future<Either<AppException, User>> login(String email, String password) async {
+  Future<Either<AppException, User>> login(String email, String password, {CancelToken? cancelToken}) async {
     const url = '/authentication';
     final response = await _networkService.post(
       url,
@@ -28,6 +28,7 @@ class AuthApi implements AuthApiBase {
         'userEmail': email,
         'password': password,
       },
+      cancelToken: cancelToken,
     );
 
     return response.fold(
@@ -53,9 +54,9 @@ class AuthApi implements AuthApiBase {
   }
 
   @override
-  Future<Either<AppException, User>> checkAuth() async {
+  Future<Either<AppException, User>> checkAuth({CancelToken? cancelToken}) async {
     const url = '/authentication/current';
-    final response = await _networkService.get(url);
+    final response = await _networkService.get(url, cancelToken: cancelToken);
 
     return response.fold(
       (exception) => left(exception),

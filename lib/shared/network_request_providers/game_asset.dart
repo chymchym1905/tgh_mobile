@@ -1,8 +1,9 @@
+import 'package:fpdart/fpdart.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:tgh_mobile/imports.dart';
 import 'package:tgh_mobile/shared/data_model/game_asset/game_asset_state.dart';
 
-import '../../app_state_providers/dio.dart';
-import '../api/index.dart';
+import '../exception.dart';
 
 part 'game_asset.g.dart';
 
@@ -34,19 +35,23 @@ class GameAsset extends _$GameAsset {
 
   Future<GameAssetState> fetchCharacters() async {
     state = const AsyncValue.loading();
-    return (await gameAssetApi.fetchCharacters()).fold(
+    final cancelToken = await ref.cancelToken();
+    return (await gameAssetApi.fetchCharacters(cancelToken: cancelToken)).fold(
       (failure) {
         state = AsyncValue.error(GameAssetStateError(failure), StackTrace.current);
         return GameAssetState.error(failure);
       },
       (characters) {
         final currentState = state.valueOrNull;
-        if (currentState is GameAssetStateLoaded) {
-          state = AsyncValue.data(GameAssetState.loaded(
-            characters,
-            currentState.weapons,
-            currentState.artifacts,
-          ));
+        switch (currentState) {
+          case GameAssetStateLoaded():
+            state = AsyncValue.data(GameAssetState.loaded(
+              characters,
+              currentState.weapons,
+              currentState.artifacts,
+            ));
+          default:
+            state = AsyncValue.data(GameAssetState.loaded(characters, null, null));
         }
         return state.value!;
       },
@@ -55,19 +60,23 @@ class GameAsset extends _$GameAsset {
 
   Future<GameAssetState> fetchWeaponArti() async {
     state = const AsyncValue.loading();
-    return (await gameAssetApi.fetchWeaponArti()).fold(
+    final cancelToken = await ref.cancelToken();
+    return (await gameAssetApi.fetchWeaponArti(cancelToken: cancelToken)).fold(
       (failure) {
         state = AsyncValue.error(GameAssetStateError(failure), StackTrace.current);
         return GameAssetState.error(failure);
       },
       (weaponArti) {
         final currentState = state.valueOrNull;
-        if (currentState is GameAssetStateLoaded) {
-          state = AsyncValue.data(GameAssetState.loaded(
-            currentState.characters,
-            weaponArti.weaponAssets,
-            weaponArti.artifactAssets,
-          ));
+        switch (currentState) {
+          case GameAssetStateLoaded():
+            state = AsyncValue.data(GameAssetState.loaded(
+              currentState.characters,
+              weaponArti.weaponAssets,
+              weaponArti.artifactAssets,
+            ));
+          default:
+            state = AsyncValue.data(GameAssetState.loaded(null, weaponArti.weaponAssets, weaponArti.artifactAssets));
         }
         return state.value!;
       },
@@ -76,8 +85,15 @@ class GameAsset extends _$GameAsset {
 
   Future<GameAssetState> fetchAll() async {
     state = const AsyncValue.loading();
-    final charactersResult = await gameAssetApi.fetchCharacters();
-    final weaponArtiResult = await gameAssetApi.fetchWeaponArti();
+    final cancelToken = await ref.cancelToken();
+    final futures = [
+      gameAssetApi.fetchCharacters(cancelToken: cancelToken),
+      gameAssetApi.fetchWeaponArti(cancelToken: cancelToken),
+    ];
+    final results = await Future.wait(futures, eagerError: false);
+    final charactersResult = results[0] as Either<AppException, List<Character>>;
+    final weaponArtiResult =
+        results[1] as Either<AppException, ({List<Weapon> weaponAssets, List<Artifact> artifactAssets})>;
 
     return charactersResult.fold(
       (failure) => GameAssetState.error(failure),

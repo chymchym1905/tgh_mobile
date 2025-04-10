@@ -1,6 +1,6 @@
 import 'package:fpdart/fpdart.dart';
+import 'package:tgh_mobile/imports.dart';
 
-import '../data_model/index.dart';
 import '../exception.dart';
 import '../network.dart';
 
@@ -13,6 +13,7 @@ abstract class SpeedrunApiBase {
     int limit, {
     bool? approved,
     Map<String, dynamic>? queryParam,
+    CancelToken? cancelToken,
   });
 
   Future<Either<AppException, List<Speedrun>>> fetchSpeedrun(
@@ -22,6 +23,7 @@ abstract class SpeedrunApiBase {
     int limit, {
     bool? approved,
     Map<String, dynamic>? queryParam,
+    CancelToken? cancelToken,
   });
 
   Future<Either<AppException, List<Speedrun>>> fetchSpeedrunAgent(
@@ -31,6 +33,7 @@ abstract class SpeedrunApiBase {
     int limit, {
     bool? approved,
     Map<String, dynamic>? queryParam,
+    CancelToken? cancelToken,
   });
   // Future<Either<AppException, List<Speedrun>>> getSpeedrunCountInPeriod(String startDate, String endDate,
   //     [bool? day, bool? week, bool? month, bool? year]);
@@ -50,17 +53,20 @@ class SpeedrunApi implements SpeedrunApiBase {
     int limit, {
     bool? approved,
     Map<String, dynamic>? queryParam,
+    CancelToken? cancelToken,
   }) async {
     const url = '/speedrun-entries/all';
-    final response = await _networkService.get(url, queryParameters: {
-      'competitor': competitorId,
-      'sortBy': sortBy,
-      'sortDir': sortDir,
-      'limit': limit,
-      'page': page,
-      'approved': approved ?? true,
-      ...queryParam ?? {},
-    });
+    final response = await _networkService.get(url,
+        queryParameters: {
+          'competitor': competitorId,
+          'sortBy': sortBy,
+          'sortDir': sortDir,
+          'limit': limit,
+          'page': page,
+          'approved': approved ?? true,
+          ...queryParam ?? {},
+        },
+        cancelToken: cancelToken);
 
     return response.fold(
       (exception) => left(exception),
@@ -86,16 +92,19 @@ class SpeedrunApi implements SpeedrunApiBase {
     int limit, {
     bool? approved,
     Map<String, dynamic>? queryParam,
+    CancelToken? cancelToken,
   }) async {
     const url = '/speedrun-entries/all-detailed';
-    final response = await _networkService.get(url, queryParameters: {
-      'sortBy': sortBy,
-      'sortDir': sortDir,
-      'page': page,
-      'limit': limit,
-      'approved': approved ?? true,
-      ...queryParam ?? {},
-    });
+    final response = await _networkService.get(url,
+        queryParameters: {
+          'sortBy': sortBy,
+          'sortDir': sortDir,
+          'page': page,
+          'limit': limit,
+          'approved': approved ?? true,
+          ...queryParam ?? {},
+        },
+        cancelToken: cancelToken);
     return response.fold(
       (exception) => left(exception),
       (response) {
@@ -117,16 +126,19 @@ class SpeedrunApi implements SpeedrunApiBase {
     int limit, {
     bool? approved,
     Map<String, dynamic>? queryParam,
+    CancelToken? cancelToken,
   }) async {
     const url = '/speedrun-entries/agent-all';
-    final response = await _networkService.get(url, queryParameters: {
-      'sortBy': sortBy,
-      'sortDir': sortDir,
-      'page': page,
-      'limit': limit,
-      'approved': approved ?? true,
-      ...queryParam ?? {},
-    });
+    final response = await _networkService.get(url,
+        queryParameters: {
+          'sortBy': sortBy,
+          'sortDir': sortDir,
+          'page': page,
+          'limit': limit,
+          'approved': approved ?? true,
+          ...queryParam ?? {},
+        },
+        cancelToken: cancelToken);
     return response.fold(
       (exception) => left(exception),
       (response) {

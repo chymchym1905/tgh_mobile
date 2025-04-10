@@ -1,8 +1,8 @@
 import 'dart:developer';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tgh_mobile/shared/network_request_providers/feed.dart';
-import 'package:tgh_mobile/shared/data_model/feed/feed.dart';
+import 'package:tgh_mobile/imports.dart';
+import 'package:tgh_mobile/shared/network.dart';
 
 ProviderContainer createContainer({
   ProviderContainer? parent,
@@ -22,89 +22,91 @@ void main() {
   group('FeedProvider Tests', () {
     late ProviderContainer container;
 
-    setUp(() {
-      container = createContainer();
-    });
-
-    test('Target both speedrun and dps entries', () async {
-      final api = container.read(feedApiProvider);
-      final result = await api.fetchFeed({});
-
-      result.fold(
-        (failure) => fail('API call failed: ${failure.toString()}'),
-        (feeds) {
-          // Add your assertions here
-          for (final feed in feeds) {
-            switch (feed) {
-              case SpeedrunFeed(:final speedrunCategory):
-                expect(speedrunCategory, isNotNull);
-              case DPSFeed(:final dpsCategory):
-                expect(dpsCategory, isNotNull);
-            }
-            // expect(feed.videoMetadata, isNotNull);
-            if (feed.videoMetadata != null) {
-              log("Title: ${feed.videoMetadata?.title}");
-              log("Thumbnail: ${feed.videoMetadata?.thumbnail}");
-              log("Views: ${feed.videoMetadata?.views}");
-              log("Duration: ${feed.videoMetadata?.duration}");
-            }
-          }
-        },
+    setUp(() async {
+      WidgetsFlutterBinding.ensureInitialized();
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      container = createContainer(
+        overrides: [
+          sharedPrefInstanceProvider.overrideWithValue(prefs),
+          dioNetworkServiceProvider.overrideWithValue(DioNetworkService(Dio())),
+        ],
       );
     });
 
-    test('Target speedrun entries', () async {
-      final api = container.read(feedApiProvider);
-      final result = await api.fetchSpeedrunFeed({'characters': 'Mavuika,Xilonen'});
-
-      result.fold(
-        (failure) => fail('API call failed: ${failure.toString()}'),
-        (feeds) {
-          // Add your assertions here
-          for (final feed in feeds) {
-            switch (feed) {
-              case SpeedrunFeed(:final speedrunCategory):
-                expect(speedrunCategory, isNotNull);
-              case DPSFeed(:final dpsCategory):
-                expect(dpsCategory, isNotNull);
-            }
-            // expect(feed.videoMetadata, isNotNull);
-            if (feed.videoMetadata != null) {
-              log("Title: ${feed.videoMetadata?.title}");
-              log("Thumbnail: ${feed.videoMetadata?.thumbnail}");
-              log("Views: ${feed.videoMetadata?.views}");
-              log("Duration: ${feed.videoMetadata?.duration}");
-            }
-          }
-        },
+    test('fetchFeed returns valid feed entries', () async {
+      final states = <AsyncValue<List<Feed>>>[];
+      final provider = fetchFeedProvider({});
+      final subscription = container.listen(
+        provider,
+        (previous, next) => states.add(next),
+        fireImmediately: true,
       );
+
+      final feeds = await container.read(provider.future);
+      subscription.close();
+
+      log(states.toString());
+      expect(feeds, isA<List<Feed>>());
+      expect(feeds, isNotEmpty);
+
+      for (final feed in feeds) {
+        switch (feed) {
+          case SpeedrunFeed():
+            expect(feed.speedrunCategory, isNotNull);
+          case DPSFeed():
+            expect(feed.dpsCategory, isNotNull);
+        }
+        expect(feed.videoMetadata, isNotNull);
+      }
     });
 
-    test('Target dps entries', () async {
-      final api = container.read(feedApiProvider);
-      final result = await api.fetchDPSFeed({'dps_character': 'Mavuika'});
-
-      result.fold(
-        (failure) => fail('API call failed: ${failure.toString()}'),
-        (feeds) {
-          // Add your assertions here
-          for (final feed in feeds) {
-            switch (feed) {
-              case SpeedrunFeed(:final speedrunCategory):
-                expect(speedrunCategory, isNotNull);
-              case DPSFeed(:final dpsCategory):
-                expect(dpsCategory, isNotNull);
-            }
-            // expect(feed.videoMetadata, isNotNull);
-            if (feed.videoMetadata != null) {
-              log("Title: ${feed.videoMetadata?.title}");
-              log("Thumbnail: ${feed.videoMetadata?.thumbnail}");
-              log("Views: ${feed.videoMetadata?.views}");
-              log("Duration: ${feed.videoMetadata?.duration}");
-            }
-          }
-        },
+    test('fetchSpeedrunFeed returns valid speedrun entries', () async {
+      final states = <AsyncValue<List<Feed>>>[];
+      final provider = fetchSpeedrunFeedProvider({'characters': 'Mavuika,Xilonen'});
+      final subscription = container.listen(
+        provider,
+        (previous, next) => states.add(next),
+        fireImmediately: true,
       );
+
+      final feeds = await container.read(provider.future);
+      subscription.close();
+
+      log(states.toString());
+      expect(feeds, isA<List<Feed>>());
+      expect(feeds, isNotEmpty);
+
+      for (final feed in feeds) {
+        expect(feed, isA<SpeedrunFeed>());
+        final speedrunFeed = feed as SpeedrunFeed;
+        expect(speedrunFeed.speedrunCategory, isNotNull);
+        expect(speedrunFeed.videoMetadata, isNotNull);
+      }
+    });
+
+    test('fetchDPSFeed returns valid dps entries', () async {
+      final states = <AsyncValue<List<Feed>>>[];
+      final provider = fetchDPSFeedProvider({'dps_character': 'Mavuika'});
+      final subscription = container.listen(
+        provider,
+        (previous, next) => states.add(next),
+        fireImmediately: true,
+      );
+
+      final feeds = await container.read(provider.future);
+      subscription.close();
+
+      log(states.toString());
+      expect(feeds, isA<List<Feed>>());
+      expect(feeds, isNotEmpty);
+
+      for (final feed in feeds) {
+        expect(feed, isA<DPSFeed>());
+        final dpsFeed = feed as DPSFeed;
+        expect(dpsFeed.dpsCategory, isNotNull);
+        expect(dpsFeed.videoMetadata, isNotNull);
+      }
     });
   });
 }

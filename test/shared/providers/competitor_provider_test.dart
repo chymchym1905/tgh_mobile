@@ -59,104 +59,138 @@ void main() {
         ],
       );
       // Ensure authentication is done once for all tests
-      final authState = await container
+      final authStates = List<AsyncValue<AuthState>>.empty(growable: true);
+      final authStateSubscription = container.listen(
+        authNotifierProvider,
+        (previous, next) => authStates.add(next),
+        fireImmediately: true,
+      );
+      await container
           .read(authNotifierProvider.notifier)
           .login('leyeuttoteuhau-8698@yopmail.com', 'SecurePassword123\\');
-      expect(authState, isA<AuthStateAuthenticated>());
+      expect(authStates.last.value, isA<AuthStateAuthenticated>());
+      authStateSubscription.close();
     });
 
     test('1. Create and link new competitor profile to a user', () async {
-      /// Create and link competitor profile to a user
-      final api = container.read(userApiProvider);
-      final result = await api.createCompetitor({
+      final states = List<AsyncValue<User>>.empty(growable: true);
+      final provider = createCompetitorProvider({
         'alias': testAlias,
         'discord_tag': 'chymchym1905',
         'account_uid': '123456789',
         'deleted_at': DateTime.now().subtract(const Duration(days: 29, hours: 23, minutes: 57)).toIso8601String(),
       });
-
-      result.fold(
-        (failure) => fail('API call failed: ${failure.toString()}'),
-        (success) {
-          expect(success.competitor?.alias, testAlias);
-          expect(success.competitor?.discordtag, 'chymchym1905');
-          expect(success.competitor?.uid, 123456789);
-          competitorId = success.competitor?.id ?? '';
-          developer.log('Competitor ID: $competitorId, Alias: $testAlias, Discord ID: chymchym1905, UID: 123456789');
-        },
+      final subscription = container.listen(
+        provider,
+        (previous, next) => states.add(next),
+        fireImmediately: true,
       );
+
+      await container.read(provider.future);
+      subscription.close();
+
+      final user = states.last.value;
+      developer.log(states.toString());
+      expect(user, isNotNull);
+      expect(user?.competitor?.alias, testAlias);
+      expect(user?.competitor?.discordtag, 'chymchym1905');
+      expect(user?.competitor?.uid, 123456789);
+      competitorId = user?.competitor?.id ?? '';
+      developer.log('Competitor ID: $competitorId, Alias: $testAlias, Discord ID: chymchym1905, UID: 123456789');
     });
 
     test('2. Unlink competitor profile from a user', () async {
-      /// Unlink competitor profile from a user
-      final api = container.read(userApiProvider);
-      final result = await api.unsetCompetitor();
-
-      result.fold(
-        (failure) => fail('API call failed: ${failure.toString()}'),
-        (success) {
-          developer.log('Competitor unlinked successfully');
-        },
+      final states = List<AsyncValue<void>>.empty(growable: true);
+      final provider = unsetCompetitorProvider;
+      final subscription = container.listen(
+        provider,
+        (previous, next) => states.add(next),
+        fireImmediately: true,
       );
+
+      await container.read(provider.future);
+      subscription.close();
+
+      developer.log(states.toString());
+      developer.log('Competitor unlinked successfully');
     });
 
     test('3. Relink the same competitor profile to the user again', () async {
-      /// Link competitor profile to the user again
-      final api = container.read(userApiProvider);
-      final result = await api.updateCompetitorForCurrentUser({
+      final states = List<AsyncValue<User?>>.empty(growable: true);
+      final provider = updateCompetitorForCurrentUserProvider({
         'competitor': competitorId,
       });
-
-      result.fold(
-        (failure) => fail('API call failed: ${failure.toString()}'),
-        (user) {
-          expect(user, isNotNull);
-          expect(user?.competitor?.alias, testAlias);
-          developer.log('Competitor $competitorId linked successfully');
-        },
+      final subscription = container.listen(
+        provider,
+        (previous, next) => states.add(next),
+        fireImmediately: true,
       );
+
+      await container.read(provider.future);
+      subscription.close();
+
+      final user = states.last.value;
+      developer.log(states.toString());
+      expect(user, isNotNull);
+      expect(user?.competitor?.alias, testAlias);
+      developer.log('Competitor $competitorId linked successfully');
     });
 
     test('4. Update the competitor profile', () async {
-      /// Modify competitor profile
-      final api = container.read(competitorApiProvider);
-      final result = await api.updateCompetitorInfo({
+      final states = List<AsyncValue<Competitor?>>.empty(growable: true);
+      final provider = updateCompetitorInfoProvider({
         'alias': testUpdatedAlias,
         'discord_tag': 'updatedchymchym1905',
         'account_uid': '987654321',
       });
-
-      result.fold(
-        (failure) => fail('API call failed: ${failure.toString()}'),
-        (competitor) {
-          expect(competitor?.alias, testUpdatedAlias);
-          developer.log('Competitor $testAlias updated to $testUpdatedAlias successfully');
-        },
+      final subscription = container.listen(
+        provider,
+        (previous, next) => states.add(next),
+        fireImmediately: true,
       );
-      final userApi = container.read(userApiProvider);
-      final result2 = await userApi.unsetCompetitor();
 
-      result2.fold(
-        (failure) => fail('API call failed: ${failure.toString()}'),
-        (success) {
-          developer.log('Competitor $competitorId unlinked successfully');
-        },
+      await container.read(provider.future);
+      subscription.close();
+
+      final competitor = states.last.value;
+      developer.log(states.toString());
+      expect(competitor?.alias, testUpdatedAlias);
+      developer.log('Competitor $testAlias updated to $testUpdatedAlias successfully');
+
+      // Unlink competitor after update
+      final unsetStates = List<AsyncValue<void>>.empty(growable: true);
+      final unsetProvider = unsetCompetitorProvider;
+      final unsetSubscription = container.listen(
+        unsetProvider,
+        (previous, next) => unsetStates.add(next),
+        fireImmediately: true,
       );
+
+      await container.read(unsetProvider.future);
+      unsetSubscription.close();
+
+      developer.log(unsetStates.toString());
+      developer.log('Competitor $competitorId unlinked successfully');
     });
 
     test('5. getCompetitorByAlias fetches competitor profile', () async {
-      final api = container.read(competitorApiProvider);
-      final result = await api.getCompetitorByAlias(testUpdatedAlias);
-
-      result.fold(
-        (failure) => fail('API call failed: ${failure.toString()}'),
-        (competitor) {
-          expect(competitor.uid, equals(null));
-          developer.log('Competitor ID: ${competitor.id}');
-          developer.log('Alias: ${competitor.alias}');
-          developer.log('Discord ID: ${competitor.discordtag}');
-        },
+      final states = List<AsyncValue<Competitor>>.empty(growable: true);
+      final provider = getCompetitorByAliasProvider(testUpdatedAlias);
+      final subscription = container.listen(
+        provider,
+        (previous, next) => states.add(next),
+        fireImmediately: true,
       );
+
+      await container.read(provider.future);
+      subscription.close();
+
+      final competitor = states.last.value;
+      developer.log(states.toString());
+      expect(competitor?.uid, equals(null));
+      developer.log('Competitor ID: ${competitor?.id}');
+      developer.log('Alias: ${competitor?.alias}');
+      developer.log('Discord ID: ${competitor?.discordtag}');
     });
   });
 }

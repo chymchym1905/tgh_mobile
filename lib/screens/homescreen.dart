@@ -22,14 +22,14 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class HomeScreenMobile extends StatefulWidget {
+class HomeScreenMobile extends ConsumerStatefulWidget {
   const HomeScreenMobile({super.key});
 
   @override
-  State<HomeScreenMobile> createState() => _HomeScreenMobileState();
+  ConsumerState<HomeScreenMobile> createState() => _HomeScreenMobileState();
 }
 
-class _HomeScreenMobileState extends State<HomeScreenMobile> {
+class _HomeScreenMobileState extends ConsumerState<HomeScreenMobile> {
   int _bottomNavIndex = 0;
   Widget _tabBuilder(int index, bool isActive, double width, double height) {
     switch (index) {
@@ -59,9 +59,25 @@ class _HomeScreenMobileState extends State<HomeScreenMobile> {
 
   @override
   Widget build(BuildContext context) {
+    final chymchymSpeedrun = ref.watch(fetchCompetitorSpeedrunsProvider(
+      '621336b43e8e7f7628dce587',
+      'created_at',
+      'desc',
+      0,
+      10,
+      approved: true,
+    ));
     return Scaffold(
       appBar: AppBar(title: const Text('Home'), centerTitle: true),
-      body: Center(child: _tabBuilder(_bottomNavIndex, false, 300, 300)),
+      body: Column(
+        children: [
+          Center(child: _tabBuilder(_bottomNavIndex, false, 300, 300)),
+          chymchymSpeedrun.when(
+              data: (data) => const Center(child: Text('fetch success')),
+              error: (error, stackTrace) => Center(child: Text(error.toString())),
+              loading: () => const CircularProgressIndicator.adaptive())
+        ],
+      ),
       floatingActionButton: Consumer(builder: (context, ref, child) {
         return FloatingActionButton(
           onPressed: () {

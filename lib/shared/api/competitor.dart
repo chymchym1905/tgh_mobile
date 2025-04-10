@@ -1,16 +1,13 @@
 import 'package:fpdart/fpdart.dart';
+import 'package:tgh_mobile/imports.dart';
 import '../exception.dart';
-import '../data_model/competitor/competitor.dart';
 import '../network.dart';
 
 abstract class CompetitorApiBase {
-  Future<Either<AppException, Competitor?>> updateCompetitorInfo(
-    Map<String, dynamic> updatedInfo,
-  );
+  Future<Either<AppException, Competitor?>> updateCompetitorInfo(Map<String, dynamic> updatedInfo,
+      {CancelToken? cancelToken});
 
-  Future<Either<AppException, Competitor>> getCompetitorByAlias(
-    String alias,
-  );
+  Future<Either<AppException, Competitor>> getCompetitorByAlias(String alias, {CancelToken? cancelToken});
 }
 
 class CompetitorApi implements CompetitorApiBase {
@@ -19,11 +16,10 @@ class CompetitorApi implements CompetitorApiBase {
   CompetitorApi(this._networkService);
 
   @override
-  Future<Either<AppException, Competitor?>> updateCompetitorInfo(
-    Map<String, dynamic> updatedInfo,
-  ) async {
+  Future<Either<AppException, Competitor?>> updateCompetitorInfo(Map<String, dynamic> updatedInfo,
+      {CancelToken? cancelToken}) async {
     const url = '/competitors/update-current';
-    final response = await _networkService.put(url, body: updatedInfo);
+    final response = await _networkService.put(url, body: updatedInfo, cancelToken: cancelToken);
 
     return response.fold(
       (exception) => left(exception),
@@ -43,9 +39,9 @@ class CompetitorApi implements CompetitorApiBase {
   }
 
   @override
-  Future<Either<AppException, Competitor>> getCompetitorByAlias(String alias) async {
+  Future<Either<AppException, Competitor>> getCompetitorByAlias(String alias, {CancelToken? cancelToken}) async {
     final url = '/competitors/$alias';
-    final response = await _networkService.get(url);
+    final response = await _networkService.get(url, cancelToken: cancelToken);
 
     return response.fold(
       (exception) => left(exception),

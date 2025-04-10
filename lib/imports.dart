@@ -8,10 +8,11 @@ export 'package:flutter_riverpod/flutter_riverpod.dart';
 export 'package:shared_preferences/shared_preferences.dart';
 
 //----------------------------------- FILES -----------------------------------
+export './main/extension.dart';
 export './screens/index.dart';
 export './widgets/spines/index.dart';
 export './constant/index.dart';
-export 'app_state_providers/index.dart';
+export './app_state_providers/index.dart';
 export './shared/api/index.dart';
 export './shared/data_model/index.dart';
 export './shared/network_request_providers/index.dart';
