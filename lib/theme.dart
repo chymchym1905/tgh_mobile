@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
-import '../../imports.dart';
+import '../imports.dart';
 
 ThemeData light = ThemeData(
     brightness: Brightness.light,
@@ -24,6 +24,7 @@ ThemeData light = ThemeData(
           systemNavigationBarColor: Colors.transparent,
           systemNavigationBarIconBrightness: Brightness.dark),
     ),
+    textTheme: Typography.englishLike2018.apply(fontSizeFactor: 1.sp),
     extensions: const [
       ThemeAssets(
         //home
@@ -72,6 +73,7 @@ ThemeData dark = ThemeData(
           systemNavigationBarColor: Colors.transparent,
           systemNavigationBarIconBrightness: Brightness.light),
     ),
+    textTheme: Typography.englishLike2018.apply(fontSizeFactor: 1.sp),
     extensions: const [
       ThemeAssets(
         //home

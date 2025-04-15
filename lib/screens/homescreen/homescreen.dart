@@ -1,6 +1,6 @@
 import 'package:tgh_mobile/app_state_providers/theme.dart';
 
-import '../imports.dart';
+import '../../imports.dart';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -31,6 +31,7 @@ class HomeScreenMobile extends ConsumerStatefulWidget {
 
 class _HomeScreenMobileState extends ConsumerState<HomeScreenMobile> {
   int _bottomNavIndex = 0;
+
   Widget _tabBuilder(int index, bool isActive, double width, double height) {
     switch (index) {
       case 0:
@@ -59,24 +60,24 @@ class _HomeScreenMobileState extends ConsumerState<HomeScreenMobile> {
 
   @override
   Widget build(BuildContext context) {
-    final chymchymSpeedrun = ref.watch(fetchCompetitorSpeedrunsProvider(
-      '621336b43e8e7f7628dce587',
-      'created_at',
-      'desc',
-      0,
-      10,
-      approved: true,
-    ));
+    // final chymchymSpeedrun = ref.watch(fetchCompetitorSpeedrunsProvider(
+    //   '621336b43e8e7f7628dce587',
+    //   'created_at',
+    //   'desc',
+    //   0,
+    //   10,
+    //   approved: true,
+    // ));
     return Scaffold(
-      appBar: AppBar(title: const Text('Home'), centerTitle: true),
-      body: Column(
-        children: [
-          Center(child: _tabBuilder(_bottomNavIndex, false, 300, 300)),
-          chymchymSpeedrun.when(
-              data: (data) => const Center(child: Text('fetch success')),
-              error: (error, stackTrace) => Center(child: Text(error.toString())),
-              loading: () => const CircularProgressIndicator.adaptive())
-        ],
+      body: SafeArea(
+        child: RefreshIndicator(
+          onRefresh: () async {},
+          child: CustomScrollView(
+            slivers: [
+              MyAppBar(home: _bottomNavIndex == 0, profile: _bottomNavIndex == 3),
+            ],
+          ),
+        ),
       ),
       floatingActionButton: Consumer(builder: (context, ref, child) {
         return FloatingActionButton(

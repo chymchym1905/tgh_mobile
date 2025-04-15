@@ -32,12 +32,16 @@ class Root extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ref.watch(themeNotifierProvider);
-    return MaterialApp(
-        title: 'The Golden House',
-        debugShowCheckedModeBanner: false,
-        theme: light,
-        darkTheme: dark,
-        themeMode: theme,
-        home: const HomeScreen());
+    return ScreenUtilInit(
+        designSize: const Size(344, 882),
+        minTextAdapt: true,
+        splitScreenMode: true,
+        builder: (context, child) => MaterialApp(
+            title: 'The Golden House',
+            debugShowCheckedModeBanner: false,
+            theme: light,
+            darkTheme: dark,
+            themeMode: theme,
+            home: const HomeScreen()));
   }
 }

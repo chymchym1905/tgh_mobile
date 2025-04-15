@@ -6,7 +6,8 @@ export 'package:lottie/lottie.dart';
 export 'package:flutter_svg/flutter_svg.dart';
 export 'package:flutter_riverpod/flutter_riverpod.dart';
 export 'package:shared_preferences/shared_preferences.dart';
-
+export 'package:google_fonts/google_fonts.dart';
+export 'package:flutter_screenutil/flutter_screenutil.dart';
 //----------------------------------- FILES -----------------------------------
 export './main/extension.dart';
 export './screens/index.dart';
@@ -16,5 +17,6 @@ export './app_state_providers/index.dart';
 export './shared/api/index.dart';
 export './shared/data_model/index.dart';
 export './shared/network_request_providers/index.dart';
-export 'theme/theme.dart';
+export 'theme.dart';
+export './widgets/index.dart';
 export 'configs.dart';
