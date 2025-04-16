@@ -1,7 +1,12 @@
-import 'package:tgh_mobile/app_state_providers/theme.dart';
+import 'dart:developer';
+
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:tgh_mobile/widgets/providers/tags.dart';
 
 import '../../imports.dart';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
+
+import 'homebody.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -31,6 +36,41 @@ class HomeScreenMobile extends ConsumerStatefulWidget {
 
 class _HomeScreenMobileState extends ConsumerState<HomeScreenMobile> {
   int _bottomNavIndex = 0;
+  late final PagingController<int, Feed> _pagingController = PagingController<int, Feed>(
+    getNextPageKey: (state) => (state.keys?.last ?? 0) + 1,
+    fetchPage: (pageKey) {
+      final filter = ref.watch(appliedFilterProvider);
+      final future = ref.read(fetchFeedProvider(filter).future);
+      return future;
+    },
+  );
+  @override
+  void initState() {
+    super.initState();
+    _pagingController.addListener(_showError);
+  }
+
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _showError() async {
+    if (_pagingController.value.status == PagingStatus.subsequentPageError) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text(
+            'Something went wrong while fetching a new page.',
+          ),
+          action: SnackBarAction(
+            label: 'Retry',
+            onPressed: () => _pagingController.fetchNextPage(),
+          ),
+        ),
+      );
+    }
+  }
 
   Widget _tabBuilder(int index, bool isActive, double width, double height) {
     switch (index) {
@@ -70,14 +110,20 @@ class _HomeScreenMobileState extends ConsumerState<HomeScreenMobile> {
     // ));
     return Scaffold(
       body: SafeArea(
-        child: RefreshIndicator(
-          onRefresh: () async {},
-          child: CustomScrollView(
-            slivers: [
-              MyAppBar(home: _bottomNavIndex == 0, profile: _bottomNavIndex == 3),
-            ],
-          ),
-        ),
+        child: IndexedStack(index: _bottomNavIndex, children: [
+          RefreshIndicator(
+              onRefresh: () async {},
+              child: CustomScrollView(slivers: [
+                MyAppBar(home: _bottomNavIndex == 0, profile: _bottomNavIndex == 3),
+                HomeBody(pagingController: _pagingController)
+              ])),
+          // Leaderboard page
+          const Center(child: Text('Leaderboard')),
+          // Trophy page
+          const Center(child: Text('Trophy')),
+          // Profile page
+          const Center(child: Text('Profile')),
+        ]),
       ),
       floatingActionButton: Consumer(builder: (context, ref, child) {
         return FloatingActionButton(

@@ -6,6 +6,7 @@ part 'feed.g.dart';
 @riverpod
 FeedApiBase feedApi(Ref ref) {
   final networkService = ref.watch(dioNetworkServiceProvider);
+  ref.keepAlive();
   return FeedApi(networkService);
 }
 

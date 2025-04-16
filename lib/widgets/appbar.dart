@@ -1,3 +1,5 @@
+import 'package:tgh_mobile/widgets/filteroverlay.dart';
+
 import '../../imports.dart';
 
 class MyAppBar extends StatelessWidget {
@@ -8,15 +10,13 @@ class MyAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
-      title: RepaintBoundary(
-        child: Text('The Golden House',
-            style: GoogleFonts.inter(
-              fontSize: 24.w,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.primary,
-              letterSpacing: -2,
-            )),
-      ),
+      title: Text('The Golden House',
+          style: GoogleFonts.inter(
+            fontSize: 24.w,
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).colorScheme.primary,
+            letterSpacing: -2,
+          )),
       centerTitle: false,
       pinned: false,
       floating: true,
@@ -41,34 +41,65 @@ class Bottom extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _BottomState extends State<Bottom> {
-  final List<String> tags = [
+  final List<String> _tags = [
     'All',
     'Verified',
-    'Melt',
-    'Vaporize',
-    'Mono Element',
-    'Spread',
-    'Aggravate',
-    'Eletro Charged',
-    'AMC',
+    'Outside',
+    'Unverified',
   ];
-  int activeIndex = 0;
+  int _activeIndex = 0;
+  OverlayEntry? _filterOverlay;
+  bool _filterApplied = false;
+  void _filterChanged(bool applied) {
+    _filterApplied = applied;
+  }
+
+  void _showFilterOverlay() {
+    if (_filterOverlay?.mounted ?? false) {
+      _filterOverlay?.remove();
+      return;
+    }
+    _filterOverlay = OverlayEntry(
+        builder: (context) => Stack(children: [
+              GestureDetector(
+                  onTap: () {
+                    _showFilterOverlay();
+                  },
+                  child: Opacity(
+                      opacity: 0.5, child: Container(color: Theme.of(context).colorScheme.surfaceContainerLowest))),
+              Positioned(
+                top: 100.h,
+                left: 30.w,
+                right: 30.w,
+                bottom: 100.h,
+                child: Container(
+                    color: Theme.of(context).colorScheme.surfaceContainerLowest,
+                    child: FilterOverlay(onFilterChanged: _filterChanged)),
+              )
+            ]));
+    Overlay.of(context).insert(_filterOverlay!);
+  }
+
   @override
   Widget build(BuildContext context) {
     return PreferredSize(
       preferredSize: widget.preferredSize,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
-        child: Row(
-          children: List<Widget>.generate(
-              tags.length,
+        child: Row(children: [
+          8.horizontalSpace,
+          IconButton(
+              onPressed: _showFilterOverlay,
+              icon: _filterApplied ? const Icon(Icons.filter_alt) : const Icon(Icons.filter_alt_off)),
+          ...List<Widget>.generate(
+              _tags.length,
               (index) => TagsChip(
-                  selected: index == activeIndex,
-                  text: tags[index],
+                  selected: index == _activeIndex,
+                  text: _tags[index],
                   onTap: () => setState(() {
-                        activeIndex = index;
-                      }))),
-        ),
+                        _activeIndex = index;
+                      })))
+        ]),
       ),
     );
   }

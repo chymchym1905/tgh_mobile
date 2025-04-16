@@ -1,3 +1,4 @@
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
 import 'imports.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'main/observer.dart';
 
 void main() async {
+  debugRepaintRainbowEnabled = true;
   WidgetsFlutterBinding.ensureInitialized();
   if (kIsWeb) {
     SystemChrome.setSystemUIOverlayStyle(
@@ -32,6 +34,7 @@ class Root extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ref.watch(themeNotifierProvider);
+    ref.watch(dioNetworkServiceProvider);
     return ScreenUtilInit(
         designSize: const Size(344, 882),
         minTextAdapt: true,

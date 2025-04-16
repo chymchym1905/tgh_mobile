@@ -9,13 +9,13 @@ part 'game_asset.g.dart';
 
 @riverpod
 class GameAsset extends _$GameAsset {
-  late GameAssetApiBase gameAssetApi;
+  late GameAssetApiBase _gameAssetApi;
 
   @override
   FutureOr<GameAssetState> build() async {
     state = const AsyncValue.loading();
     final networkService = ref.watch(dioNetworkServiceProvider);
-    gameAssetApi = GameAssetApi(networkService);
+    _gameAssetApi = GameAssetApi(networkService);
     return const GameAssetStateInitial();
     // final charactersResult = await gameAssetApi.fetchCharacters();
     // final weaponArtiResult = await gameAssetApi.fetchWeaponArti();
@@ -36,7 +36,7 @@ class GameAsset extends _$GameAsset {
   Future<GameAssetState> fetchCharacters() async {
     state = const AsyncValue.loading();
     final cancelToken = await ref.cancelToken();
-    return (await gameAssetApi.fetchCharacters(cancelToken: cancelToken)).fold(
+    return (await _gameAssetApi.fetchCharacters(cancelToken: cancelToken)).fold(
       (failure) {
         state = AsyncValue.error(GameAssetStateError(failure), StackTrace.current);
         return GameAssetState.error(failure);
@@ -61,7 +61,7 @@ class GameAsset extends _$GameAsset {
   Future<GameAssetState> fetchWeaponArti() async {
     state = const AsyncValue.loading();
     final cancelToken = await ref.cancelToken();
-    return (await gameAssetApi.fetchWeaponArti(cancelToken: cancelToken)).fold(
+    return (await _gameAssetApi.fetchWeaponArti(cancelToken: cancelToken)).fold(
       (failure) {
         state = AsyncValue.error(GameAssetStateError(failure), StackTrace.current);
         return GameAssetState.error(failure);
@@ -87,8 +87,8 @@ class GameAsset extends _$GameAsset {
     state = const AsyncValue.loading();
     final cancelToken = await ref.cancelToken();
     final futures = [
-      gameAssetApi.fetchCharacters(cancelToken: cancelToken),
-      gameAssetApi.fetchWeaponArti(cancelToken: cancelToken),
+      _gameAssetApi.fetchCharacters(cancelToken: cancelToken),
+      _gameAssetApi.fetchWeaponArti(cancelToken: cancelToken),
     ];
     final results = await Future.wait(futures, eagerError: false);
     final charactersResult = results[0] as Either<AppException, List<Character>>;

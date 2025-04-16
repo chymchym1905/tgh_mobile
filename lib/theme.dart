@@ -24,7 +24,7 @@ ThemeData light = ThemeData(
           systemNavigationBarColor: Colors.transparent,
           systemNavigationBarIconBrightness: Brightness.dark),
     ),
-    textTheme: Typography.englishLike2018.apply(fontSizeFactor: 1.sp),
+    textTheme: Typography.englishLike2018.apply(fontSizeFactor: 1.sp, bodyColor: Colors.black),
     extensions: const [
       ThemeAssets(
         //home
@@ -73,7 +73,7 @@ ThemeData dark = ThemeData(
           systemNavigationBarColor: Colors.transparent,
           systemNavigationBarIconBrightness: Brightness.light),
     ),
-    textTheme: Typography.englishLike2018.apply(fontSizeFactor: 1.sp),
+    textTheme: Typography.englishLike2018.apply(fontSizeFactor: 1.sp, bodyColor: Colors.white),
     extensions: const [
       ThemeAssets(
         //home

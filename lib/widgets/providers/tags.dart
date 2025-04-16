@@ -1,0 +1,50 @@
+import 'package:tgh_mobile/shared/network_request_providers/game_asset.dart';
+
+import '../../imports.dart';
+import '../../shared/data_model/game_asset/game_asset_state.dart';
+
+enum TagsType { speedrun, dps, all }
+
+final tagsStateProvider = StateProvider.autoDispose<TagsType>((ref) => TagsType.all);
+
+final tagProvider = StateProvider.autoDispose<String>((ref) => 'All');
+
+final appliedFilterProvider = StateProvider.autoDispose<Map<String, dynamic>>((ref) => {});
+
+final characterTagsProvider = FutureProvider.autoDispose<List<String>>((ref) async {
+  final response = await ref.watch(gameAssetProvider.notifier).fetchCharacters();
+  switch (response) {
+    case GameAssetStateLoaded():
+      return response.characters?.map((e) => e.name).toList() ?? [];
+    default:
+      return [];
+  }
+});
+
+final speedrunTagsProvider = Provider.autoDispose<List<String>>((ref) => [
+      'Vaporize',
+      'Freeze',
+      'Melt',
+      'Spread/Aggravate',
+      'Bloom',
+      'Overload',
+      'Eletro Charged',
+      'Geo carry',
+      'Anemo carry',
+      'Physical carry',
+      'Mono cyro',
+      'Mono hydro',
+      'Mono electro',
+      'Mono pyro',
+      'Burn'
+    ]);
+
+final elementTagsProvider = Provider.autoDispose<List<String>>((ref) => [
+      'Hydro',
+      'Pyro',
+      'Electro',
+      'Cryo',
+      'Anemo',
+      'Geo',
+      'Dendro',
+    ]);
