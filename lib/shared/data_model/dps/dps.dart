@@ -25,7 +25,7 @@ mixin DPSProperties {
   String? get abyssFloor;
   String get videolink;
   bool get approved;
-  String get notes;
+  String? get notes;
   DateTime? get createdAt;
   DateTime? get updatedAt;
   String? get lastModifiedBy;
@@ -55,7 +55,7 @@ class DPS with _$DPS, DPSProperties {
     @JsonKey(name: 'abyss_floor') String? abyssFloor,
     @JsonKey(name: 'video_link') required String videolink,
     required bool approved,
-    required String notes,
+    @JsonKey(name: 'notes') String? notes,
     @JsonKey(name: 'created_at') DateTime? createdAt,
     @JsonKey(name: 'last_modified_by') String? lastModifiedBy,
     @JsonKey(name: 'updated_at') DateTime? updatedAt,

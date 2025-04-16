@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:tgh_mobile/shared/exception.dart';
 import '../character_ceiling/character_ceiling.dart';
 import '../competitor/competitor.dart';
 import '../dps/dps.dart';
@@ -51,7 +52,7 @@ class Feed with _$Feed {
     @JsonKey(name: 'abyss_floor') String? abyssFloor,
     @JsonKey(name: 'video_link') required String videolink,
     required bool approved,
-    required String notes,
+    @JsonKey(name: 'notes') String? notes,
     @JsonKey(name: 'created_at') DateTime? createdAt,
     @JsonKey(name: 'last_modified_by') String? lastModifiedBy,
     @JsonKey(name: 'updated_at') DateTime? updatedAt,
@@ -73,7 +74,7 @@ class Feed with _$Feed {
     required bool approved,
     @JsonKey(name: 'speedrun_category') required String speedrunCategory,
     @JsonKey(name: 'speedrun_subcategory') String? speedrunSubcategory,
-    required String notes,
+    @JsonKey(name: 'notes') String? notes,
     @JsonKey(name: 'created_at') DateTime? createdAt,
     @JsonKey(name: 'last_modified_by') String? lastModifiedBy,
     @JsonKey(name: 'updated_at') DateTime? updatedAt,
@@ -84,4 +85,11 @@ class Feed with _$Feed {
   }) = SpeedrunFeed;
 
   factory Feed.fromJson(Map<String, dynamic> json) => const FeedConverter().fromJson(json);
+}
+
+@freezed
+class FeedState with _$FeedState {
+  const factory FeedState.loading() = FeedStateLoading;
+  const factory FeedState.loaded(List<List<Feed>> feedLists, List<int> pages) = FeedStateLoaded;
+  const factory FeedState.error(AppException exception) = FeedStateError;
 }

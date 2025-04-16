@@ -7,9 +7,7 @@ enum TagsType { speedrun, dps, all }
 
 final tagsStateProvider = StateProvider.autoDispose<TagsType>((ref) => TagsType.all);
 
-final tagProvider = StateProvider.autoDispose<String>((ref) => 'All');
-
-final appliedFilterProvider = StateProvider.autoDispose<Map<String, dynamic>>((ref) => {});
+final appliedFilterProvider = StateProvider<Map<String, dynamic>>((ref) => {});
 
 final characterTagsProvider = FutureProvider.autoDispose<List<String>>((ref) async {
   final response = await ref.watch(gameAssetProvider.notifier).fetchCharacters();

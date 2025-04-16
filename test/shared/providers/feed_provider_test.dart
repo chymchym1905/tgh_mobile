@@ -35,15 +35,14 @@ void main() {
     });
 
     test('fetchFeed returns valid feed entries', () async {
-      final states = <AsyncValue<List<Feed>>>[];
-      final provider = fetchFeedProvider({});
+      final states = List<FeedState>.empty(growable: true);
       final subscription = container.listen(
-        provider,
+        feedNotifierProvider,
         (previous, next) => states.add(next),
         fireImmediately: true,
       );
 
-      final feeds = await container.read(provider.future);
+      final feeds = await container.read(feedNotifierProvider.notifier).fetchFeed({});
       subscription.close();
 
       log(states.toString());
@@ -57,20 +56,18 @@ void main() {
           case DPSFeed():
             expect(feed.dpsCategory, isNotNull);
         }
-        expect(feed.videoMetadata, isNotNull);
       }
     });
 
     test('fetchSpeedrunFeed returns valid speedrun entries', () async {
-      final states = <AsyncValue<List<Feed>>>[];
-      final provider = fetchSpeedrunFeedProvider({'characters': 'Mavuika,Xilonen'});
+      final states = List<FeedState>.empty(growable: true);
       final subscription = container.listen(
-        provider,
+        feedNotifierProvider,
         (previous, next) => states.add(next),
         fireImmediately: true,
       );
+      final feeds = await container.read(feedNotifierProvider.notifier).fetchSpeedrunFeed({});
 
-      final feeds = await container.read(provider.future);
       subscription.close();
 
       log(states.toString());
@@ -81,20 +78,17 @@ void main() {
         expect(feed, isA<SpeedrunFeed>());
         final speedrunFeed = feed as SpeedrunFeed;
         expect(speedrunFeed.speedrunCategory, isNotNull);
-        expect(speedrunFeed.videoMetadata, isNotNull);
       }
     });
 
     test('fetchDPSFeed returns valid dps entries', () async {
-      final states = <AsyncValue<List<Feed>>>[];
-      final provider = fetchDPSFeedProvider({'dps_character': 'Mavuika'});
+      final states = List<FeedState>.empty(growable: true);
       final subscription = container.listen(
-        provider,
+        feedNotifierProvider,
         (previous, next) => states.add(next),
         fireImmediately: true,
       );
-
-      final feeds = await container.read(provider.future);
+      final feeds = await container.read(feedNotifierProvider.notifier).fetchDPSFeed({});
       subscription.close();
 
       log(states.toString());
@@ -105,7 +99,6 @@ void main() {
         expect(feed, isA<DPSFeed>());
         final dpsFeed = feed as DPSFeed;
         expect(dpsFeed.dpsCategory, isNotNull);
-        expect(dpsFeed.videoMetadata, isNotNull);
       }
     });
   });

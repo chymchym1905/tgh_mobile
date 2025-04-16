@@ -7,8 +7,9 @@ import 'package:flutter/foundation.dart';
 import 'main/observer.dart';
 
 void main() async {
-  debugRepaintRainbowEnabled = true;
+  // debugRepaintRainbowEnabled = true;
   WidgetsFlutterBinding.ensureInitialized();
+  debugPrint(defaultTargetPlatform.toString());
   if (kIsWeb) {
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle.light.copyWith(

@@ -16,7 +16,7 @@ abstract class SpeedrunProperties {
   bool get approved;
   String get speedrunCategory;
   String? get speedrunSubcategory;
-  String get notes;
+  String? get notes;
   DateTime? get createdAt;
   String? get lastModifiedBy;
   DateTime? get updatedAt;
@@ -40,7 +40,7 @@ class Speedrun with _$Speedrun implements SpeedrunProperties {
     required bool approved,
     @JsonKey(name: 'speedrun_category') required String speedrunCategory,
     @JsonKey(name: 'speedrun_subcategory') String? speedrunSubcategory,
-    required String notes,
+    @JsonKey(name: 'notes') String? notes,
     @JsonKey(name: 'created_at') DateTime? createdAt,
     @JsonKey(name: 'last_modified_by') String? lastModifiedBy,
     @JsonKey(name: 'updated_at') DateTime? updatedAt,

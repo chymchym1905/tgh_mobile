@@ -2,31 +2,40 @@ import 'package:tgh_mobile/widgets/filteroverlay.dart';
 
 import '../../imports.dart';
 
-class MyAppBar extends StatelessWidget {
+class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   const MyAppBar({super.key, required this.home, required this.profile});
   final bool home;
   final bool profile;
 
   @override
   Widget build(BuildContext context) {
-    return SliverAppBar(
-      title: Text('The Golden House',
-          style: GoogleFonts.inter(
-            fontSize: 24.w,
-            fontWeight: FontWeight.bold,
-            color: Theme.of(context).colorScheme.primary,
-            letterSpacing: -2,
-          )),
+    return AppBar(
+      title: Padding(
+        padding: EdgeInsets.only(top: 8.h),
+        child: Text('The Golden House',
+            style: GoogleFonts.inter(
+              fontSize: 24.w,
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.primary,
+              letterSpacing: -2,
+            )),
+      ),
       centerTitle: false,
-      pinned: false,
-      floating: true,
-      snap: true,
-      bottom: home ? Bottom() : null,
+      elevation: 0,
+      shadowColor: Colors.transparent,
+      surfaceTintColor: Colors.transparent,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       actions: [
         IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
         if (profile) IconButton(onPressed: () {}, icon: const Icon(Icons.settings)),
       ],
     );
+  }
+
+  @override
+  Size get preferredSize {
+    final height = AppBar().preferredSize.height;
+    return Size.fromHeight(height);
   }
 }
 
@@ -41,12 +50,7 @@ class Bottom extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _BottomState extends State<Bottom> {
-  final List<String> _tags = [
-    'All',
-    'Verified',
-    'Outside',
-    'Unverified',
-  ];
+  final List<String> _tags = ['All', 'Verified', 'Outside', 'Unverified'];
   int _activeIndex = 0;
   OverlayEntry? _filterOverlay;
   bool _filterApplied = false;
@@ -86,8 +90,7 @@ class _BottomState extends State<Bottom> {
       preferredSize: widget.preferredSize,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
-        child: Row(children: [
-          8.horizontalSpace,
+        child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start, children: [
           IconButton(
               onPressed: _showFilterOverlay,
               icon: _filterApplied ? const Icon(Icons.filter_alt) : const Icon(Icons.filter_alt_off)),
