@@ -9,8 +9,9 @@ export 'package:shared_preferences/shared_preferences.dart';
 export 'package:google_fonts/google_fonts.dart';
 export 'package:flutter_screenutil/flutter_screenutil.dart';
 //----------------------------------- FILES -----------------------------------
-export './main/extension.dart';
+export 'utils/extension.dart';
 export './screens/index.dart';
+export './widgets/overlays/index.dart';
 export './widgets/spines/index.dart';
 export './constant/index.dart';
 export './app_state_providers/index.dart';

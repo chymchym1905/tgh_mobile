@@ -27,6 +27,7 @@ String _viewsToString(dynamic views) {
 @freezed
 class VideoMetadata with _$VideoMetadata {
   const factory VideoMetadata({
+    required String id,
     required String title,
     required String thumbnail,
     @JsonKey(name: 'views', fromJson: _viewsToString) required dynamic views,

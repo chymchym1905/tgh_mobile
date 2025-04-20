@@ -1,25 +1,26 @@
-import 'package:tgh_mobile/widgets/filteroverlay.dart';
+import 'package:tgh_mobile/widgets/overlays/filteroverlay.dart';
 
 import '../../imports.dart';
 
 class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const MyAppBar({super.key, required this.home, required this.profile});
-  final bool home;
+  const MyAppBar({super.key, required this.profile});
   final bool profile;
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
+    return SliverAppBar(
       title: Padding(
         padding: EdgeInsets.only(top: 8.h),
         child: Text('The Golden House',
             style: GoogleFonts.inter(
-              fontSize: 24.w,
+              fontSize: 24,
               fontWeight: FontWeight.bold,
               color: Theme.of(context).colorScheme.primary,
               letterSpacing: -2,
             )),
       ),
+      pinned: true,
+      floating: true,
       centerTitle: false,
       elevation: 0,
       shadowColor: Colors.transparent,
@@ -88,21 +89,24 @@ class _BottomState extends State<Bottom> {
   Widget build(BuildContext context) {
     return PreferredSize(
       preferredSize: widget.preferredSize,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start, children: [
-          IconButton(
-              onPressed: _showFilterOverlay,
-              icon: _filterApplied ? const Icon(Icons.filter_alt) : const Icon(Icons.filter_alt_off)),
-          ...List<Widget>.generate(
-              _tags.length,
-              (index) => TagsChip(
-                  selected: index == _activeIndex,
-                  text: _tags[index],
-                  onTap: () => setState(() {
-                        _activeIndex = index;
-                      })))
-        ]),
+      child: Container(
+        color: Theme.of(context).colorScheme.surface,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.start, children: [
+            IconButton(
+                onPressed: _showFilterOverlay,
+                icon: _filterApplied ? const Icon(Icons.filter_alt) : const Icon(Icons.filter_alt_off)),
+            ...List<Widget>.generate(
+                _tags.length,
+                (index) => TagsChip(
+                    selected: index == _activeIndex,
+                    text: _tags[index],
+                    onTap: () => setState(() {
+                          _activeIndex = index;
+                        })))
+          ]),
+        ),
       ),
     );
   }

@@ -1,18 +1,16 @@
-import '../../imports.dart';
+import '../imports.dart';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
-
-import 'homebody.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, required this.navigationShell});
+  final StatefulNavigationShell navigationShell;
 
   @override
-  ConsumerState<HomeScreen> createState() => _HomeScreenMobileState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenMobileState extends ConsumerState<HomeScreen> {
-  int _bottomNavIndex = 0;
-
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget _tabBuilder(int index, bool isActive, double width, double height) {
     switch (index) {
       case 0:
@@ -49,26 +47,14 @@ class _HomeScreenMobileState extends ConsumerState<HomeScreen> {
     //   10,
     //   approved: true,
     // ));
+
     return Scaffold(
-        appBar: MyAppBar(home: _bottomNavIndex == 0, profile: _bottomNavIndex == 3),
-        body: SafeArea(
-          child: IndexedStack(index: _bottomNavIndex, children: [
-            const HomeBody(),
-            // Leaderboard page
-            const Center(child: Text('Leaderboard')),
-            // Trophy page
-            const Center(child: Text('Trophy')),
-            // Profile page
-            const Center(child: Text('Profile')),
-          ]),
-        ),
+        body: widget.navigationShell,
         floatingActionButton: Consumer(builder: (context, ref, child) {
           return FloatingActionButton(
-            onPressed: () {
-              ref.read(themeNotifierProvider.notifier).toggleTheme();
-            },
+            onPressed: () {},
             backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-            shape: CircleBorder(),
+            shape: const CircleBorder(),
             mini: true,
             child: const Icon(Icons.add),
           );
@@ -86,8 +72,8 @@ class _HomeScreenMobileState extends ConsumerState<HomeScreen> {
                 shadow: Theme.of(context).extension<Shadows>()!.shadow,
                 notchSmoothness: NotchSmoothness.defaultEdge,
                 gapLocation: GapLocation.center,
-                activeIndex: _bottomNavIndex,
-                onTap: (index) => setState(() => _bottomNavIndex = index),
+                activeIndex: widget.navigationShell.currentIndex,
+                onTap: (index) => widget.navigationShell.goBranch(index),
               ));
   }
 }

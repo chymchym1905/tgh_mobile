@@ -26,7 +26,7 @@ class _HomeBodyState extends ConsumerState<HomeBody> {
     },
     fetchPage: (pageKey) async {
       final filter = ref.watch(appliedFilterProvider);
-      final response = await ref.read(feedNotifierProvider.notifier).fetchFeed(filter);
+      final response = await ref.watch(feedNotifierProvider.notifier).fetchFeed(filter);
       return response;
     },
   );
@@ -38,42 +38,51 @@ class _HomeBodyState extends ConsumerState<HomeBody> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Bottom(),
-        8.verticalSpace,
-        Expanded(
-          child: PagingListener(
-            controller: _pagingController,
-            builder: (context, state, fetchNextPage) => PagedListView<int, Feed>(
-              state: state,
-              fetchNextPage: fetchNextPage,
-              builderDelegate: PagedChildBuilderDelegate(
-                firstPageErrorIndicatorBuilder: (context) => Center(
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                      const Text('Error loading data'),
-                      ElevatedButton(
-                          onPressed: () {
-                            _pagingController.refresh();
-                          },
-                          style: ButtonStyle(
-                              backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.primary),
-                              foregroundColor: const WidgetStatePropertyAll(Colors.white),
-                              textStyle: WidgetStatePropertyAll(Theme.of(context).textTheme.titleMedium),
-                              overlayColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
-                                if (states.contains(WidgetState.pressed)) {
-                                  return Colors.white.withOpacity(0.3);
-                                }
-                                return null; // Defer to the widget's default.
-                              })),
-                          child: const Text('Retry'))
-                    ])),
-                itemBuilder: (context, item, index) {
-                  return Center(
+    ref.watch(feedNotifierProvider);
+    return CustomScrollView(
+      slivers: [
+        const MyAppBar(profile: false),
+        const PinnedHeaderSliver(child: Bottom()),
+        PagingListener(
+          controller: _pagingController,
+          builder: (context, state, fetchNextPage) => PagedSliverGrid<int, Feed>(
+            state: state,
+            fetchNextPage: fetchNextPage,
+            showNewPageProgressIndicatorAsGridChild: false,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount:
+                  1 + ((MediaQuery.of(context).size.width - kMaxWidthMobile / 2).abs() / kMaxWidthMobile).round(),
+              childAspectRatio: 1920 / 1080,
+              mainAxisSpacing: 8,
+              crossAxisSpacing: 8,
+            ),
+            builderDelegate: PagedChildBuilderDelegate(
+              firstPageErrorIndicatorBuilder: (context) => Center(
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                    const Text('Error loading data'),
+                    ElevatedButton(
+                        onPressed: () {
+                          _pagingController.refresh();
+                        },
+                        style: ButtonStyle(
+                            backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.primary),
+                            foregroundColor: const WidgetStatePropertyAll(Colors.white),
+                            textStyle: WidgetStatePropertyAll(Theme.of(context).textTheme.titleMedium),
+                            overlayColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
+                              if (states.contains(WidgetState.pressed)) {
+                                return Colors.white.withOpacity(0.3);
+                              }
+                              return null; // Defer to the widget's default.
+                            })),
+                        child: const Text('Retry'))
+                  ])),
+              itemBuilder: (context, item, index) {
+                return Container(
+                  color: Colors.red,
+                  child: Center(
                     child: Text(
                       switch (item) {
                         SpeedrunFeed() => 'Speedrun: ${item.videoMetadata?.title}, index: $index',
@@ -81,9 +90,9 @@ class _HomeBodyState extends ConsumerState<HomeBody> {
                         _ => 'Unknown: ${item.videoMetadata?.title}, index: $index'
                       },
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             ),
           ),
         ),

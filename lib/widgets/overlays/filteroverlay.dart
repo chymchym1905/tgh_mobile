@@ -1,4 +1,4 @@
-import '../imports.dart';
+import '../../imports.dart';
 
 class FilterOverlay extends StatelessWidget {
   const FilterOverlay({super.key, required this.onFilterChanged});
