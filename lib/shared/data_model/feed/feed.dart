@@ -30,6 +30,7 @@ class FeedConverter implements JsonConverter<Feed, Map<String, dynamic>> {
 
 @freezed
 class Feed with _$Feed {
+  const Feed._();
   @JsonSerializable(explicitToJson: true)
   @Implements<DPSProperties>()
   const factory Feed.dps({
@@ -85,11 +86,29 @@ class Feed with _$Feed {
   }) = SpeedrunFeed;
 
   factory Feed.fromJson(Map<String, dynamic> json) => const FeedConverter().fromJson(json);
+  @override
+  String toString() {
+    return map(
+      dps: (feed) => 'DPSFeed(Competitor: ${feed.competitor.alias}, url: ${feed.videolink})',
+      speedrun: (feed) => 'SpeedrunFeed(Competitor: ${feed.competitor.alias}, url: ${feed.videolink})',
+    );
+  }
 }
 
 @freezed
 class FeedState with _$FeedState {
+  const FeedState._();
   const factory FeedState.loading() = FeedStateLoading;
   const factory FeedState.loaded(List<List<Feed>> feedLists, List<int> pages) = FeedStateLoaded;
   const factory FeedState.error(AppException exception) = FeedStateError;
+
+  @override
+  String toString() {
+    return map(
+      loading: (_) => 'FeedState.Loading',
+      loaded: (state) =>
+          'FeedState.Loaded(pages: ${state.pages.length}, items: ${state.feedLists.map((list) => list.length).join('+')})',
+      error: (state) => 'FeedState.Error(${state.exception})',
+    );
+  }
 }

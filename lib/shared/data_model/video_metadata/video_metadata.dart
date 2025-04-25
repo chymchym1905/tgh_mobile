@@ -32,6 +32,8 @@ class VideoMetadata with _$VideoMetadata {
     required String thumbnail,
     @JsonKey(name: 'views', fromJson: _viewsToString) required dynamic views,
     required int duration,
+    required double aspectRatio,
+    required String type,
   }) = _VideoMetadata;
 
   factory VideoMetadata.fromJson(Map<String, dynamic> json) => _$VideoMetadataFromJson(json);

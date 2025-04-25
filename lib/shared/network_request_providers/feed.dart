@@ -13,60 +13,64 @@ part 'feed.g.dart';
 
 @riverpod
 class FeedNotifier extends _$FeedNotifier {
-  late final NetworkService _networkService;
-  late final FeedApiBase _feedApi;
+  late final NetworkService _networkService = ref.watch(dioNetworkServiceProvider);
+  late final FeedApiBase _feedApi = FeedApi(_networkService);
+  FeedStateLoaded _stateStore = const FeedStateLoaded([], []);
 
   @override
-  FeedState build() {
-    _networkService = ref.watch(dioNetworkServiceProvider);
-    _feedApi = FeedApi(_networkService);
+  Future<FeedState> build() async {
+    _stateStore = const FeedStateLoaded([], []);
     return const FeedStateLoaded([], []);
   }
 
   Future<List<Feed>> fetchFeed(Map<String, dynamic> param) async {
-    state = const FeedStateLoading();
+    state = const AsyncData(FeedStateLoading());
     final cancelToken = await ref.cancelToken();
     final result = await _feedApi.fetchFeed(param, cancelToken: cancelToken);
-    return result.fold((l) => throw l, (r) {
-      state.map(
-        loading: (s) => s = const FeedStateLoading(),
-        loaded: (s) => s = FeedStateLoaded(s.feedLists + [r], s.pages + [1]),
-        error: (s) => s = FeedStateError(s.exception),
-      );
+    return result.fold((l) {
+      state = AsyncError(l, StackTrace.current);
+      throw l;
+    }, (r) {
+      appendFeed(r);
       return r;
     });
   }
 
   Future<List<Feed>> fetchSpeedrunFeed(Map<String, dynamic> param) async {
-    state = const FeedStateLoading();
+    state = const AsyncData(FeedStateLoading());
     final cancelToken = await ref.cancelToken();
     final result = await _feedApi.fetchSpeedrunFeed(param, cancelToken: cancelToken);
-    return result.fold((l) => throw l, (r) {
-      state.map(
-        loading: (s) => s = const FeedStateLoading(),
-        loaded: (s) => s = FeedStateLoaded(s.feedLists + [r], s.pages + [1]),
-        error: (s) => s = FeedStateError(s.exception),
-      );
+    return result.fold((l) {
+      state = AsyncError(l, StackTrace.current);
+      throw l;
+    }, (r) {
+      appendFeed(r);
       return r;
     });
   }
 
   Future<List<Feed>> fetchDPSFeed(Map<String, dynamic> param) async {
-    state = const FeedStateLoading();
+    state = const AsyncData(FeedStateLoading());
     final cancelToken = await ref.cancelToken();
     final result = await _feedApi.fetchDPSFeed(param, cancelToken: cancelToken);
-    return result.fold((l) => throw l, (r) {
-      state.map(
-        loading: (s) => s = const FeedStateLoading(),
-        loaded: (s) => s = FeedStateLoaded(s.feedLists + [r], s.pages + [1]),
-        error: (s) => s = FeedStateError(s.exception),
-      );
+    return result.fold((l) {
+      state = AsyncError(l, StackTrace.current);
+      throw l;
+    }, (r) {
+      appendFeed(r);
       return r;
     });
   }
 
+  void appendFeed(List<Feed> feed) {
+    final currFeedList = _stateStore.feedLists;
+    final currPage = _stateStore.pages;
+    _stateStore = FeedStateLoaded(currFeedList + [feed], currPage.isEmpty ? [1] : currPage + [currPage.last + 1]);
+    state = AsyncData(_stateStore);
+  }
+
   void clearFeed() {
-    state = const FeedStateLoaded([], []);
+    state = const AsyncData(FeedStateLoaded([], []));
   }
 }
 

@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tgh_mobile/utils/extension.dart';
 
 class Observers extends ProviderObserver {
   @override
@@ -10,10 +11,11 @@ class Observers extends ProviderObserver {
     Object? newValue,
     ProviderContainer container,
   ) {
+    final value = newValue is AsyncValue ? (newValue).toShortString() : newValue.toString();
     log('''
 {
   "provider": "${provider.name ?? provider.runtimeType}",
-  "newValue": "$newValue"
+  "newValue": "$value"
 }''');
   }
 

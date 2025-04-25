@@ -15,3 +15,13 @@ extension CancelTokenExtension on Ref {
     return cancelToken;
   }
 }
+
+extension AsyncValueToString<T> on AsyncValue<T> {
+  String toShortString() {
+    return when(
+      data: (data) => data.toString(),
+      error: (err, stack) => 'Error: $err',
+      loading: () => 'Loading',
+    );
+  }
+}

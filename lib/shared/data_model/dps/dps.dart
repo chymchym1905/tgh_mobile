@@ -34,6 +34,7 @@ mixin DPSProperties {
 
 @freezed
 class DPS with _$DPS, DPSProperties {
+  const DPS._();
   @JsonSerializable(explicitToJson: true)
   const factory DPS({
     @JsonKey(name: '_id') required String id,
@@ -63,4 +64,9 @@ class DPS with _$DPS, DPSProperties {
   }) = _DPS;
 
   factory DPS.fromJson(Map<String, dynamic> json) => _$DPSFromJson(json);
+
+  @override
+  String toString() {
+    return 'DPS(id: $id, competitor: $competitor, videolink: $videolink)';
+  }
 }

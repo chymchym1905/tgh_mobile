@@ -12,12 +12,6 @@ void main() async {
   debugPrint(defaultTargetPlatform.toString());
   if (kIsWeb) {
     usePathUrlStrategy();
-    // SystemChrome.setSystemUIOverlayStyle(
-    //   SystemUiOverlayStyle.light.copyWith(
-    //     statusBarColor: Colors.black,
-    //     statusBarBrightness: Brightness.light,
-    //   ),
-    // );
   }
   final prefs = await SharedPreferences.getInstance();
   runApp(ProviderScope(

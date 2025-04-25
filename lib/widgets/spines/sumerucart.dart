@@ -1,7 +1,8 @@
 import '../../imports.dart';
 
 class Sumerucart extends StatelessWidget {
-  const Sumerucart({super.key});
+  const Sumerucart({super.key, required this.width});
+  final double width;
 
   @override
   Widget build(BuildContext context) {
@@ -11,17 +12,21 @@ class Sumerucart extends StatelessWidget {
     const html_loop = '''
 <img src="asset:assets/gifs/spine_128_loop.png">
 ''';
-    return FutureBuilder(
-        future: Future.delayed(const Duration(milliseconds: 6000)),
-        builder: (context, snapshot) {
-          return Stack(
-            children: [
-              Opacity(
-                  opacity: snapshot.connectionState == ConnectionState.done ? 1 : 0,
-                  child: const HtmlWidget(html_loop)),
-              Opacity(opacity: snapshot.connectionState == ConnectionState.done ? 0 : 1, child: const HtmlWidget(html)),
-            ],
-          );
-        });
+    return SizedBox(
+      width: width,
+      child: FutureBuilder(
+          future: Future.delayed(const Duration(milliseconds: 6000)),
+          builder: (context, snapshot) {
+            return Stack(
+              children: [
+                Opacity(
+                    opacity: snapshot.connectionState == ConnectionState.done ? 1 : 0,
+                    child: const HtmlWidget(html_loop)),
+                Opacity(
+                    opacity: snapshot.connectionState == ConnectionState.done ? 0 : 1, child: const HtmlWidget(html)),
+              ],
+            );
+          }),
+    );
   }
 }

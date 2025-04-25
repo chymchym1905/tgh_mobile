@@ -27,6 +27,7 @@ abstract class SpeedrunProperties {
 
 @freezed
 class Speedrun with _$Speedrun implements SpeedrunProperties {
+  const Speedrun._();
   @JsonSerializable(explicitToJson: true)
   const factory Speedrun({
     @JsonKey(name: '_id') required String id,
@@ -50,4 +51,9 @@ class Speedrun with _$Speedrun implements SpeedrunProperties {
   }) = _Speedrun;
 
   factory Speedrun.fromJson(Map<String, dynamic> json) => _$SpeedrunFromJson(json);
+
+  @override
+  String toString() {
+    return 'Speedrun(id: $id, competitor: $competitor, videolink: $videolink)';
+  }
 }

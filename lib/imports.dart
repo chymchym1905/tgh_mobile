@@ -8,6 +8,9 @@ export 'package:flutter_riverpod/flutter_riverpod.dart';
 export 'package:shared_preferences/shared_preferences.dart';
 export 'package:google_fonts/google_fonts.dart';
 export 'package:flutter_screenutil/flutter_screenutil.dart';
+export 'package:go_router/go_router.dart';
+export 'package:tgh_mobile/utils/extracodec.dart';
+export 'package:youtube_player_iframe/youtube_player_iframe.dart';
 //----------------------------------- FILES -----------------------------------
 export 'utils/extension.dart';
 export './screens/index.dart';

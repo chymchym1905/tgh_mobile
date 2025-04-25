@@ -8,3 +8,4 @@ export 'auth_state/authstate.dart';
 export 'game_asset/character.dart';
 export 'game_asset/weapon.dart';
 export 'game_asset/artifact.dart';
+export 'video_metadata/video_metadata.dart';

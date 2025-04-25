@@ -35,7 +35,7 @@ void main() {
     });
 
     test('fetchFeed returns valid feed entries', () async {
-      final states = List<FeedState>.empty(growable: true);
+      final states = List<AsyncValue<FeedState>>.empty(growable: true);
       final subscription = container.listen(
         feedNotifierProvider,
         (previous, next) => states.add(next),
@@ -60,7 +60,7 @@ void main() {
     });
 
     test('fetchSpeedrunFeed returns valid speedrun entries', () async {
-      final states = List<FeedState>.empty(growable: true);
+      final states = List<AsyncValue<FeedState>>.empty(growable: true);
       final subscription = container.listen(
         feedNotifierProvider,
         (previous, next) => states.add(next),
@@ -82,7 +82,7 @@ void main() {
     });
 
     test('fetchDPSFeed returns valid dps entries', () async {
-      final states = List<FeedState>.empty(growable: true);
+      final states = List<AsyncValue<FeedState>>.empty(growable: true);
       final subscription = container.listen(
         feedNotifierProvider,
         (previous, next) => states.add(next),

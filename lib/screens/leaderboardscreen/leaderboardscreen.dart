@@ -5,6 +5,10 @@ class LeaderboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(child: Text('Leaderboard'));
+    return const Center(
+        child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [Text('Leaderboard'), Sumerucart(width: 300)],
+    ));
   }
 }

@@ -9,16 +9,12 @@ part 'auth.g.dart';
 
 @riverpod
 class AuthNotifier extends _$AuthNotifier {
-  late AuthApi _authApi;
-  late StorageService _sharedPrefs;
-  late NetworkService _dioNetworkService;
+  late final AuthApi _authApi = AuthApi(_dioNetworkService);
+  late final StorageService _sharedPrefs = ref.watch(sharedPrefsServiceProvider);
+  late final NetworkService _dioNetworkService = ref.watch(dioNetworkServiceProvider);
 
   @override
   Future<AuthState> build() async {
-    _dioNetworkService = ref.watch(dioNetworkServiceProvider);
-    _authApi = AuthApi(_dioNetworkService);
-    _sharedPrefs = ref.watch(sharedPrefsServiceProvider);
-
     final localAuthToken = _sharedPrefs.get(APP_AUTH_TOKEN_STORAGE_KEY) as String?;
 
     if (localAuthToken != null) {
