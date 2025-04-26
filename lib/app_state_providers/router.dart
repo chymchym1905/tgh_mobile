@@ -13,6 +13,7 @@ final _shellNavigatorHomeKey = GlobalKey<NavigatorState>(debugLabel: 'shellHome'
 final _shellNavigatorLeaderboardKey = GlobalKey<NavigatorState>(debugLabel: 'shellLeaderboard');
 final _shellNavigatorStandingsKey = GlobalKey<NavigatorState>(debugLabel: 'shellStandings');
 final _shellNavigatorProfileKey = GlobalKey<NavigatorState>(debugLabel: 'shellProfile');
+final rootNavigatorKey = GlobalKey<NavigatorState>();
 
 @riverpod
 GoRouter router(Ref ref) {
@@ -27,6 +28,7 @@ GoRouter router(Ref ref) {
       initialLocation: Routes.home,
       debugLogDiagnostics: true,
       restorationScopeId: 'router',
+      navigatorKey: rootNavigatorKey,
       observers: [GoRouterObserver()],
       routes: [
         StatefulShellRoute.indexedStack(
@@ -89,16 +91,12 @@ GoRouter router(Ref ref) {
         ),
         GoRoute(
           path: Routes.videoPath,
+          name: 'video',
           builder: (context, state) {
             final id = state.pathParameters['id'] ?? '';
-            final feedItem = ref.watch(fetchFeedByIdProvider(id));
-            return feedItem.when(
-              data: (data) => VideoScreen(feedItem: data),
-              error: (error, stack) => ErrorScreen(error: ['Error: $error', 'Stack: $stack']),
-              loading: () => const Scaffold(body: Center(child: Sumerucart(width: 300))),
-            );
+            return VideoScreen(id: id);
           },
-        ),
+        )
       ],
       extraCodec: const MyExtraCodec());
   return router;

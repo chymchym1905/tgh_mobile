@@ -7,13 +7,16 @@ class ErrorScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      body: ListView(
         children: [
-          Image.asset('assets/icons/Qiqiqdead.jpg'),
+          Image.asset('assets/icons/Qiqidead.jpg'),
           8.verticalSpace,
-          Text(error.join('\n'), textAlign: TextAlign.start),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(error.join('\n'), textAlign: TextAlign.start),
+          ),
           8.verticalSpace,
-          InkWellTextButton(onTap: () => context.pop(), text: 'Back'),
+          Center(child: InkWellTextButton(onTap: () => context.pop(), text: 'Back')),
         ],
       ),
     );

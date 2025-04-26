@@ -1,5 +1,4 @@
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'imports.dart';
 import 'package:flutter/foundation.dart';
@@ -12,6 +11,7 @@ void main() async {
   debugPrint(defaultTargetPlatform.toString());
   if (kIsWeb) {
     usePathUrlStrategy();
+    GoRouter.optionURLReflectsImperativeAPIs = true;
   }
   final prefs = await SharedPreferences.getInstance();
   runApp(ProviderScope(

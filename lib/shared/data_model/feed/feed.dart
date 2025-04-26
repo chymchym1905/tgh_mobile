@@ -89,8 +89,10 @@ class Feed with _$Feed {
   @override
   String toString() {
     return map(
-      dps: (feed) => 'DPSFeed(Competitor: ${feed.competitor.alias}, url: ${feed.videolink})',
-      speedrun: (feed) => 'SpeedrunFeed(Competitor: ${feed.competitor.alias}, url: ${feed.videolink})',
+      dps: (feed) =>
+          'DPSFeed(Competitor: ${feed.competitor.alias}, url: ${feed.videolink}, videoMetadata: ${feed.videoMetadata})',
+      speedrun: (feed) =>
+          'SpeedrunFeed(Competitor: ${feed.competitor.alias}, url: ${feed.videolink}, videoMetadata: ${feed.videoMetadata})',
     );
   }
 }

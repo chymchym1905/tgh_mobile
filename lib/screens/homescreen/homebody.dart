@@ -83,8 +83,8 @@ class _HomeBodyState extends ConsumerState<HomeBody> {
                       if (item.videoMetadata == null) {
                         return;
                       }
-                      context.push(Routes.video(item.videoMetadata!.id),
-                          extra: VideoRouteData(metadata: item.videoMetadata!));
+                      // context.pushNamed('video', queryParameters: {'id': item.id});
+                      context.push(Routes.video(item.id));
                     },
                     child: Container(
                       color: Colors.red,

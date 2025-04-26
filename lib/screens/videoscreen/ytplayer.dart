@@ -17,7 +17,7 @@ class _YTPlayerState extends ConsumerState<YTPlayer> {
   @override
   void initState() {
     super.initState();
-    log(widget.metadata.id);
+    log(widget.metadata.id, name: 'YTPlayer video id');
     _controller.setFullScreenListener((isFullScreen) {
       log('${isFullScreen ? 'Entered' : 'Exited'} Fullscreen.');
       if (isFullScreen) {
@@ -42,7 +42,7 @@ class _YTPlayerState extends ConsumerState<YTPlayer> {
         goRouter: true,
         builder: (context, player) {
           return Scaffold(body: LayoutBuilder(builder: (context, constraints) {
-            if (constraints.maxWidth > kMaxWidthMobile) {
+            if (constraints.maxWidth > kMaxWidthTablet) {
               return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Expanded(flex: 3, child: Column(children: [player])),
                 Expanded(flex: 2, child: Column(children: [Container()]))

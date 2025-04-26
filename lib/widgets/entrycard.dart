@@ -9,8 +9,7 @@ class FeedEntryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.push(Routes.video(feeditem.videoMetadata?.id ?? ''),
-            extra: VideoRouteData(metadata: feeditem.videoMetadata));
+        context.push(Routes.video(feeditem.videoMetadata?.id ?? ''));
       },
       child: Column(
         children: [
