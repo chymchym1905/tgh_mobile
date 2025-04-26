@@ -48,7 +48,6 @@ class _HomeBodyState extends ConsumerState<HomeBody> {
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount:
                     1 + ((MediaQuery.of(context).size.width - kMaxWidthMobile / 2).abs() / kMaxWidthMobile).round(),
-                childAspectRatio: 1920 / 1080,
                 mainAxisSpacing: 8,
                 crossAxisSpacing: 8,
               ),

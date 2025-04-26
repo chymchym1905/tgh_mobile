@@ -3,17 +3,17 @@ import 'bilbiliplayer.dart';
 import 'ytplayer.dart';
 
 class VideoScreen extends StatelessWidget {
-  const VideoScreen({super.key, required this.id, required this.metadata, required this.videos});
-  final String id;
-  final VideoMetadata metadata;
-  final List<VideoMetadata> videos;
+  const VideoScreen({super.key, required this.feedItem});
+  final Feed feedItem;
 
   @override
   Widget build(BuildContext context) {
-    if (metadata.type == 'bili') {
-      return BiliVideoScreen(metadata: metadata);
+    if (feedItem.videoMetadata?.type == 'bili') {
+      return BiliVideoScreen(metadata: feedItem.videoMetadata!);
+    } else if (feedItem.videoMetadata?.type == 'youtube') {
+      return YTPlayer(metadata: feedItem.videoMetadata!);
     } else {
-      return YTPlayer(metadata: metadata);
+      return ErrorScreen(error: ['No video found', (feedItem.videoMetadata?.toString() ?? 'No metadata found')]);
     }
   }
 }

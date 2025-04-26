@@ -4,12 +4,15 @@ import 'package:tgh_mobile/shared/network.dart';
 
 part 'feed.g.dart';
 
-// @riverpod
-// FeedApiBase feedApi(Ref ref) {
+// final feedApiProvider = Provider<FeedApiBase>((ref) {
 //   final networkService = ref.watch(dioNetworkServiceProvider);
-//   ref.keepAlive();
 //   return FeedApi(networkService);
-// }
+// });
+@riverpod
+FeedApiBase feedApi(Ref ref) {
+  final networkService = ref.watch(dioNetworkServiceProvider);
+  return FeedApi(networkService);
+}
 
 @riverpod
 class FeedNotifier extends _$FeedNotifier {
@@ -112,3 +115,10 @@ class FeedNotifier extends _$FeedNotifier {
 //     (success) => success,
 //   );
 // }
+
+@riverpod
+Future<Feed> fetchFeedById(Ref ref, String id) async {
+  final cancelToken = await ref.cancelToken();
+  final result = await ref.watch(feedApiProvider).fetchFeedById(id, cancelToken: cancelToken);
+  return result.fold((l) => throw l, (r) => r);
+}

@@ -35,6 +35,8 @@ abstract class SpeedrunApiBase {
     Map<String, dynamic>? queryParam,
     CancelToken? cancelToken,
   });
+
+  Future<Either<AppException, Speedrun>> fetchSpeedrunById(String id);
   // Future<Either<AppException, List<Speedrun>>> getSpeedrunCountInPeriod(String startDate, String endDate,
   //     [bool? day, bool? week, bool? month, bool? year]);
 }
@@ -147,6 +149,25 @@ class SpeedrunApi implements SpeedrunApiBase {
           return right(entries.map((e) => Speedrun.fromJson(e)).toList());
         } else {
           return left(AppException(message: response.data.toString(), code: response.statusCode.toString()));
+        }
+      },
+    );
+  }
+
+  @override
+  Future<Either<AppException, Speedrun>> fetchSpeedrunById(String id) async {
+    final url = '/speedrun-entries/$id';
+    final response = await _networkService.get(url);
+    return response.fold(
+      (exception) => left(exception),
+      (response) {
+        if (response.statusCode == 200 && (response.data as Map).containsKey('speedrunEntry')) {
+          return right(Speedrun.fromJson(response.data['speedrunEntry'] as Map<String, dynamic>));
+        } else {
+          return left(AppException(
+            message: response.data.toString(),
+            code: response.statusCode.toString(),
+          ));
         }
       },
     );

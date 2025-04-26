@@ -14,6 +14,6 @@ class Routes {
   static const String submitRestrictedDps = '/submit-restricted-dps';
 
   // Video route with parameter
-  static String video(String videoId) => '/video/$videoId';
-  static const String videoPath = '/video/:videoId';
+  static String video(String id) => '/video/$id';
+  static const String videoPath = '/video/:id';
 }

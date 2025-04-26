@@ -9,6 +9,8 @@ abstract class FeedApiBase {
   Future<Either<AppException, List<Feed>>> fetchSpeedrunFeed(Map<String, dynamic> param, {CancelToken? cancelToken});
 
   Future<Either<AppException, List<Feed>>> fetchDPSFeed(Map<String, dynamic> param, {CancelToken? cancelToken});
+
+  Future<Either<AppException, Feed>> fetchFeedById(String id, {CancelToken? cancelToken});
 }
 
 class FeedApi implements FeedApiBase {
@@ -83,6 +85,32 @@ class FeedApi implements FeedApiBase {
         if (response.statusCode == 200 && (response.data as Map).containsKey('entries')) {
           final entries = (response.data['entries'] as List).map((e) => e as Map<String, dynamic>).toList();
           return right(entries.map((e) => Feed.fromJson(e)).toList());
+        } else {
+          return left(AppException(
+            message: response.data.toString(),
+            code: response.statusCode.toString(),
+          ));
+        }
+      },
+    );
+  }
+
+  @override
+  Future<Either<AppException, Feed>> fetchFeedById(String id, {CancelToken? cancelToken}) async {
+    final url = '/feed/$id';
+    final response = await _networkService.get(url, cancelToken: cancelToken);
+    return response.fold(
+      (exception) => left(exception),
+      (response) {
+        if (response.statusCode == 200 && (response.data as Map).containsKey('entries')) {
+          final entries = (response.data['entries'] as List).map((e) => e as Map<String, dynamic>).toList();
+          if (entries.length > 1) {
+            return left(AppException(
+              message: 'Multiple entries found for id: $id',
+              code: '500',
+            ));
+          }
+          return right(entries.map((e) => Feed.fromJson(e)).toList().first);
         } else {
           return left(AppException(
             message: response.data.toString(),

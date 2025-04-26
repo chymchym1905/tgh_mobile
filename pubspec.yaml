@@ -64,6 +64,7 @@ dependencies:
 
   # Utilities
   fluttertoast: ^8.2.12
+  shimmer: ^3.0.0
 
 dev_dependencies:
   flutter_test:
@@ -91,10 +92,10 @@ flutter_launcher_icons:
   android: true
   ios: true
   remove_alpha_ios: true
-  image_path: "assets/images/GoldenHouse 2 (1).png"
+  image_path: "assets/images/tgh logo.png"
   web:
     generate: true
-    image_path: "assets/images/GoldenHouse 2 (1).png"
+    image_path: "assets/images/tgh logo.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

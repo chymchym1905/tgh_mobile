@@ -3,8 +3,9 @@ import 'dart:convert';
 
 import 'package:tgh_mobile/imports.dart';
 
+/// Unused
 class VideoRouteData {
-  final VideoMetadata metadata;
+  final VideoMetadata? metadata;
   final List<VideoMetadata> relatedVideos;
 
   const VideoRouteData({
@@ -33,7 +34,7 @@ class _MyExtraDecoder extends Converter<Object?, Object?> {
     final List<Object?> inputAsList = input as List<Object?>;
     if (inputAsList[0] == 'VideoRouteData') {
       return VideoRouteData(
-          metadata: inputAsList[1]! as VideoMetadata, relatedVideos: inputAsList[2]! as List<VideoMetadata>);
+          metadata: inputAsList[1] as VideoMetadata?, relatedVideos: inputAsList[2] as List<VideoMetadata>);
     }
     throw FormatException('Unable to parse input: $input');
   }
