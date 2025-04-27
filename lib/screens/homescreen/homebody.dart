@@ -29,6 +29,7 @@ class _HomeBodyState extends ConsumerState<HomeBody> {
 
   @override
   Widget build(BuildContext context) {
+    // Important line to make sure the feed is not broken
     ref.watch(feedNotifierProvider);
     return RefreshIndicator(
       onRefresh: () async {
@@ -86,18 +87,7 @@ class _HomeBodyState extends ConsumerState<HomeBody> {
                       // context.pushNamed('video', queryParameters: {'id': item.id});
                       context.push(Routes.video(item.id));
                     },
-                    child: Container(
-                      color: Colors.red,
-                      child: Center(
-                        child: Text(
-                          switch (item) {
-                            SpeedrunFeed() => 'Speedrun: ${item.videoMetadata?.title}, index: $index',
-                            DPSFeed() => 'DPS: ${item.videoMetadata?.title}, index: $index',
-                            _ => 'Unknown: ${item.videoMetadata?.title}, index: $index'
-                          },
-                        ),
-                      ),
-                    ),
+                    child: FeedEntryCard(feeditem: item),
                   );
                 },
               ),

@@ -9,7 +9,7 @@ class ErrorScreen extends StatelessWidget {
     return Scaffold(
       body: ListView(
         children: [
-          Image.asset('assets/icons/Qiqidead.jpg'),
+          SizedBox(width: 200, child: Image.asset('assets/icons/Qiqidead.jpg')),
           8.verticalSpace,
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),

@@ -23,4 +23,5 @@ export './shared/data_model/index.dart';
 export './shared/network_request_providers/index.dart';
 export 'theme.dart';
 export './widgets/index.dart';
+export './utils/pfp&bannerurl.dart';
 export 'configs.dart';
