@@ -13,22 +13,34 @@ final _shellNavigatorHomeKey = GlobalKey<NavigatorState>(debugLabel: 'shellHome'
 final _shellNavigatorLeaderboardKey = GlobalKey<NavigatorState>(debugLabel: 'shellLeaderboard');
 final _shellNavigatorStandingsKey = GlobalKey<NavigatorState>(debugLabel: 'shellStandings');
 final _shellNavigatorProfileKey = GlobalKey<NavigatorState>(debugLabel: 'shellProfile');
-final rootNavigatorKey = GlobalKey<NavigatorState>();
 
 @riverpod
 GoRouter router(Ref ref) {
-  final authState = ValueNotifier<AuthState?>(const AuthStateInitial());
-  ref
-    ..onDispose(authState.dispose)
-    ..listen(authNotifierProvider, (_, next) {
-      authState.value = next.value;
+  final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'rootNavigatorKey');
+  final authStateNotifier = ValueNotifier<AuthState?>(const AuthStateLoggedOut());
+  ref.onDispose(authStateNotifier.dispose);
+  ref.listen(authNotifierProvider, (_, next) {
+    next.whenData((authState) {
+      authStateNotifier.value = authState;
     });
-
+  });
   final router = GoRouter(
       initialLocation: Routes.home,
       debugLogDiagnostics: true,
       restorationScopeId: 'router',
       navigatorKey: rootNavigatorKey,
+      refreshListenable: authStateNotifier,
+      // ignore: body_might_complete_normally_nullable
+      redirect: (context, state) {
+        if (authStateNotifier.value is AuthStateLoggedOut && RouteMap.private.allowedRoutes.contains(state.uri.path)) {
+          return Routes.login;
+        } else if (authStateNotifier.value is AuthStateAuthenticated && state.uri.path == Routes.login) {
+          return RouteMap.public.redirectPath;
+        } else if (authStateNotifier.value is AuthStateError) {
+          return null;
+        }
+        return null;
+      },
       observers: [GoRouterObserver()],
       routes: [
         StatefulShellRoute.indexedStack(
@@ -90,6 +102,10 @@ GoRouter router(Ref ref) {
           ],
         ),
         GoRoute(
+          path: Routes.login,
+          builder: (context, state) => const LoginScreen(),
+        ),
+        GoRoute(
           path: Routes.videoPath,
           name: 'video',
           builder: (context, state) {
@@ -99,5 +115,7 @@ GoRouter router(Ref ref) {
         )
       ],
       extraCodec: const MyExtraCodec());
+  ref.onDispose(router.dispose);
+
   return router;
 }

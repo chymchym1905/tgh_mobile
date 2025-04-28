@@ -13,15 +13,16 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: GestureDetector(
           onTap: onTap,
           child: Padding(
-            padding: EdgeInsets.only(top: 8.h),
-            child: Text('The Golden House',
-                style: GoogleFonts.inter(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.primary,
-                  letterSpacing: -2,
-                )),
-          )),
+              padding: EdgeInsets.only(top: 8.h),
+              child: RichText(
+                  text: TextSpan(
+                      text: 'The Golden House',
+                      style: GoogleFonts.inter(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.primary,
+                        letterSpacing: -2,
+                      ))))),
       pinned: true,
       floating: true,
       centerTitle: false,
@@ -30,6 +31,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
       surfaceTintColor: Colors.transparent,
       backgroundColor: Theme.of(context).colorScheme.surface,
       actions: [
+        8.horizontalSpace,
         IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
         if (profile) IconButton(onPressed: () {}, icon: const Icon(Icons.settings)),
       ],

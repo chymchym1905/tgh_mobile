@@ -15,18 +15,14 @@ class Observers extends ProviderObserver {
     final value = newValue is AsyncValue ? (newValue).toShortString() : newValue.toString();
     log('''
 {
-  "provider": "${provider.name ?? provider.runtimeType}",
-  "newValue": "$value"
-}''');
+  "Provider": "${provider.name ?? provider.runtimeType}",
+  "NewValue": "$value"
+}''', name: 'Provider updated');
   }
 
   @override
   void didDisposeProvider(ProviderBase provider, ProviderContainer container) {
-    log('''
-{
-  "provider": "${provider.name ?? provider.runtimeType}",
-  "newValue": "disposed"
-}''');
+    log('''"Provider": "${provider.name ?? provider.runtimeType}"''', name: 'Provider disposed');
     super.didDisposeProvider(provider, container);
   }
 }

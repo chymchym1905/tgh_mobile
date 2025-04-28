@@ -33,7 +33,6 @@ class _HomeBodyState extends ConsumerState<HomeBody> {
   Widget build(BuildContext context) {
     // Important line to make sure the feed is not broken
     log('''
-AspectRatio: ${aspectRatio(calculateCardWidth(MediaQuery.of(context).size.width, 1 + ((MediaQuery.of(context).size.width - kMaxWidthMobile / 2).abs() / kMaxWidthMobile).round(), 8))}
 CardWidth: ${calculateCardWidth(MediaQuery.of(context).size.width, 1 + ((MediaQuery.of(context).size.width - kMaxWidthMobile / 2).abs() / kMaxWidthMobile).round(), 8)}
 ''', name: 'ViewPortWidth NewsFeed');
     ref.watch(feedNotifierProvider);
@@ -58,27 +57,11 @@ CardWidth: ${calculateCardWidth(MediaQuery.of(context).size.width, 1 + ((MediaQu
               state: state,
               fetchNextPage: fetchNextPage,
               showNewPageProgressIndicatorAsGridChild: false,
-              // gridDelegate: CustomGridDelegate(
-              //     crossAxisCount:
-              //         1 + ((MediaQuery.of(context).size.width - kMaxWidthMobile / 2).abs() / kMaxWidthMobile).round(),
-              //     spacing: 8),
-              gridDelegateBuilder: (childCount) {
+              gridDelegateBuilder: (_) {
                 return SliverSimpleGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 1 +
                         ((MediaQuery.of(context).size.width - kMaxWidthMobile / 2).abs() / kMaxWidthMobile).round());
-
-                // return RenderSliverMasonryGrid(childManager: , gridDelegate: gridDelegate,
-                // mainAxisSpacing:8 crossAxisSpacing: 8);
               },
-              // gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              //     crossAxisCount:
-              //         1 + ((MediaQuery.of(context).size.width - kMaxWidthMobile / 2).abs() / kMaxWidthMobile).round(),
-              //     mainAxisSpacing: 8,
-              //     crossAxisSpacing: 8,
-              //     childAspectRatio: aspectRatio(calculateCardWidth(
-              //         MediaQuery.of(context).size.width,
-              //         1 + ((MediaQuery.of(context).size.width - kMaxWidthMobile / 2).abs() / kMaxWidthMobile).round(),
-              //         8))),
               builderDelegate: PagedChildBuilderDelegate(
                 firstPageErrorIndicatorBuilder: (context) => Center(
                     child: Column(

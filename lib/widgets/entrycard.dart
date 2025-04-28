@@ -1,7 +1,4 @@
-import 'dart:developer';
-
 import 'package:tgh_mobile/imports.dart';
-import 'package:tgh_mobile/widgets/imagecontainer.dart';
 
 class FeedEntryCard extends StatelessWidget {
   const FeedEntryCard({super.key, required this.feeditem});
@@ -68,7 +65,7 @@ class FeedEntryCard extends StatelessWidget {
                         feeditem.videoMetadata?.title ?? 'Video title not found',
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 4),
                       Text(

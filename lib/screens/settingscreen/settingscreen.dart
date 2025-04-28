@@ -23,7 +23,19 @@ class SettingsScreen extends StatelessWidget {
             title: Text('Clear preferences', style: Theme.of(context).textTheme.titleMedium),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push(Routes.clearCache),
-          )
+          ),
+          Consumer(builder: (context, ref, child) {
+            final authState = ref.watch(authNotifierProvider);
+            return ListTile(
+              leading: authState is AuthStateAuthenticated ? const Icon(Icons.logout) : const Icon(Icons.login),
+              title: Text(authState is AuthStateAuthenticated ? 'Logout' : 'Login',
+                  style: Theme.of(context).textTheme.titleMedium),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => authState is AuthStateAuthenticated
+                  ? ref.read(authNotifierProvider.notifier).logout()
+                  : context.go(Routes.login),
+            );
+          }),
         ]));
   }
 }

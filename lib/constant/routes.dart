@@ -9,9 +9,12 @@ class Routes {
   static const String clearCache = '/profile/settings/clear-cache';
   static const String leaderboard = '/leaderboard';
   static const String standings = '/standings';
-  static const String submitSpeedrun = '/submit-speedrun';
-  static const String submitDps = '/submit-dps';
-  static const String submitRestrictedDps = '/submit-restricted-dps';
+  static const String submit = '/submit';
+  static const String submitSpeedrun = '/submit/speedrun';
+  static const String submitDps = '/submit/dps';
+  static const String submitRestrictedDps = '/submit/restricted-dps';
+  static const String dashBoard = '/admin-dashboard';
+  static const String agentDashboard = '/agent-dashboard';
 
   // Video route with parameter
   static String video(String id) => '/video/$id';

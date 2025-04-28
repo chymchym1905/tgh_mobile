@@ -22,11 +22,11 @@ class AuthNotifier extends _$AuthNotifier {
       final cancelToken = await ref.cancelToken();
       final currentUser = await _authApi.checkAuth(cancelToken: cancelToken);
       return currentUser.fold(
-        (failure) => const AuthStateInitial(),
+        (failure) => const AuthStateLoggedOut(),
         (success) => AuthState.authenticated(success, localAuthToken),
       );
     }
-    return const AuthStateInitial();
+    return const AuthStateLoggedOut();
   }
 
   Future<AuthState> login(String email, String password) async {
@@ -72,5 +72,11 @@ class AuthNotifier extends _$AuthNotifier {
         return value;
       },
     );
+  }
+
+  void logout() {
+    _sharedPrefs.remove(APP_AUTH_TOKEN_STORAGE_KEY);
+    _dioNetworkService.removeAuthHeader();
+    state = const AsyncValue.data(AuthState.loggedOut());
   }
 }
