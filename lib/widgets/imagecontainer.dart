@@ -32,30 +32,11 @@ class _ImageContainerState extends State<ImageContainer> with AutomaticKeepAlive
           future: completer.future,
           builder: (context, snapshot) {
             if (snapshot.hasError) {
-              return SizedBox(
-                  child: Center(
-                      child: Column(
-                children: [
-                  Image.asset('assets/icons/Qiqidead.jpg'),
-                  Text('Video Unavailable'),
-                ],
-              )));
+              return const AppErrorWidget(message: 'Video Unavailable');
             } else if (snapshot.hasData) {
               return image;
             } else {
-              return SizedBox(
-                  width: double.infinity,
-                  child: Center(
-                      child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                        width: 30.w,
-                        child: Image.asset('assets/icons/Qiqidead.jpg'),
-                      ),
-                      Text('Video Unavailable'),
-                    ],
-                  )));
+              return const AppErrorWidget(message: 'Video Unavailable');
             }
           }),
     );
