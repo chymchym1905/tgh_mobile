@@ -2,15 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ShimmerComponent extends StatelessWidget {
-  final double width;
-  final double height;
+  final double? width;
+  final double? height;
   final ShapeBorder shapeBorder;
   final double radius;
-  const ShimmerComponent.sharpregtangular(
-      {super.key, this.width = double.infinity, this.height = double.infinity, this.radius = 10})
+  const ShimmerComponent.sharpregtangular({super.key, this.width, this.height, this.radius = 10})
       : shapeBorder = const RoundedRectangleBorder();
-  ShimmerComponent.regtangular(
-      {super.key, this.width = double.infinity, this.height = double.infinity, this.radius = 10})
+  ShimmerComponent.regtangular({super.key, this.width, this.height, this.radius = 10})
       : shapeBorder = RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(radius)));
   const ShimmerComponent.circular(
       {super.key,

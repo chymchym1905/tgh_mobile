@@ -50,15 +50,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     return Scaffold(
         body: widget.navigationShell,
-        floatingActionButton: Consumer(builder: (context, ref, child) {
-          return FloatingActionButton(
-            onPressed: () {},
-            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-            shape: const CircleBorder(),
-            mini: true,
-            child: const Icon(Icons.add),
-          );
-        }),
+        floatingActionButton: MediaQuery.of(context).size.width > kMaxWidthTablet
+            ? null
+            : FloatingActionButton(
+                onPressed: () {},
+                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                shape: const CircleBorder(),
+                mini: true,
+                child: const Icon(Icons.add),
+              ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: MediaQuery.of(context).size.width > kMaxWidthTablet
             ? null

@@ -3,22 +3,25 @@ import 'package:tgh_mobile/widgets/overlays/filteroverlay.dart';
 import '../../imports.dart';
 
 class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const MyAppBar({super.key, required this.profile});
+  const MyAppBar({super.key, required this.profile, this.onTap});
   final bool profile;
+  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
-      title: Padding(
-        padding: EdgeInsets.only(top: 8.h),
-        child: Text('The Golden House',
-            style: GoogleFonts.inter(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.primary,
-              letterSpacing: -2,
-            )),
-      ),
+      title: GestureDetector(
+          onTap: onTap,
+          child: Padding(
+            padding: EdgeInsets.only(top: 8.h),
+            child: Text('The Golden House',
+                style: GoogleFonts.inter(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.primary,
+                  letterSpacing: -2,
+                )),
+          )),
       pinned: true,
       floating: true,
       centerTitle: false,

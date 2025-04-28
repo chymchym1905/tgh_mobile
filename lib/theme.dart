@@ -49,7 +49,8 @@ ThemeData light = ThemeData(
         blurRadius: 10,
         spreadRadius: 0.1,
         color: Color.fromARGB(255, 28, 28, 28),
-      ))
+      )),
+      TextColors(text: Colors.black, textSecondary: Color.fromARGB(255, 97, 96, 97))
     ]);
 
 ThemeData dark = ThemeData(
@@ -98,7 +99,8 @@ ThemeData dark = ThemeData(
         blurRadius: 8,
         spreadRadius: 0.1,
         color: Color.fromARGB(255, 217, 217, 217),
-      ))
+      )),
+      TextColors(text: Colors.white, textSecondary: Color.fromARGB(255, 170, 171, 171))
     ]);
 
 class ThemeAssets extends ThemeExtension<ThemeAssets> {
@@ -171,6 +173,23 @@ class Shadows extends ThemeExtension<Shadows> {
 
   @override
   Shadows lerp(ThemeExtension<Shadows>? other, double t) {
+    return this;
+  }
+}
+
+class TextColors extends ThemeExtension<TextColors> {
+  final Color text;
+  final Color textSecondary;
+
+  const TextColors({required this.text, required this.textSecondary});
+
+  @override
+  TextColors copyWith({Color? text, Color? textSecondary}) {
+    return TextColors(text: text ?? this.text, textSecondary: textSecondary ?? this.textSecondary);
+  }
+
+  @override
+  TextColors lerp(ThemeExtension<TextColors>? other, double t) {
     return this;
   }
 }
