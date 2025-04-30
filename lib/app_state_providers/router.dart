@@ -106,6 +106,10 @@ GoRouter router(Ref ref) {
           builder: (context, state) => const LoginScreen(),
         ),
         GoRoute(
+          path: Routes.register,
+          builder: (context, state) => const SignUpScreen(),
+        ),
+        GoRoute(
           path: Routes.videoPath,
           name: 'video',
           builder: (context, state) {

@@ -12,7 +12,8 @@ abstract class UserApiBase {
   Future<Either<AppException, User>> getEmail(String email, {CancelToken? cancelToken});
   Future<Either<AppException, User>> register(String name, String email, String password, {CancelToken? cancelToken});
   Future<Either<AppException, User>> resendVerificationEmail(String email, {CancelToken? cancelToken});
-  // Future<Either<AppException, Map<String, dynamic>>> fetchAccountInfo(String userId, {CancelToken? cancelToken});
+  Future<Either<AppException, UserProfileInfo>> fetchAccountInfo(String userId, {CancelToken? cancelToken});
+  Future<Either<AppException, UserProfileInfo>> fetchPublicAccountInfo(String competitorId, {CancelToken? cancelToken});
 }
 
 class UserApi implements UserApiBase {
@@ -146,6 +147,41 @@ class UserApi implements UserApiBase {
       (response) {
         if (response.statusCode == 200 && (response.data as Map).containsKey('user')) {
           return right(User.fromJson(response.data['user'] as Map<String, dynamic>));
+        } else {
+          return left(AppException(message: response.data.toString(), code: response.statusCode.toString()));
+        }
+      },
+    );
+  }
+
+  @override
+  Future<Either<AppException, UserProfileInfo>> fetchAccountInfo(String userId, {CancelToken? cancelToken}) async {
+    final url = '/users/$userId/account-info';
+    final response = await _networkService.get(url, cancelToken: cancelToken);
+
+    return response.fold(
+      (exception) => left(exception),
+      (response) {
+        if (response.statusCode == 200 && (response.data as Map).containsKey('userProfileInformation')) {
+          return right(UserProfileInfo.fromJson(response.data['userProfileInformation'] as Map<String, dynamic>));
+        } else {
+          return left(AppException(message: response.data.toString(), code: response.statusCode.toString()));
+        }
+      },
+    );
+  }
+
+  @override
+  Future<Either<AppException, UserProfileInfo>> fetchPublicAccountInfo(String competitorId,
+      {CancelToken? cancelToken}) async {
+    final url = '/users/$competitorId/public-account-info';
+    final response = await _networkService.get(url, cancelToken: cancelToken);
+
+    return response.fold(
+      (exception) => left(exception),
+      (response) {
+        if (response.statusCode == 200 && (response.data as Map).containsKey('userProfileInformation')) {
+          return right(UserProfileInfo.fromJson(response.data['userProfileInformation'] as Map<String, dynamic>));
         } else {
           return left(AppException(message: response.data.toString(), code: response.statusCode.toString()));
         }
