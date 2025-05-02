@@ -26,14 +26,28 @@ class SettingsScreen extends StatelessWidget {
           ),
           Consumer(builder: (context, ref, child) {
             final authState = ref.watch(authNotifierProvider);
-            return ListTile(
-              leading: authState is AuthStateAuthenticated ? const Icon(Icons.logout) : const Icon(Icons.login),
-              title: Text(authState is AuthStateAuthenticated ? 'Logout' : 'Login',
-                  style: Theme.of(context).textTheme.titleMedium),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () => authState is AuthStateAuthenticated
-                  ? ref.read(authNotifierProvider.notifier).logout()
-                  : context.go(Routes.login),
+            return authState.when(
+              data: (data) {
+                final loginTile = ListTile(
+                    leading: const Icon(Icons.login),
+                    title: Text('Login', style: Theme.of(context).textTheme.titleMedium),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () => context.go(Routes.login));
+                return data.when(
+                    authenticated: (user, authToken) => ListTile(
+                          leading: const Icon(Icons.logout),
+                          title: Text('Logout', style: Theme.of(context).textTheme.titleMedium),
+                          trailing: const Icon(Icons.chevron_right),
+                          onTap: () {
+                            ref.read(authNotifierProvider.notifier).logout();
+                            context.go(Routes.login);
+                          },
+                        ),
+                    error: (error) => loginTile,
+                    loggedOut: () => loginTile);
+              },
+              error: (error, stack) => const SizedBox.shrink(),
+              loading: () => const SizedBox.shrink(),
             );
           }),
         ]));

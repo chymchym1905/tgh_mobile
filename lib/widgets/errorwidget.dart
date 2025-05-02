@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class AppErrorWidget extends StatelessWidget {
   const AppErrorWidget({super.key, required this.message});
-  final String message;
+  final List<String> message;
 
   @override
   Widget build(BuildContext context) {
@@ -10,7 +10,7 @@ class AppErrorWidget extends StatelessWidget {
       child: Column(
         children: [
           Image.asset('assets/icons/Qiqidead.jpg'),
-          Text(message),
+          Text(message.join('\n')),
         ],
       ),
     );

@@ -44,17 +44,7 @@ class FeedEntryCard extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () {},
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.circular(50),
-                      child: CircleAvatar(
-                          radius: 26,
-                          backgroundColor: Theme.of(context).colorScheme.surface,
-                          child: SizedBox(
-                              width: 52,
-                              height: 52,
-                              child: Image.network(pfp, fit: BoxFit.cover, errorBuilder: (context, error, stackTrace) {
-                                return const Icon(Icons.person, size: 52);
-                              })))),
+                  child: UniformCircleAvatar(url: pfp, radius: 26),
                 ),
                 const SizedBox(width: 8),
                 Expanded(

@@ -1,9 +1,10 @@
 import 'package:tgh_mobile/imports.dart';
 
 class InkWellTextButton extends StatelessWidget {
-  const InkWellTextButton({super.key, required this.onTap, required this.text});
+  const InkWellTextButton({super.key, required this.onTap, required this.text, this.fontSize = 16});
   final void Function() onTap;
   final String text;
+  final double fontSize;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +22,7 @@ class InkWellTextButton extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                 child: Text(
                   text,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(color: colorScheme.onPrimaryContainer),
+                  style: TextStyle(fontSize: fontSize, color: colorScheme.onPrimaryContainer),
                 ),
               ))),
     );

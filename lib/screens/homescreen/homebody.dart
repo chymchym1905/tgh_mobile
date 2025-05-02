@@ -85,9 +85,9 @@ CardWidth: ${calculateCardWidth(MediaQuery.of(context).size.width, 1 + ((MediaQu
                               })),
                           child: const Text('Retry'))
                     ])),
-                firstPageProgressIndicatorBuilder: (context) => const Center(child: Sumerucart(width: 300)),
+                firstPageProgressIndicatorBuilder: (context) => Center(child: Sumerucart(width: 300.wr)),
                 newPageProgressIndicatorBuilder: (context) =>
-                    const Padding(padding: EdgeInsets.all(16), child: Center(child: Sumerucart(width: 200))),
+                    Padding(padding: const EdgeInsets.all(16), child: Center(child: NotesWriting(width: 200.wr))),
                 itemBuilder: (context, item, index) {
                   return GestureDetector(
                     onTap: () {

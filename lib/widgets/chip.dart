@@ -27,3 +27,21 @@ class TagsChip extends StatelessWidget {
     );
   }
 }
+
+class RoleChip extends StatelessWidget {
+  final Color color;
+  final String label;
+  const RoleChip(this.label, this.color, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(10.wr),
+      ),
+      padding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 4.wr),
+      child: Text(label, style: TextStyle(fontSize: 12.wr, fontWeight: FontWeight.bold, color: Colors.black)),
+    );
+  }
+}

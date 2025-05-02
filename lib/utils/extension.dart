@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:tgh_mobile/imports.dart';
 
 import '../shared/exception.dart';
@@ -24,4 +25,20 @@ extension AsyncValueToString<T> on AsyncValue<T> {
       loading: () => 'Loading',
     );
   }
+}
+
+extension ResponsiveSize on num {
+  /// Returns a responsive size for ProfileScreen only
+  double get wr {
+    // Get the screen width
+    final screenWidth = ScreenUtil().screenWidth;
+    // Calculate the responsive size
+    final responsiveSize = this * screenWidth / 375;
+    // Cap it at the value when screen width is 512
+    return math.min(responsiveSize, this * 512 / 375);
+  }
+}
+
+extension StringExtension on String {
+  String toCapitalized() => length > 0 ? '${this[0].toUpperCase()}${substring(1).toLowerCase()}' : '';
 }

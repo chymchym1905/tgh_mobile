@@ -86,14 +86,14 @@ class UserApi implements UserApiBase {
 
   @override
   Future<Either<AppException, User>> getName(String name, {CancelToken? cancelToken}) async {
-    const url = '/users/get-name';
+    final url = '/users/get-name/$name';
     final response = await _networkService.get(url, cancelToken: cancelToken);
 
     return response.fold(
       (exception) => left(exception),
       (response) {
-        if (response.statusCode == 200) {
-          return right(User.fromJson(response.data as Map<String, dynamic>));
+        if (response.statusCode == 200 && (response.data as Map).containsKey('user')) {
+          return right(User.fromJson(response.data['user'] as Map<String, dynamic>));
         } else {
           return left(AppException(message: response.data.toString(), code: response.statusCode.toString()));
         }
@@ -103,7 +103,7 @@ class UserApi implements UserApiBase {
 
   @override
   Future<Either<AppException, User>> getEmail(String email, {CancelToken? cancelToken}) async {
-    const url = '/users/get-email';
+    final url = '/users/get-email/$email';
     final response = await _networkService.get(url, cancelToken: cancelToken);
 
     return response.fold(

@@ -151,7 +151,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   .copyWith(color: Colors.blue, decoration: TextDecoration.underline),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
-                                  context.go(Routes.register);
+                                  context.push(Routes.register);
                                 })
                         ]))),
                     RichText(

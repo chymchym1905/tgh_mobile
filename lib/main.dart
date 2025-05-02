@@ -27,7 +27,6 @@ class Root extends ConsumerWidget {
     final router = ref.watch(routerProvider);
     ref.watch(dioNetworkServiceProvider);
     return ScreenUtilInit(
-        designSize: const Size(344, 882),
         minTextAdapt: true,
         splitScreenMode: true,
         builder: (context, child) => MaterialApp.router(

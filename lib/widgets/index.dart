@@ -6,3 +6,4 @@ export 'textformfield/asynctextformfield.dart';
 export 'entrycard.dart';
 export 'shimmer.dart';
 export 'errorwidget.dart';
+export 'circleavatar.dart';

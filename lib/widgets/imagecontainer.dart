@@ -32,11 +32,11 @@ class _ImageContainerState extends State<ImageContainer> with AutomaticKeepAlive
           future: completer.future,
           builder: (context, snapshot) {
             if (snapshot.hasError) {
-              return const AppErrorWidget(message: 'Video Unavailable');
+              return const AppErrorWidget(message: ['Video Unavailable']);
             } else if (snapshot.hasData) {
               return image;
             } else {
-              return const AppErrorWidget(message: 'Video Unavailable');
+              return const AppErrorWidget(message: ['Video Unavailable']);
             }
           }),
     );
