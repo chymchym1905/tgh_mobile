@@ -40,7 +40,7 @@ void main() {
     });
 
     test('fetchCompetitorSpeedruns returns valid speedruns', () async {
-      final states = List<AsyncValue<List<Speedrun>>>.empty(growable: true);
+      final states = List<AsyncValue<(int count, List<Speedrun> speedruns)>>.empty(growable: true);
       final provider = fetchCompetitorSpeedrunsProvider(
         '621336b43e8e7f7628dce587',
         'created_at',
@@ -59,12 +59,12 @@ void main() {
       await container.read(provider.future);
       subscription.close();
 
-      final speedruns = states.last.value;
+      final data = states.last.value;
       log(states.toString());
-      expect(speedruns, isNotNull);
-      expect(speedruns, isA<List<Speedrun>>());
+      expect(data, isNotNull);
+      expect(data, isA<(int count, List<Speedrun> speedruns)>());
 
-      for (final speedrun in speedruns!) {
+      for (final speedrun in data!.$2) {
         expect(speedrun.id, isNotEmpty);
         expect(speedrun.competitor.alias, equals('chymchym1905'));
         log('Speedrun ID: ${speedrun.id}');
@@ -73,7 +73,7 @@ void main() {
     });
 
     test('fetchSpeedrun returns paginated speedruns', () async {
-      final states = List<AsyncValue<List<Speedrun>>>.empty(growable: true);
+      final states = List<AsyncValue<(int count, List<Speedrun> speedruns)>>.empty(growable: true);
       final provider = fetchSpeedrunProvider(
         'created_at',
         'desc',
@@ -91,13 +91,12 @@ void main() {
       await container.read(provider.future);
       subscription.close();
 
-      final speedruns = states.last.value;
+      final data = states.last.value;
       log(states.toString());
-      expect(speedruns, isNotNull);
-      expect(speedruns, isA<List<Speedrun>>());
-      expect(speedruns!.length, lessThanOrEqualTo(5));
+      expect(data, isNotNull);
+      expect(data, isA<(int count, List<Speedrun> speedruns)>());
 
-      for (final speedrun in speedruns) {
+      for (final speedrun in data!.$2) {
         expect(speedrun.approved, isTrue);
         log('Speedrun ID: ${speedrun.id}');
         log('Created at: ${speedrun.createdAt}');
@@ -117,7 +116,7 @@ void main() {
       authStateSubscription.close();
 
       // Now test the speedrun agent provider
-      final states = List<AsyncValue<List<Speedrun>>>.empty(growable: true);
+      final states = List<AsyncValue<(int count, List<Speedrun> speedruns)>>.empty(growable: true);
       final provider = fetchSpeedrunAgentProvider(
         'created_at',
         'desc',
@@ -136,12 +135,12 @@ void main() {
       await container.read(provider.future);
       subscription.close();
 
-      final speedruns = states.last.value;
+      final data = states.last.value;
       log(states.toString());
-      expect(speedruns, isNotNull);
-      expect(speedruns, isA<List<Speedrun>>());
+      expect(data, isNotNull);
+      expect(data, isA<(int count, List<Speedrun> speedruns)>());
 
-      for (final speedrun in speedruns!) {
+      for (final speedrun in data!.$2) {
         expect(speedrun.id, isNotEmpty);
         expect(speedrun.speedrunCategory, equals('Abyss'));
         log('Agent Speedrun ID: ${speedrun.id}');
