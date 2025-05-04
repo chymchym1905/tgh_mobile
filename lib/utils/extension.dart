@@ -35,7 +35,13 @@ extension ResponsiveSize on num {
     // Calculate the responsive size
     final responsiveSize = this * screenWidth / 375;
     // Cap it at the value when screen width is 512
-    return math.min(responsiveSize, this * 512 / 375);
+    double bound = this * 512 / 375;
+    // if (screenWidth < kMaxWidthTabletLandscape) {
+    //   bound = this * 512 / 375;
+    // } else {
+    //   bound = this * kMaxWidthTablet / 375;
+    // }
+    return math.min(responsiveSize, bound);
   }
 }
 

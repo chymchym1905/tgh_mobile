@@ -26,6 +26,7 @@ class Root extends ConsumerWidget {
     final theme = ref.watch(themeNotifierProvider);
     final router = ref.watch(routerProvider);
     ref.watch(dioNetworkServiceProvider);
+    ref.watch(gameAssetProvider);
     return ScreenUtilInit(
         minTextAdapt: true,
         splitScreenMode: true,

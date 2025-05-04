@@ -11,17 +11,13 @@ class ShimmerComponent extends StatelessWidget {
   ShimmerComponent.regtangular({super.key, this.width, this.height, this.radius = 10})
       : shapeBorder = RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(radius)));
   const ShimmerComponent.circular(
-      {super.key,
-      this.width = double.infinity,
-      this.height = double.infinity,
-      this.shapeBorder = const CircleBorder(),
-      this.radius = 10});
+      {super.key, this.width, this.height, this.shapeBorder = const CircleBorder(), this.radius = 10});
 
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: Theme.of(context).colorScheme.surfaceContainerLowest,
-      highlightColor: Theme.of(context).colorScheme.surfaceContainerLow,
+      baseColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+      highlightColor: Theme.of(context).colorScheme.outline,
       child: Container(
         width: width,
         height: height,

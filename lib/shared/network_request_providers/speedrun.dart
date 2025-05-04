@@ -11,7 +11,7 @@ SpeedrunApiBase speedrunApi(Ref ref) {
 }
 
 @riverpod
-Future<List<Speedrun>> fetchCompetitorSpeedruns(
+Future<(int count, List<Speedrun> speedruns)> fetchCompetitorSpeedruns(
     Ref ref, String competitorId, String sortBy, String sortDir, int page, int limit,
     {bool? approved, Map<String, dynamic>? queryParam}) async {
   final cancelToken = await ref.cancelToken();
@@ -32,7 +32,7 @@ Future<List<Speedrun>> fetchCompetitorSpeedruns(
 }
 
 @riverpod
-Future<List<Speedrun>> fetchSpeedrun(Ref ref, String sortBy, String sortDir, int page, int limit,
+Future<(int count, List<Speedrun> speedruns)> fetchSpeedrun(Ref ref, String sortBy, String sortDir, int page, int limit,
     {bool? approved, Map<String, dynamic>? queryParam}) async {
   final speedrunApi = ref.watch(speedrunApiProvider);
   final cancelToken = await ref.cancelToken();
@@ -52,7 +52,8 @@ Future<List<Speedrun>> fetchSpeedrun(Ref ref, String sortBy, String sortDir, int
 }
 
 @riverpod
-Future<List<Speedrun>> fetchSpeedrunAgent(Ref ref, String sortBy, String sortDir, int page, int limit,
+Future<(int count, List<Speedrun> speedruns)> fetchSpeedrunAgent(
+    Ref ref, String sortBy, String sortDir, int page, int limit,
     {bool? approved, Map<String, dynamic>? queryParam}) async {
   final speedrunApi = ref.watch(speedrunApiProvider);
   final cancelToken = await ref.cancelToken();

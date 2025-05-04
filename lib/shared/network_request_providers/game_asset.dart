@@ -16,21 +16,27 @@ class GameAsset extends _$GameAsset {
     state = const AsyncValue.loading();
     final networkService = ref.watch(dioNetworkServiceProvider);
     _gameAssetApi = GameAssetApi(networkService);
-    return const GameAssetStateInitial();
-    // final charactersResult = await gameAssetApi.fetchCharacters();
-    // final weaponArtiResult = await gameAssetApi.fetchWeaponArti();
 
-    // return charactersResult.fold(
-    //   (failure) => GameAssetState.error(failure),
-    //   (characters) => weaponArtiResult.fold(
-    //     (failure) => GameAssetState.error(failure),
-    //     (weaponArti) => GameAssetState.loaded(
-    //       characters,
-    //       weaponArti.weaponAssets,
-    //       weaponArti.artifactAssets,
-    //     ),
-    //   ),
-    // );
+    final cancelToken = await ref.cancelToken();
+    final futures = [
+      _gameAssetApi.fetchCharacters(cancelToken: cancelToken),
+      _gameAssetApi.fetchWeaponArti(cancelToken: cancelToken),
+    ];
+    final results = await Future.wait(futures, eagerError: false);
+    final charactersResult = results[0] as Either<AppException, List<Character>>;
+    final weaponArtiResult =
+        results[1] as Either<AppException, ({List<Weapon> weaponAssets, List<Artifact> artifactAssets})>;
+    return charactersResult.fold(
+      (failure) => GameAssetState.error(failure),
+      (characters) => weaponArtiResult.fold(
+        (failure) {
+          return GameAssetState.error(failure);
+        },
+        (weaponArti) {
+          return GameAssetState.loaded(characters, weaponArti.weaponAssets, weaponArti.artifactAssets);
+        },
+      ),
+    );
   }
 
   Future<GameAssetState> fetchCharacters() async {

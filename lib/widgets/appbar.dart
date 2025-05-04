@@ -103,13 +103,18 @@ class _BottomState extends State<Bottom> {
                 onPressed: _showFilterOverlay,
                 icon: _filterApplied ? const Icon(Icons.filter_alt) : const Icon(Icons.filter_alt_off)),
             ...List<Widget>.generate(
-                _tags.length,
-                (index) => TagsChip(
-                    selected: index == _activeIndex,
-                    text: _tags[index],
-                    onTap: () => setState(() {
-                          _activeIndex = index;
-                        })))
+              _tags.length,
+              (index) => Padding(
+                padding: const EdgeInsets.only(left: 8),
+                child: TagsChip(
+                  selected: index == _activeIndex,
+                  text: _tags[index],
+                  onTap: () => setState(() {
+                    _activeIndex = index;
+                  }),
+                ),
+              ),
+            ),
           ]),
         ),
       ),

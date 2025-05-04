@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:tgh_mobile/widgets/providers/tags.dart';
 
@@ -32,9 +30,6 @@ class _HomeBodyState extends ConsumerState<HomeBody> {
   @override
   Widget build(BuildContext context) {
     // Important line to make sure the feed is not broken
-    log('''
-CardWidth: ${calculateCardWidth(MediaQuery.of(context).size.width, 1 + ((MediaQuery.of(context).size.width - kMaxWidthMobile / 2).abs() / kMaxWidthMobile).round(), 8)}
-''', name: 'ViewPortWidth NewsFeed');
     ref.watch(feedNotifierProvider);
     return RefreshIndicator(
       onRefresh: () async {

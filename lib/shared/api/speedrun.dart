@@ -5,7 +5,7 @@ import '../exception.dart';
 import '../network.dart';
 
 abstract class SpeedrunApiBase {
-  Future<Either<AppException, List<Speedrun>>> fetchCompetitorSpeedruns(
+  Future<Either<AppException, (int count, List<Speedrun> speedruns)>> fetchCompetitorSpeedruns(
     String competitorId,
     String sortBy,
     String sortDir,
@@ -16,7 +16,7 @@ abstract class SpeedrunApiBase {
     CancelToken? cancelToken,
   });
 
-  Future<Either<AppException, List<Speedrun>>> fetchSpeedrun(
+  Future<Either<AppException, (int count, List<Speedrun> speedruns)>> fetchSpeedrun(
     String sortBy,
     String sortDir,
     int page,
@@ -26,7 +26,7 @@ abstract class SpeedrunApiBase {
     CancelToken? cancelToken,
   });
 
-  Future<Either<AppException, List<Speedrun>>> fetchSpeedrunAgent(
+  Future<Either<AppException, (int count, List<Speedrun> speedruns)>> fetchSpeedrunAgent(
     String sortBy,
     String sortDir,
     int page,
@@ -47,7 +47,7 @@ class SpeedrunApi implements SpeedrunApiBase {
   SpeedrunApi(this._networkService);
 
   @override
-  Future<Either<AppException, List<Speedrun>>> fetchCompetitorSpeedruns(
+  Future<Either<AppException, (int count, List<Speedrun> speedruns)>> fetchCompetitorSpeedruns(
     String competitorId,
     String sortBy,
     String sortDir,
@@ -75,7 +75,7 @@ class SpeedrunApi implements SpeedrunApiBase {
       (response) {
         if (response.statusCode == 200 && (response.data as Map).containsKey('entries')) {
           final entries = (response.data['entries']['rows'] as List).map((e) => e as Map<String, dynamic>).toList();
-          return right(entries.map((e) => Speedrun.fromJson(e)).toList());
+          return right((response.data['entries']['count'] as int, entries.map((e) => Speedrun.fromJson(e)).toList()));
         } else {
           return left(AppException(
             message: response.data.toString(),
@@ -87,7 +87,7 @@ class SpeedrunApi implements SpeedrunApiBase {
   }
 
   @override
-  Future<Either<AppException, List<Speedrun>>> fetchSpeedrun(
+  Future<Either<AppException, (int count, List<Speedrun> speedruns)>> fetchSpeedrun(
     String sortBy,
     String sortDir,
     int page,
@@ -112,7 +112,7 @@ class SpeedrunApi implements SpeedrunApiBase {
       (response) {
         if (response.statusCode == 200 && (response.data as Map).containsKey('entries')) {
           final entries = (response.data['entries']['rows'] as List).map((e) => e as Map<String, dynamic>).toList();
-          return right(entries.map((e) => Speedrun.fromJson(e)).toList());
+          return right((response.data['entries']['count'] as int, entries.map((e) => Speedrun.fromJson(e)).toList()));
         } else {
           return left(AppException(message: response.data.toString(), code: response.statusCode.toString()));
         }
@@ -121,7 +121,7 @@ class SpeedrunApi implements SpeedrunApiBase {
   }
 
   @override
-  Future<Either<AppException, List<Speedrun>>> fetchSpeedrunAgent(
+  Future<Either<AppException, (int count, List<Speedrun> speedruns)>> fetchSpeedrunAgent(
     String sortBy,
     String sortDir,
     int page,
@@ -146,7 +146,7 @@ class SpeedrunApi implements SpeedrunApiBase {
       (response) {
         if (response.statusCode == 200 && (response.data as Map).containsKey('entries')) {
           final entries = (response.data['entries']['rows'] as List).map((e) => e as Map<String, dynamic>).toList();
-          return right(entries.map((e) => Speedrun.fromJson(e)).toList());
+          return right((response.data['entries']['count'] as int, entries.map((e) => Speedrun.fromJson(e)).toList()));
         } else {
           return left(AppException(message: response.data.toString(), code: response.statusCode.toString()));
         }

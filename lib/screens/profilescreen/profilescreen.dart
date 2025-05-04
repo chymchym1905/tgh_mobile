@@ -15,6 +15,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     return ref.watch(authNotifierProvider).when(
           data: (authState) => authState.when(
             authenticated: (user, authToken) {
+              if (user.competitor?.id == null) {
+                return ProfileNoUser(name: user.name);
+              }
               final userProfileInfo = ref.watch(fetchAccountInfoProvider(user.id));
               return userProfileInfo.when(
                 data: (data) => ProfileWithUser(user: user, userProfileInfo: data),
