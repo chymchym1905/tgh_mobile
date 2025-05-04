@@ -10,7 +10,7 @@ DpsApiBase dpsApi(Ref ref) {
 }
 
 @riverpod
-Future<List<DPS>> fetchCompetitorDps(
+Future<(int count, List<DPS> dps)> fetchCompetitorDps(
   Ref ref, {
   required String competitorId,
   required String sortBy,
@@ -41,7 +41,7 @@ Future<List<DPS>> fetchCompetitorDps(
 }
 
 @riverpod
-Future<List<DPS>> fetchDps(
+Future<(int count, List<DPS> dps)> fetchDps(
   Ref ref, {
   required String sortBy,
   required String sortDir,
@@ -70,7 +70,7 @@ Future<List<DPS>> fetchDps(
 }
 
 @riverpod
-Future<List<DPS>> fetchDpsAgent(
+Future<(int count, List<DPS> dps)> fetchDpsAgent(
   Ref ref, {
   required String sortBy,
   required String sortDir,

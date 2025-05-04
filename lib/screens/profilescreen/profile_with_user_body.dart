@@ -1,7 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:tgh_mobile/imports.dart';
 
 import 'categorytab.dart';
+import 'tableheader_dps.dart';
 import 'tableheader_speedrun.dart';
+import 'tablerow_dps.dart';
 import 'tablerow_speedrun.dart';
 
 class ProfileBody extends ConsumerStatefulWidget {
@@ -14,12 +17,20 @@ class ProfileBody extends ConsumerStatefulWidget {
 }
 
 class _ProfileBodyState extends ConsumerState<ProfileBody> {
-  int limit = 10;
-  int page = 0;
-  int _speedrunCategoryIndex = 0;
-  String _currentCategory = 'Abyss';
+  ScrollController dpsCategoryScrollController = ScrollController();
+  ScrollController speedrunCategoryScrollController = ScrollController();
 
-  final List<String> _categoryOrder = [
+  int limitSpeedrun = 10;
+  int pageSpeedrun = 0;
+  int _speedrunCategoryIndex = 0;
+  String _currentSpeedrunCategory = 'Abyss';
+
+  int limitDps = 10;
+  int pageDps = 0;
+  int _dpsCategoryIndex = 0;
+  String _currentDpsCategory = 'All';
+
+  final List<String> _speedrunCategoryOrder = [
     'Abyss',
     'Domain',
     'Event',
@@ -27,6 +38,16 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
     'World Boss',
   ];
 
+  final List<String> _dpsCategoryOrder = [
+    'All',
+    'Overworld',
+    'Weekly Boss',
+    'Event',
+    'World Boss',
+    'Reputation Bounty',
+    'Abyss',
+    'Domain',
+  ];
   Widget _shimmerRow() {
     return Row(
       children: [
@@ -51,12 +72,19 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
       widget.user.competitor!.id,
       SortBy.createdAt.value,
       SortDir.desc.value,
-      page,
-      limit,
+      pageSpeedrun,
+      limitSpeedrun,
     ));
+    final dps = ref.watch(fetchCompetitorDpsProvider(
+        competitorId: widget.user.competitor!.id,
+        sortBy: SortBy.createdAt.value,
+        sortDir: SortDir.desc.value,
+        page: pageDps,
+        limit: limitDps));
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        ///Speedrun section
         Container(
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surfaceContainer,
@@ -68,24 +96,27 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
               speedruns.when(
                 data: (data) {
                   final uniqueCategories = data.$2.map((e) => e.speedrunCategory).toSet().toList()
-                    ..sort((a, b) => _categoryOrder.indexOf(a).compareTo(_categoryOrder.indexOf(b)));
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: List<Widget>.generate(
-                      uniqueCategories.length,
-                      (index) => Padding(
-                        padding: EdgeInsets.only(right: 8.wr),
-                        child: CategoryTab(
-                          name: uniqueCategories[index],
-                          selected: _speedrunCategoryIndex == index,
-                          onTap: () => setState(() {
-                            _speedrunCategoryIndex = index;
-                            _currentCategory = uniqueCategories[index];
-                          }),
-                        ),
-                      ),
-                    ),
-                  );
+                    ..sort((a, b) => _speedrunCategoryOrder.indexOf(a).compareTo(_speedrunCategoryOrder.indexOf(b)));
+                  final child = SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      controller: speedrunCategoryScrollController,
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: List<Widget>.generate(
+                              uniqueCategories.length,
+                              (index) => Padding(
+                                  padding: EdgeInsets.only(right: 8.wr),
+                                  child: CategoryTab(
+                                      name: uniqueCategories[index],
+                                      selected: _speedrunCategoryIndex == index,
+                                      onTap: () => setState(() {
+                                            _speedrunCategoryIndex = index;
+                                            _currentSpeedrunCategory = uniqueCategories[index];
+                                          }))))));
+                  if (defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android) {
+                    return child;
+                  }
+                  return Scrollbar(controller: speedrunCategoryScrollController, child: child);
                 },
                 error: (error, stack) => AppErrorWidget(message: [error.toString(), stack.toString()]),
                 loading: () => SizedBox(
@@ -111,13 +142,13 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
                           padding: const EdgeInsets.symmetric(vertical: 8),
                           child: speedruns.when(
                             data: (data) {
-                              if (_currentCategory == 'Abyss') {
+                              if (_currentSpeedrunCategory == 'Abyss') {
                                 return const TableHeaderAbyss();
-                              } else if (_currentCategory == 'Domain') {
+                              } else if (_currentSpeedrunCategory == 'Domain') {
                                 return const TableHeaderDomain();
-                              } else if (_currentCategory == 'Event') {
+                              } else if (_currentSpeedrunCategory == 'Event') {
                                 return const TableHeaderEvent();
-                              } else if (_currentCategory == 'Weekly Boss') {
+                              } else if (_currentSpeedrunCategory == 'Weekly Boss') {
                                 return const TableHeaderBoss();
                               } else {
                                 return const TableHeaderBoss();
@@ -137,7 +168,7 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
                             child: speedruns.when(
                                 data: (data) => Column(
                                     children: data.$2
-                                        .where((e) => e.speedrunCategory == _currentCategory)
+                                        .where((e) => e.speedrunCategory == _currentSpeedrunCategory)
                                         .map((e) => TableRowAbyss(speedrun: e))
                                         .toList()),
                                 error: (error, stackTrace) =>
@@ -158,72 +189,263 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
                                     ]))))
                   ])),
               10.verticalSpace,
-              Row(children: [
-                Text('Rows per page:', style: TextStyle(fontSize: 12.wr)),
-                SizedBox(width: 5.wr),
-                SizedBox(
-                  width: 80,
-                  child: CustomDropdown(
-                      decoration: CustomDropdownDecoration(
-                        expandedShadow: [
-                          BoxShadow(
-                              color: Theme.of(context).colorScheme.surfaceContainerLowest,
-                              offset: const Offset(0, 3),
-                              blurRadius: 6,
-                              spreadRadius: 0)
-                        ],
-                        closedFillColor: Theme.of(context).colorScheme.surfaceContainerLow,
-                        closedBorder: Border.all(color: Theme.of(context).colorScheme.outline),
-                        expandedBorder: Border.all(color: Theme.of(context).colorScheme.outline),
-                        expandedFillColor: Theme.of(context).colorScheme.surfaceContainerHigh,
-                        listItemStyle: TextStyle(fontSize: 12.wr),
-                        headerStyle: TextStyle(fontSize: 12.wr),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Text('Rows per page:', style: TextStyle(fontSize: 12.wr)),
+                      SizedBox(width: 5.wr),
+                      SizedBox(
+                        width: 80.wr,
+                        child: CustomDropdown(
+                            decoration: CustomDropdownDecoration(
+                              expandedShadow: [
+                                BoxShadow(
+                                    color: Theme.of(context).colorScheme.surfaceContainerLowest,
+                                    offset: const Offset(0, 3),
+                                    blurRadius: 6,
+                                    spreadRadius: 0)
+                              ],
+                              closedFillColor: Theme.of(context).colorScheme.surfaceContainerLow,
+                              closedBorder: Border.all(color: Theme.of(context).colorScheme.outline),
+                              expandedBorder: Border.all(color: Theme.of(context).colorScheme.outline),
+                              expandedFillColor: Theme.of(context).colorScheme.surfaceContainerHigh,
+                              listItemStyle: TextStyle(fontSize: 12.wr),
+                              headerStyle: TextStyle(fontSize: 12.wr),
+                              expandedSuffixIcon: Icon(Icons.arrow_drop_up, size: 10.wr),
+                              closedSuffixIcon: Icon(Icons.arrow_drop_down, size: 10.wr),
+                            ),
+                            // hideSelectedFieldWhenExpanded: true,
+                            closedHeaderPadding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 3.wr),
+                            items: const [10, 20, 50, 100],
+                            onChanged: (p0) {
+                              setState(() {
+                                limitSpeedrun = p0!;
+                                pageSpeedrun = 0;
+                              });
+                            },
+                            initialItem: limitSpeedrun),
                       ),
-                      hideSelectedFieldWhenExpanded: true,
-                      closedHeaderPadding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 3.wr),
-                      items: const [10, 20, 50, 100],
-                      onChanged: (p0) {
-                        setState(() {
-                          limit = p0!;
-                          page = 0;
-                        });
-                      },
-                      initialItem: limit),
-                ),
-                const Spacer(),
-                speedruns.when(
-                  data: (data) {
-                    final hasNextPage = (page + 1) * limit < data.$1;
-                    return Row(
-                      children: [
-                        IconButton(
-                          onPressed: page > 0
-                              ? () => setState(() {
-                                    page--;
-                                  })
-                              : null,
-                          icon: const Icon(Icons.chevron_left),
-                        ),
-                        Text('${page + 1}', style: TextStyle(fontSize: 12.wr)),
-                        IconButton(
-                          onPressed: hasNextPage
-                              ? () => setState(() {
-                                    page++;
-                                  })
-                              : null,
-                          icon: const Icon(Icons.chevron_right),
-                        ),
-                      ],
-                    );
-                  },
-                  error: (_, __) => const SizedBox.shrink(),
-                  loading: () => SizedBox(
-                    width: 20.wr,
-                    height: 20.wr,
-                    child: CircularProgressIndicator(),
+                    ],
                   ),
+                  speedruns.when(
+                    data: (data) {
+                      final hasNextPage = (pageSpeedrun + 1) * limitSpeedrun < data.$1;
+                      return Row(
+                        children: [
+                          IconButton(
+                              padding: EdgeInsets.all(4.wr),
+                              constraints: BoxConstraints(minWidth: 16.wr, minHeight: 16.wr),
+                              iconSize: 12.wr,
+                              onPressed: pageSpeedrun > 0
+                                  ? () => setState(() {
+                                        pageSpeedrun--;
+                                      })
+                                  : null,
+                              icon: const Icon(Icons.chevron_left)),
+                          Text('${pageSpeedrun + 1}', style: TextStyle(fontSize: 12.wr)),
+                          IconButton(
+                              padding: EdgeInsets.all(4.wr),
+                              constraints: BoxConstraints(minWidth: 16.wr, minHeight: 16.wr),
+                              iconSize: 12.wr,
+                              onPressed: hasNextPage
+                                  ? () => setState(() {
+                                        pageSpeedrun++;
+                                      })
+                                  : null,
+                              icon: const Icon(Icons.chevron_right)),
+                          Text(
+                              '${(pageSpeedrun * limitSpeedrun) + 1}-${(pageSpeedrun + 1) * limitSpeedrun > data.$1 ? data.$1 : (pageSpeedrun + 1) * limitSpeedrun} of ${data.$1}',
+                              style: TextStyle(fontSize: 12.wr))
+                        ],
+                      );
+                    },
+                    error: (_, __) => const SizedBox.shrink(),
+                    loading: () => SizedBox(width: 20.wr, height: 20.wr, child: const CircularProgressIndicator()),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        50.verticalSpace,
+
+        ///DPS section
+        Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surfaceContainer,
+            borderRadius: BorderRadius.circular(10.wr),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              dps.when(
+                data: (data) {
+                  final uniqueCategories = ['All', ...data.$2.map((e) => e.dpsCategory).toSet()]
+                    ..sort((a, b) => _dpsCategoryOrder.indexOf(a).compareTo(_dpsCategoryOrder.indexOf(b)));
+                  final child = SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      controller: dpsCategoryScrollController,
+                      child: Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: List<Widget>.generate(
+                                  uniqueCategories.length,
+                                  (index) => Padding(
+                                      padding: EdgeInsets.only(right: 8.wr),
+                                      child: CategoryTab(
+                                          name: uniqueCategories[index],
+                                          selected: _dpsCategoryIndex == index,
+                                          onTap: () => setState(() {
+                                                _dpsCategoryIndex = index;
+                                                _currentDpsCategory = uniqueCategories[index];
+                                              })))))));
+                  if (defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android) {
+                    return child;
+                  } else {
+                    return Scrollbar(controller: dpsCategoryScrollController, child: child);
+                  }
+                },
+                error: (error, stack) => AppErrorWidget(message: [error.toString(), stack.toString()]),
+                loading: () => SizedBox(
+                  width: 20.wr,
+                  height: 20.wr,
+                  child: const CircularProgressIndicator(),
                 ),
-              ]),
+              ),
+              10.verticalSpace,
+              Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surfaceDim,
+                    borderRadius: BorderRadius.circular(5.wr),
+                    border: Border.all(color: Theme.of(context).colorScheme.outline),
+                  ),
+                  child: Column(children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(5.wr)),
+                      child: Container(
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.surfaceContainerLowest,
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: dps.when(
+                            data: (data) {
+                              return const TableHeaderDps();
+                            },
+                            error: (error, stack) => Text(error.toString(), style: TextStyle(fontSize: 12.wr)),
+                            loading: () => _shimmerRow(),
+                          )),
+                    ),
+                    Divider(color: Theme.of(context).colorScheme.outline, thickness: 1, height: 0),
+                    ClipRRect(
+                        borderRadius: BorderRadius.vertical(bottom: Radius.circular(5.wr)),
+                        child: Container(
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.onInverseSurface,
+                            ),
+                            child: dps.when(
+                                data: (data) => Column(
+                                    children: data.$2
+                                        .where((e) =>
+                                            _currentDpsCategory == 'All' ? true : e.dpsCategory == _currentDpsCategory)
+                                        .map((e) => TableRowDps(dps: e))
+                                        .toList()),
+                                error: (error, stackTrace) =>
+                                    Center(child: AppErrorWidget(message: [error.toString(), stackTrace.toString()])),
+                                loading: () => Column(children: [
+                                      Padding(padding: EdgeInsets.symmetric(vertical: 10.wr), child: _shimmerRow()),
+                                      Divider(color: Theme.of(context).colorScheme.outline, thickness: 1, height: 0),
+                                      Padding(padding: EdgeInsets.symmetric(vertical: 10.wr), child: _shimmerRow()),
+                                      Divider(color: Theme.of(context).colorScheme.outline, thickness: 1, height: 0),
+                                      Padding(padding: EdgeInsets.symmetric(vertical: 10.wr), child: _shimmerRow()),
+                                      Divider(color: Theme.of(context).colorScheme.outline, thickness: 1, height: 0),
+                                      Padding(padding: EdgeInsets.symmetric(vertical: 10.wr), child: _shimmerRow()),
+                                      Divider(color: Theme.of(context).colorScheme.outline, thickness: 1, height: 0),
+                                      Padding(padding: EdgeInsets.symmetric(vertical: 10.wr), child: _shimmerRow()),
+                                      Divider(color: Theme.of(context).colorScheme.outline, thickness: 1, height: 0),
+                                      Padding(padding: EdgeInsets.symmetric(vertical: 10.wr), child: _shimmerRow()),
+                                      Divider(color: Theme.of(context).colorScheme.outline, thickness: 1, height: 0),
+                                    ]))))
+                  ])),
+              10.verticalSpace,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Text('Rows per page:', style: TextStyle(fontSize: 12.wr)),
+                      SizedBox(width: 5.wr),
+                      SizedBox(
+                        width: 80.wr,
+                        child: CustomDropdown(
+                            decoration: CustomDropdownDecoration(
+                              expandedShadow: [
+                                BoxShadow(
+                                    color: Theme.of(context).colorScheme.surfaceContainerLowest,
+                                    offset: const Offset(0, 3),
+                                    blurRadius: 6,
+                                    spreadRadius: 0)
+                              ],
+                              closedFillColor: Theme.of(context).colorScheme.surfaceContainerLow,
+                              closedBorder: Border.all(color: Theme.of(context).colorScheme.outline),
+                              expandedBorder: Border.all(color: Theme.of(context).colorScheme.outline),
+                              expandedFillColor: Theme.of(context).colorScheme.surfaceContainerHigh,
+                              listItemStyle: TextStyle(fontSize: 12.wr),
+                              headerStyle: TextStyle(fontSize: 12.wr),
+                              expandedSuffixIcon: Icon(Icons.arrow_drop_up, size: 10.wr),
+                              closedSuffixIcon: Icon(Icons.arrow_drop_down, size: 10.wr),
+                            ),
+                            closedHeaderPadding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 3.wr),
+                            items: const [10, 20, 50, 100],
+                            onChanged: (p0) {
+                              setState(() {
+                                limitDps = p0!;
+                                pageDps = 0;
+                              });
+                            },
+                            initialItem: limitDps),
+                      ),
+                    ],
+                  ),
+                  dps.when(
+                    data: (data) {
+                      final hasNextPage = (pageDps + 1) * limitDps < data.$1;
+                      return Row(
+                        children: [
+                          IconButton(
+                              padding: EdgeInsets.all(4.wr),
+                              constraints: BoxConstraints(minWidth: 16.wr, minHeight: 16.wr),
+                              iconSize: 12.wr,
+                              onPressed: pageDps > 0
+                                  ? () => setState(() {
+                                        pageDps--;
+                                      })
+                                  : null,
+                              icon: const Icon(Icons.chevron_left)),
+                          Text('${pageDps + 1}', style: TextStyle(fontSize: 12.wr)),
+                          IconButton(
+                              padding: EdgeInsets.all(4.wr),
+                              constraints: BoxConstraints(minWidth: 16.wr, minHeight: 16.wr),
+                              iconSize: 12.wr,
+                              onPressed: hasNextPage
+                                  ? () => setState(() {
+                                        pageDps++;
+                                      })
+                                  : null,
+                              icon: const Icon(Icons.chevron_right)),
+                          Text(
+                              '${(pageDps * limitDps) + 1}-${(pageDps + 1) * limitDps > data.$1 ? data.$1 : (pageDps + 1) * limitDps} of ${data.$1}',
+                              style: TextStyle(fontSize: 12.wr))
+                        ],
+                      );
+                    },
+                    error: (_, __) => const SizedBox.shrink(),
+                    loading: () => SizedBox(width: 20.wr, height: 20.wr, child: const CircularProgressIndicator()),
+                  ),
+                ],
+              ),
               50.verticalSpace,
             ],
           ),

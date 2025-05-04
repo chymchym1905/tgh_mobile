@@ -79,6 +79,7 @@ class _ProfileWithUserState extends State<ProfileWithUser> {
               pinned: true,
               shadowColor: Colors.transparent,
               centerTitle: false,
+              toolbarHeight: 50.wr,
               title: Visibility(
                 visible: _scrollProgress == 1,
                 child: Row(
@@ -88,7 +89,7 @@ class _ProfileWithUserState extends State<ProfileWithUser> {
                             border: Border.all(width: 2, color: Theme.of(context).colorScheme.onSurface),
                             shape: BoxShape.circle),
                         child: UniformCircleAvatar(url: pfpUrl(competitor.id), radius: 16.wr)),
-                    SizedBox(width: 6.wr),
+                    SizedBox(width: 10.wr),
                     Text(competitor.alias, style: TextStyle(fontSize: 16.wr)),
                   ],
                 ),

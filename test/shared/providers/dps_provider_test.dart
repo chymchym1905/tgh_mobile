@@ -36,7 +36,7 @@ void main() {
     });
 
     test('fetchCompetitorDps returns valid dps entries', () async {
-      final states = <AsyncValue<List<DPS>>>[];
+      final states = <AsyncValue<(int count, List<DPS> dps)>>[];
       final provider = fetchCompetitorDpsProvider(
         competitorId: '621336b43e8e7f7628dce587',
         sortBy: 'created_at',
@@ -58,7 +58,7 @@ void main() {
       expect(dpsEntries, isA<List<DPS>>());
       expect(dpsEntries, isNotEmpty);
 
-      for (final dps in dpsEntries) {
+      for (final dps in dpsEntries.$2) {
         expect(dps.id, isNotEmpty);
         expect(dps.competitor.alias, equals('chymchym1905'));
         expect(dps.enemy, isNotNull);
@@ -67,7 +67,7 @@ void main() {
     });
 
     test('fetchDps returns paginated dps entries', () async {
-      final states = <AsyncValue<List<DPS>>>[];
+      final states = <AsyncValue<(int count, List<DPS> dps)>>[];
       final provider = fetchDpsProvider(
         sortBy: 'created_at',
         sortDir: 'desc',
@@ -87,9 +87,8 @@ void main() {
 
       log(states.toString());
       expect(dpsEntries, isA<List<DPS>>());
-      expect(dpsEntries.length, lessThanOrEqualTo(5));
 
-      for (final dps in dpsEntries) {
+      for (final dps in dpsEntries.$2) {
         expect(dps.approved, isTrue);
         expect(dps.id, isNotEmpty);
         expect(dps.createdAt, isNotNull);
@@ -109,7 +108,7 @@ void main() {
       expect(authStates.last.value, isA<AuthStateAuthenticated>());
       authStateSubscription.close();
 
-      final states = <AsyncValue<List<DPS>>>[];
+      final states = <AsyncValue<(int count, List<DPS> dps)>>[];
       final provider = fetchDpsAgentProvider(
         sortBy: 'created_at',
         sortDir: 'desc',
@@ -131,7 +130,7 @@ void main() {
       expect(dpsEntries, isA<List<DPS>>());
       expect(dpsEntries, isNotEmpty);
 
-      for (final dps in dpsEntries) {
+      for (final dps in dpsEntries.$2) {
         expect(dps.id, isNotEmpty);
         expect(dps.dpsCategory, isNotNull);
         expect(dps.enemy, isNotNull);

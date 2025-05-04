@@ -4,7 +4,7 @@ import '../exception.dart';
 import '../network.dart';
 
 abstract class DpsApiBase {
-  Future<Either<AppException, List<DPS>>> fetchCompetitorDps(
+  Future<Either<AppException, (int count, List<DPS> dps)>> fetchCompetitorDps(
     String competitorId,
     String sortBy,
     String sortDir,
@@ -15,7 +15,7 @@ abstract class DpsApiBase {
     CancelToken? cancelToken,
   });
 
-  Future<Either<AppException, List<DPS>>> fetchDps(
+  Future<Either<AppException, (int count, List<DPS> dps)>> fetchDps(
     String sortBy,
     String sortDir,
     int page,
@@ -25,7 +25,7 @@ abstract class DpsApiBase {
     CancelToken? cancelToken,
   });
 
-  Future<Either<AppException, List<DPS>>> fetchDpsAgent(
+  Future<Either<AppException, (int count, List<DPS> dps)>> fetchDpsAgent(
     String sortBy,
     String sortDir,
     int page,
@@ -44,7 +44,7 @@ class DpsApi implements DpsApiBase {
   DpsApi(this._networkService);
 
   @override
-  Future<Either<AppException, List<DPS>>> fetchCompetitorDps(
+  Future<Either<AppException, (int count, List<DPS> dps)>> fetchCompetitorDps(
     String competitorId,
     String sortBy,
     String sortDir,
@@ -72,7 +72,7 @@ class DpsApi implements DpsApiBase {
       (response) {
         if (response.statusCode == 200 && (response.data as Map).containsKey('dpsEntries')) {
           final entries = (response.data['dpsEntries']['rows'] as List).map((e) => e as Map<String, dynamic>).toList();
-          return right(entries.map((e) => DPS.fromJson(e)).toList());
+          return right((response.data['dpsEntries']['count'] as int, entries.map((e) => DPS.fromJson(e)).toList()));
         } else {
           return left(AppException(
             message: response.data.toString(),
@@ -84,7 +84,7 @@ class DpsApi implements DpsApiBase {
   }
 
   @override
-  Future<Either<AppException, List<DPS>>> fetchDps(
+  Future<Either<AppException, (int count, List<DPS> dps)>> fetchDps(
     String sortBy,
     String sortDir,
     int page,
@@ -110,7 +110,7 @@ class DpsApi implements DpsApiBase {
       (response) {
         if (response.statusCode == 200 && (response.data as Map).containsKey('dpsEntries')) {
           final entries = (response.data['dpsEntries']['rows'] as List).map((e) => e as Map<String, dynamic>).toList();
-          return right(entries.map((e) => DPS.fromJson(e)).toList());
+          return right((response.data['dpsEntries']['count'] as int, entries.map((e) => DPS.fromJson(e)).toList()));
         } else {
           return left(AppException(
             message: response.data.toString(),
@@ -122,7 +122,7 @@ class DpsApi implements DpsApiBase {
   }
 
   @override
-  Future<Either<AppException, List<DPS>>> fetchDpsAgent(
+  Future<Either<AppException, (int count, List<DPS> dps)>> fetchDpsAgent(
     String sortBy,
     String sortDir,
     int page,
@@ -148,7 +148,7 @@ class DpsApi implements DpsApiBase {
       (response) {
         if (response.statusCode == 200 && (response.data as Map).containsKey('dpsEntries')) {
           final entries = (response.data['dpsEntries']['rows'] as List).map((e) => e as Map<String, dynamic>).toList();
-          return right(entries.map((e) => DPS.fromJson(e)).toList());
+          return right((response.data['dpsEntries']['count'] as int, entries.map((e) => DPS.fromJson(e)).toList()));
         } else {
           return left(AppException(
             message: response.data.toString(),
