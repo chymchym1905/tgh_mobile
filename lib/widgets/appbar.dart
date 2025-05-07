@@ -1,5 +1,4 @@
 import 'package:flutter/gestures.dart';
-import 'package:tgh_mobile/widgets/overlays/filteroverlay.dart';
 
 import '../../imports.dart';
 
@@ -55,7 +54,7 @@ class Bottom extends StatefulWidget implements PreferredSizeWidget {
   State<Bottom> createState() => _BottomState();
 
   @override
-  Size get preferredSize => Size.fromHeight(24);
+  Size get preferredSize => const Size.fromHeight(24);
 }
 
 class _BottomState extends State<Bottom> {

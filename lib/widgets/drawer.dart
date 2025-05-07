@@ -27,9 +27,9 @@ class DrawerWidget extends StatelessWidget {
                                           height: 56,
                                           child: IconButton(
                                               onPressed: () => Scaffold.of(context).closeDrawer(),
-                                              icon: Icon(Icons.dehaze,
+                                              icon: const Icon(Icons.dehaze,
                                                   size: 30, weight: 700, grade: 200, opticalSize: 24))))),
-                              SizedBox(width: 8),
+                              const SizedBox(width: 8),
                               RichText(
                                   text: TextSpan(
                                       text: 'The Golden House',
@@ -132,9 +132,9 @@ class DrawerItemExpanded extends StatelessWidget {
               height: 48,
               child: Row(
                 children: [
-                  SizedBox(width: 16),
+                  const SizedBox(width: 16),
                   icon,
-                  SizedBox(width: 16),
+                  const SizedBox(width: 16),
                   Text(title),
                 ],
               ),
@@ -158,7 +158,7 @@ class DrawerItemCollapsed extends StatelessWidget {
               height: 48,
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [icon, Text(title, style: TextStyle(fontSize: 8))]),
+                  children: [icon, Text(title, style: const TextStyle(fontSize: 8))]),
             )));
   }
 }

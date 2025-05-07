@@ -43,7 +43,7 @@ class _HomeBodyState extends ConsumerState<HomeBody> {
                 ref.invalidate(feedNotifierProvider);
               },
               child: Padding(
-                  padding: EdgeInsets.only(top: 0),
+                  padding: const EdgeInsets.only(top: 0),
                   child: RichText(
                       text: TextSpan(
                           text: 'The Golden House',

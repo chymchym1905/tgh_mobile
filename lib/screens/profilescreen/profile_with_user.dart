@@ -44,7 +44,7 @@ class _ProfileWithUserState extends State<ProfileWithUser> {
 
     return Stack(
       children: [
-        Container(
+        SizedBox(
           height: 400,
           child: Stack(
             fit: StackFit.expand,

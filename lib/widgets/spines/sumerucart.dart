@@ -9,7 +9,7 @@ class Sumerucart extends StatelessWidget {
     const html = '''
 <img src="asset:assets/gifs/spine_128.png">
 ''';
-    const html_loop = '''
+    const htmlLoop = '''
 <img src="asset:assets/gifs/spine_128_loop.png">
 ''';
     return SizedBox(
@@ -21,7 +21,7 @@ class Sumerucart extends StatelessWidget {
               children: [
                 Opacity(
                     opacity: snapshot.connectionState == ConnectionState.done ? 1 : 0,
-                    child: const HtmlWidget(html_loop)),
+                    child: const HtmlWidget(htmlLoop)),
                 Opacity(
                     opacity: snapshot.connectionState == ConnectionState.done ? 0 : 1, child: const HtmlWidget(html)),
               ],

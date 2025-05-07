@@ -1,6 +1,5 @@
 import '../imports.dart';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
-import 'package:go_router/go_router.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key, required this.navigationShell});
@@ -52,7 +51,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Scaffold(
         drawer: MediaQuery.of(context).size.width > kMaxWidthTablet &&
                 MediaQuery.of(context).size.width < kMaxWidthTabletLandscape
-            ? Drawer(
+            ? const Drawer(
                 width: 300,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(0))),
                 child: DrawerWidget(expanded: true))

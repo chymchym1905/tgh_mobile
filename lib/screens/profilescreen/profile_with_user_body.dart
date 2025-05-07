@@ -1,9 +1,7 @@
-import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:tgh_mobile/imports.dart';
 
-import '../../widgets/categorytab.dart';
 import 'tableheader_dps.dart';
 import 'tableheader_speedrun.dart';
 import 'tablerow_dps.dart';

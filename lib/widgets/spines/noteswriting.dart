@@ -9,7 +9,7 @@ class NotesWriting extends StatelessWidget {
     const html = '''
 <img src="asset:assets/gifs/notes_128_fadein.png">
 ''';
-    const html_loop = '''
+    const htmlLoop = '''
 <img src="asset:assets/gifs/notes_128_loop.png">
 ''';
     return SizedBox(
@@ -21,7 +21,7 @@ class NotesWriting extends StatelessWidget {
               children: [
                 Opacity(
                     opacity: snapshot.connectionState == ConnectionState.done ? 1 : 0,
-                    child: const HtmlWidget(html_loop)),
+                    child: const HtmlWidget(htmlLoop)),
                 Opacity(
                     opacity: snapshot.connectionState == ConnectionState.done ? 0 : 1, child: const HtmlWidget(html)),
               ],

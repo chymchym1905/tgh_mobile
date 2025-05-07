@@ -101,7 +101,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                         children: [
                           Padding(
                               padding: EdgeInsets.symmetric(horizontal: 16.wr, vertical: 16.wr),
-                              child: Row(
+                              child: const Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [],
                               ))

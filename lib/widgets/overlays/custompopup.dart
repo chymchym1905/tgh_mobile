@@ -74,7 +74,7 @@ class CustomPopupMenu extends StatefulWidget {
   final bool enablePassEvent;
 
   @override
-  _CustomPopupMenuState createState() => _CustomPopupMenuState();
+  State<CustomPopupMenu> createState() => _CustomPopupMenuState();
 }
 
 class _CustomPopupMenuState extends State<CustomPopupMenu> {
@@ -131,8 +131,8 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       Material(
-                        child: widget.menuBuilder(),
                         color: Colors.transparent,
+                        child: widget.menuBuilder(),
                       ),
                     ],
                   ),
@@ -154,7 +154,7 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
             // but the passed event would trigger [showMenu] again.
             // So, we use time threshold to solve this bug.
             _canResponse = false;
-            Future.delayed(Duration(milliseconds: 300)).then((_) => _canResponse = true);
+            Future.delayed(const Duration(milliseconds: 300)).then((_) => _canResponse = true);
           },
           child: widget.barrierColor == Colors.transparent
               ? menu
@@ -279,8 +279,8 @@ class _MenuLayoutDelegate extends MultiChildLayoutDelegate {
   void performLayout(Size size) {
     Size contentSize = Size.zero;
     Size arrowSize = Size.zero;
-    Offset contentOffset = Offset(0, 0);
-    Offset arrowOffset = Offset(0, 0);
+    Offset contentOffset = const Offset(0, 0);
+    Offset arrowOffset = const Offset(0, 0);
 
     double anchorCenterX = anchorOffset.dx + anchorSize.width / 2;
     double anchorTopY = anchorOffset.dy;
@@ -395,13 +395,13 @@ class _MenuLayoutDelegate extends MultiChildLayoutDelegate {
     if (hasChild(_MenuLayoutId.arrow)) {
       positionChild(
         _MenuLayoutId.arrow,
-        isBottom ? Offset(arrowOffset.dx, arrowOffset.dy + 0.1) : Offset(-100, 0),
+        isBottom ? Offset(arrowOffset.dx, arrowOffset.dy + 0.1) : const Offset(-100, 0),
       );
     }
     if (hasChild(_MenuLayoutId.downArrow)) {
       positionChild(
         _MenuLayoutId.downArrow,
-        !isBottom ? Offset(arrowOffset.dx, arrowOffset.dy - 0.1) : Offset(-100, 0),
+        !isBottom ? Offset(arrowOffset.dx, arrowOffset.dy - 0.1) : const Offset(-100, 0),
       );
     }
   }
