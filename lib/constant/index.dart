@@ -4,3 +4,4 @@ export 'routes.dart';
 export 'fight_prop_icons.dart';
 export 'fight_prop.dart';
 export 'api_param.dart';
+export 'rolemap.dart';

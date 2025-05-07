@@ -46,7 +46,7 @@ class Speedrun with _$Speedrun implements SpeedrunProperties {
     @JsonKey(name: 'last_modified_by') String? lastModifiedBy,
     @JsonKey(name: 'updated_at') DateTime? updatedAt,
     required int time,
-    String? accountSnapshot,
+    @JsonKey(name: 'account_snapshot') String? accountSnapshot,
     List<String>? tags,
   }) = _Speedrun;
 
@@ -54,6 +54,6 @@ class Speedrun with _$Speedrun implements SpeedrunProperties {
 
   @override
   String toString() {
-    return 'Speedrun(id: $id, competitor: $competitor, videolink: $videolink)';
+    return 'Speedrun(id: $id, competitor: $competitor, videolink: $videolink, accountSnapshot: $accountSnapshot)';
   }
 }

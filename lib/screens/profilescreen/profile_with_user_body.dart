@@ -1,7 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 import 'package:tgh_mobile/imports.dart';
 
-import 'categorytab.dart';
+import '../../widgets/categorytab.dart';
 import 'tableheader_dps.dart';
 import 'tableheader_speedrun.dart';
 import 'tablerow_dps.dart';
@@ -167,10 +169,80 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
                             ),
                             child: speedruns.when(
                                 data: (data) => Column(
-                                    children: data.$2
-                                        .where((e) => e.speedrunCategory == _currentSpeedrunCategory)
-                                        .map((e) => TableRowAbyss(speedrun: e))
-                                        .toList()),
+                                        children: data.$2
+                                            .where((e) => e.speedrunCategory == _currentSpeedrunCategory)
+                                            .map((e) {
+                                      return CustomPopupMenu(
+                                          pressType: PressType.longPress,
+                                          position: PreferredPosition.bottom,
+                                          verticalMargin: 0,
+                                          horizontalMargin: 0,
+                                          arrowColor: Theme.of(context).colorScheme.surfaceContainerLowest,
+                                          onTap: () {
+                                            context.push(Routes.video(e.id));
+                                          },
+                                          menuBuilder: () => Container(
+                                              decoration: BoxDecoration(
+                                                  color: Theme.of(context).colorScheme.surfaceContainerLowest,
+                                                  border:
+                                                      Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+                                                  borderRadius: BorderRadius.circular(5.wr)),
+                                              child: Material(
+                                                  color: Colors.transparent,
+                                                  shape:
+                                                      RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.wr)),
+                                                  child: IntrinsicWidth(
+                                                      child: Column(
+                                                          mainAxisSize: MainAxisSize.min,
+                                                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                          children: [
+                                                        InkWell(
+                                                            onTap: () {},
+                                                            highlightColor:
+                                                                Theme.of(context).colorScheme.surfaceContainerHigh,
+                                                            splashColor:
+                                                                Theme.of(context).colorScheme.surfaceContainerHighest,
+                                                            borderRadius: BorderRadius.only(
+                                                                topLeft: Radius.circular(5.wr),
+                                                                topRight: Radius.circular(5.wr),
+                                                                bottomLeft: e.accountSnapshot != null &&
+                                                                        e.accountSnapshot!.isNotEmpty
+                                                                    ? const Radius.circular(0)
+                                                                    : Radius.circular(5.wr),
+                                                                bottomRight: e.accountSnapshot != null &&
+                                                                        e.accountSnapshot!.isNotEmpty
+                                                                    ? const Radius.circular(0)
+                                                                    : Radius.circular(5.wr)),
+                                                            child: Padding(
+                                                                padding: EdgeInsets.symmetric(
+                                                                    vertical: 10.wr, horizontal: 10.wr),
+                                                                child: Row(children: [
+                                                                  Icon(Icons.flag, size: 16.wr),
+                                                                  SizedBox(width: 5.wr),
+                                                                  Text('Report', style: TextStyle(fontSize: 12.wr))
+                                                                ]))),
+                                                        if (e.accountSnapshot != null && e.accountSnapshot!.isNotEmpty)
+                                                          InkWell(
+                                                              onTap: () {},
+                                                              highlightColor:
+                                                                  Theme.of(context).colorScheme.surfaceContainerHigh,
+                                                              splashColor:
+                                                                  Theme.of(context).colorScheme.surfaceContainerHighest,
+                                                              borderRadius: BorderRadius.only(
+                                                                  bottomLeft: Radius.circular(5.wr),
+                                                                  bottomRight: Radius.circular(5.wr)),
+                                                              child: Padding(
+                                                                  padding: EdgeInsets.symmetric(
+                                                                      vertical: 10.wr, horizontal: 10.wr),
+                                                                  child: Row(children: [
+                                                                    Icon(Icons.zoom_in, size: 16.wr),
+                                                                    SizedBox(width: 5.wr),
+                                                                    Text('View Builds',
+                                                                        style: TextStyle(fontSize: 12.wr))
+                                                                  ]))),
+                                                      ])))),
+                                          child: TableRowAbyss(speedrun: e));
+                                    }).toList()),
                                 error: (error, stackTrace) =>
                                     Center(child: AppErrorWidget(message: [error.toString(), stackTrace.toString()])),
                                 loading: () => Column(children: [
@@ -197,7 +269,7 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
                       Text('Rows per page:', style: TextStyle(fontSize: 12.wr)),
                       SizedBox(width: 5.wr),
                       SizedBox(
-                        width: 80.wr,
+                        width: 60.wr,
                         child: CustomDropdown(
                             decoration: CustomDropdownDecoration(
                               expandedShadow: [
@@ -217,7 +289,10 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
                               closedSuffixIcon: Icon(Icons.arrow_drop_down, size: 10.wr),
                             ),
                             // hideSelectedFieldWhenExpanded: true,
-                            closedHeaderPadding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 3.wr),
+                            closedHeaderPadding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 5.wr),
+                            expandedHeaderPadding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 5.wr),
+                            itemsListPadding: const EdgeInsets.all(0),
+                            listItemPadding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 5.wr),
                             items: const [10, 20, 50, 100],
                             onChanged: (p0) {
                               setState(() {
@@ -234,27 +309,33 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
                       final hasNextPage = (pageSpeedrun + 1) * limitSpeedrun < data.$1;
                       return Row(
                         children: [
-                          IconButton(
-                              padding: EdgeInsets.all(4.wr),
-                              constraints: BoxConstraints(minWidth: 16.wr, minHeight: 16.wr),
-                              iconSize: 12.wr,
-                              onPressed: pageSpeedrun > 0
-                                  ? () => setState(() {
-                                        pageSpeedrun--;
-                                      })
-                                  : null,
-                              icon: const Icon(Icons.chevron_left)),
+                          SizedBox(
+                              width: 20.wr,
+                              height: 20.wr,
+                              child: IconButton(
+                                  padding: const EdgeInsets.all(0),
+                                  iconSize: 16.wr,
+                                  onPressed: pageSpeedrun > 0
+                                      ? () => setState(() {
+                                            pageSpeedrun--;
+                                          })
+                                      : null,
+                                  icon: const Icon(Icons.chevron_left))),
+                          SizedBox(width: 2.wr),
                           Text('${pageSpeedrun + 1}', style: TextStyle(fontSize: 12.wr)),
-                          IconButton(
-                              padding: EdgeInsets.all(4.wr),
-                              constraints: BoxConstraints(minWidth: 16.wr, minHeight: 16.wr),
-                              iconSize: 12.wr,
-                              onPressed: hasNextPage
-                                  ? () => setState(() {
-                                        pageSpeedrun++;
-                                      })
-                                  : null,
-                              icon: const Icon(Icons.chevron_right)),
+                          SizedBox(width: 2.wr),
+                          SizedBox(
+                              width: 20.wr,
+                              height: 20.wr,
+                              child: IconButton(
+                                  padding: const EdgeInsets.all(0),
+                                  iconSize: 16.wr,
+                                  onPressed: hasNextPage
+                                      ? () => setState(() {
+                                            pageSpeedrun++;
+                                          })
+                                      : null,
+                                  icon: const Icon(Icons.chevron_right))),
                           Text(
                               '${(pageSpeedrun * limitSpeedrun) + 1}-${(pageSpeedrun + 1) * limitSpeedrun > data.$1 ? data.$1 : (pageSpeedrun + 1) * limitSpeedrun} of ${data.$1}',
                               style: TextStyle(fontSize: 12.wr))
@@ -350,7 +431,78 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
                                     children: data.$2
                                         .where((e) =>
                                             _currentDpsCategory == 'All' ? true : e.dpsCategory == _currentDpsCategory)
-                                        .map((e) => TableRowDps(dps: e))
+                                        .map((e) => CustomPopupMenu(
+                                            pressType: PressType.longPress,
+                                            position: PreferredPosition.bottom,
+                                            verticalMargin: 0,
+                                            horizontalMargin: 0,
+                                            arrowColor: Theme.of(context).colorScheme.surfaceContainerLowest,
+                                            onTap: () {
+                                              context.push(Routes.video(e.id));
+                                            },
+                                            menuBuilder: () => Container(
+                                                decoration: BoxDecoration(
+                                                    color: Theme.of(context).colorScheme.surfaceContainerLowest,
+                                                    border:
+                                                        Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+                                                    borderRadius: BorderRadius.circular(5.wr)),
+                                                child: Material(
+                                                    color: Colors.transparent,
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(5.wr)),
+                                                    child: IntrinsicWidth(
+                                                        child: Column(
+                                                            mainAxisSize: MainAxisSize.min,
+                                                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                            children: [
+                                                          InkWell(
+                                                              onTap: () {},
+                                                              highlightColor:
+                                                                  Theme.of(context).colorScheme.surfaceContainerHigh,
+                                                              splashColor:
+                                                                  Theme.of(context).colorScheme.surfaceContainerHighest,
+                                                              borderRadius: BorderRadius.only(
+                                                                  topLeft: Radius.circular(5.wr),
+                                                                  topRight: Radius.circular(5.wr),
+                                                                  bottomLeft: e.accountSnapshot != null &&
+                                                                          e.accountSnapshot!.isNotEmpty
+                                                                      ? const Radius.circular(0)
+                                                                      : Radius.circular(5.wr),
+                                                                  bottomRight: e.accountSnapshot != null &&
+                                                                          e.accountSnapshot!.isNotEmpty
+                                                                      ? const Radius.circular(0)
+                                                                      : Radius.circular(5.wr)),
+                                                              child: Padding(
+                                                                  padding: EdgeInsets.symmetric(
+                                                                      vertical: 10.wr, horizontal: 10.wr),
+                                                                  child: Row(children: [
+                                                                    Icon(Icons.flag, size: 16.wr),
+                                                                    SizedBox(width: 5.wr),
+                                                                    Text('Report', style: TextStyle(fontSize: 12.wr))
+                                                                  ]))),
+                                                          if (e.accountSnapshot != null &&
+                                                              e.accountSnapshot!.isNotEmpty)
+                                                            InkWell(
+                                                                onTap: () {},
+                                                                highlightColor:
+                                                                    Theme.of(context).colorScheme.surfaceContainerHigh,
+                                                                splashColor: Theme.of(context)
+                                                                    .colorScheme
+                                                                    .surfaceContainerHighest,
+                                                                borderRadius: BorderRadius.only(
+                                                                    bottomLeft: Radius.circular(5.wr),
+                                                                    bottomRight: Radius.circular(5.wr)),
+                                                                child: Padding(
+                                                                    padding: EdgeInsets.symmetric(
+                                                                        vertical: 10.wr, horizontal: 10.wr),
+                                                                    child: Row(children: [
+                                                                      Icon(Icons.zoom_in, size: 16.wr),
+                                                                      SizedBox(width: 5.wr),
+                                                                      Text('View Builds',
+                                                                          style: TextStyle(fontSize: 12.wr))
+                                                                    ]))),
+                                                        ])))),
+                                            child: TableRowDps(dps: e)))
                                         .toList()),
                                 error: (error, stackTrace) =>
                                     Center(child: AppErrorWidget(message: [error.toString(), stackTrace.toString()])),
@@ -378,7 +530,7 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
                       Text('Rows per page:', style: TextStyle(fontSize: 12.wr)),
                       SizedBox(width: 5.wr),
                       SizedBox(
-                        width: 80.wr,
+                        width: 60.wr,
                         child: CustomDropdown(
                             decoration: CustomDropdownDecoration(
                               expandedShadow: [
@@ -397,7 +549,10 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
                               expandedSuffixIcon: Icon(Icons.arrow_drop_up, size: 10.wr),
                               closedSuffixIcon: Icon(Icons.arrow_drop_down, size: 10.wr),
                             ),
-                            closedHeaderPadding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 3.wr),
+                            closedHeaderPadding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 5.wr),
+                            expandedHeaderPadding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 5.wr),
+                            itemsListPadding: const EdgeInsets.all(0),
+                            listItemPadding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 5.wr),
                             items: const [10, 20, 50, 100],
                             onChanged: (p0) {
                               setState(() {
@@ -414,27 +569,33 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
                       final hasNextPage = (pageDps + 1) * limitDps < data.$1;
                       return Row(
                         children: [
-                          IconButton(
-                              padding: EdgeInsets.all(4.wr),
-                              constraints: BoxConstraints(minWidth: 16.wr, minHeight: 16.wr),
-                              iconSize: 12.wr,
-                              onPressed: pageDps > 0
-                                  ? () => setState(() {
-                                        pageDps--;
-                                      })
-                                  : null,
-                              icon: const Icon(Icons.chevron_left)),
+                          SizedBox(
+                              width: 20.wr,
+                              height: 20.wr,
+                              child: IconButton(
+                                  padding: const EdgeInsets.all(0),
+                                  iconSize: 16.wr,
+                                  onPressed: pageDps > 0
+                                      ? () => setState(() {
+                                            pageDps--;
+                                          })
+                                      : null,
+                                  icon: const Icon(Icons.chevron_left))),
+                          SizedBox(width: 2.wr),
                           Text('${pageDps + 1}', style: TextStyle(fontSize: 12.wr)),
-                          IconButton(
-                              padding: EdgeInsets.all(4.wr),
-                              constraints: BoxConstraints(minWidth: 16.wr, minHeight: 16.wr),
-                              iconSize: 12.wr,
-                              onPressed: hasNextPage
-                                  ? () => setState(() {
-                                        pageDps++;
-                                      })
-                                  : null,
-                              icon: const Icon(Icons.chevron_right)),
+                          SizedBox(width: 2.wr),
+                          SizedBox(
+                              width: 20.wr,
+                              height: 20.wr,
+                              child: IconButton(
+                                  padding: const EdgeInsets.all(0),
+                                  iconSize: 16.wr,
+                                  onPressed: hasNextPage
+                                      ? () => setState(() {
+                                            pageDps++;
+                                          })
+                                      : null,
+                                  icon: const Icon(Icons.chevron_right))),
                           Text(
                               '${(pageDps * limitDps) + 1}-${(pageDps + 1) * limitDps > data.$1 ? data.$1 : (pageDps + 1) * limitDps} of ${data.$1}',
                               style: TextStyle(fontSize: 12.wr))
@@ -446,7 +607,7 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
                   ),
                 ],
               ),
-              50.verticalSpace,
+              200.verticalSpace,
             ],
           ),
         ),

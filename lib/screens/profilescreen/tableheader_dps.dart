@@ -1,5 +1,5 @@
 import 'package:tgh_mobile/imports.dart';
-import 'colsinfo.dart';
+import '../../utils/colsinfo.dart';
 
 class TableHeaderDps extends StatelessWidget {
   const TableHeaderDps({super.key});
@@ -54,15 +54,17 @@ class TableHeaderDps extends StatelessWidget {
                     maxLines: 1,
                     style: TextStyle(fontSize: 10.wr, fontWeight: FontWeight.bold)))),
         SizedBox(width: 10.wr),
-        Expanded(
-            flex: colDps[5],
-            child: Center(
-                child: Text('Options',
-                    textAlign: TextAlign.center,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                    style: TextStyle(fontSize: 10.wr, fontWeight: FontWeight.bold)))),
-        SizedBox(width: 10.wr)
+        if (MediaQuery.of(context).size.width > kMaxWidthMobile) ...[
+          Expanded(
+              flex: colDps[5],
+              child: Center(
+                  child: Text('Options',
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: TextStyle(fontSize: 10.wr, fontWeight: FontWeight.bold)))),
+          SizedBox(width: 10.wr)
+        ]
       ],
     );
   }

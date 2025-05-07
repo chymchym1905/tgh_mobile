@@ -44,7 +44,9 @@ GoRouter router(Ref ref) {
       observers: [GoRouterObserver()],
       routes: [
         StatefulShellRoute.indexedStack(
-          builder: (context, state, navigationShell) => HomeScreen(navigationShell: navigationShell),
+          builder: (context, state, navigationShell) {
+            return HomeScreen(navigationShell: navigationShell);
+          },
           restorationScopeId: 'shell',
           branches: [
             StatefulShellBranch(

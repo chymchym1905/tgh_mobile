@@ -11,6 +11,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
+  SideMenuController sideMenuController = SideMenuController();
   Widget _tabBuilder(int index, bool isActive, double width, double height) {
     switch (index) {
       case 0:
@@ -49,6 +50,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // ));
 
     return Scaffold(
+        drawer: MediaQuery.of(context).size.width > kMaxWidthTablet &&
+                MediaQuery.of(context).size.width < kMaxWidthTabletLandscape
+            ? Drawer(
+                width: 300,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(0))),
+                child: DrawerWidget(expanded: true))
+            : null,
         body: widget.navigationShell,
         floatingActionButton: MediaQuery.of(context).size.width > kMaxWidthTablet
             ? null

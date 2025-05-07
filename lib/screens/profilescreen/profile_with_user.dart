@@ -14,6 +14,7 @@ class ProfileWithUser extends StatefulWidget {
 class _ProfileWithUserState extends State<ProfileWithUser> {
   double _scrollProgress = 0.0;
   final double _scrollThreshold = 200.0;
+  bool _expanded = false;
 
   late final ScrollController _mainScrollController = ScrollController()
     ..addListener(() {
@@ -72,14 +73,26 @@ class _ProfileWithUserState extends State<ProfileWithUser> {
           ),
         ),
         CustomScrollView(
-          clipBehavior: Clip.none,
-          controller: _mainScrollController,
           slivers: [
             SliverAppBar(
               pinned: true,
               shadowColor: Colors.transparent,
               centerTitle: false,
               toolbarHeight: 50.wr,
+              leading: MediaQuery.of(context).size.width > kMaxWidthTablet
+                  ? IconButton(
+                      onPressed: () {
+                        if (MediaQuery.of(context).size.width > kMaxWidthTabletLandscape) {
+                          setState(() {
+                            _expanded = !_expanded;
+                          });
+                        } else if (MediaQuery.of(context).size.width > kMaxWidthTablet &&
+                            MediaQuery.of(context).size.width < kMaxWidthTabletLandscape) {
+                          Scaffold.of(context).openDrawer();
+                        }
+                      },
+                      icon: const Icon(Icons.dehaze, size: 30, weight: 700, grade: 200, opticalSize: 24))
+                  : null,
               title: Visibility(
                 visible: _scrollProgress == 1,
                 child: Row(
@@ -106,101 +119,166 @@ class _ProfileWithUserState extends State<ProfileWithUser> {
               ],
             ),
             SliverToBoxAdapter(
-                child: Center(
-                    child: ConstrainedBox(
-                        constraints: BoxConstraints(maxWidth: kMaxWidthTabletLandscape.toDouble()),
-                        child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 20.wr),
-                            child: Column(children: [
-                              120.verticalSpace,
-                              Container(
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context).colorScheme.surfaceContainer,
-                                    borderRadius: BorderRadius.circular(15.wr),
-                                  ),
-                                  padding: EdgeInsets.symmetric(horizontal: 20.wr, vertical: 16.wr),
-                                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                    Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                      Container(
-                                          decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              border: Border.all(
-                                                  width: 2.wr, color: Theme.of(context).colorScheme.primary)),
-                                          child: UniformCircleAvatar(url: pfpUrl(competitor.id), radius: 26.wr)),
-                                      SizedBox(width: 10.wr),
-                                      Expanded(
-                                          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                        Text(competitor.alias, style: TextStyle(fontSize: 16.wr)),
-                                        5.wr.verticalSpace,
-                                        Text(
-                                            profileInfo.accountSnapshot?.signature ??
-                                                'This user has not left a signature',
-                                            style: TextStyle(
-                                                fontSize: 12.wr,
-                                                color: Theme.of(context).extension<TextColors>()!.textSecondary)),
-                                        10.wr.verticalSpace,
-                                        Wrap(direction: Axis.horizontal, runSpacing: 4.wr, spacing: 10.wr, children: [
-                                          Container(
-                                            padding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 4.wr),
-                                            decoration: BoxDecoration(
-                                              color: Theme.of(context).colorScheme.surfaceBright,
-                                              borderRadius: BorderRadius.circular(10.wr),
-                                            ),
-                                            child: Text('WL ${profileInfo.accountSnapshot?.worldLevel}',
-                                                style: TextStyle(
-                                                    fontSize: 12.wr,
-                                                    color: Theme.of(context).extension<TextColors>()!.textSecondary)),
-                                          ),
-                                          Container(
-                                              padding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 4.wr),
+                child: SizedBox(
+                    height: MediaQuery.of(context).size.height - kToolbarHeight,
+                    child: Row(children: [
+                      if (MediaQuery.of(context).size.width > kMaxWidthTabletLandscape) ...[
+                        AnimatedContainer(
+                          duration: const Duration(milliseconds: 300),
+                          width: _expanded ? 200 : 56,
+                          child: AnimatedSwitcher(
+                            duration: _expanded ? const Duration(milliseconds: 200) : const Duration(milliseconds: 500),
+                            child: DrawerWidget(
+                              key: ValueKey<bool>(_expanded),
+                              expanded: _expanded,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 10.wr)
+                      ] else if (MediaQuery.of(context).size.width > kMaxWidthTablet &&
+                          MediaQuery.of(context).size.width < kMaxWidthTabletLandscape) ...[
+                        const SizedBox(width: 56, child: DrawerWidget(expanded: false)),
+                        SizedBox(width: 10.wr)
+                      ],
+                      Expanded(
+                          child: CustomScrollView(
+                        controller: _mainScrollController,
+                        slivers: [
+                          SliverToBoxAdapter(
+                              child: Center(
+                                  child: ConstrainedBox(
+                                      constraints: BoxConstraints(
+                                          maxWidth: kMaxWidthTabletLandscape.toDouble() - (_expanded ? 200 : 56)),
+                                      child: Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: 20.wr),
+                                          child: Column(children: [
+                                            120.verticalSpace,
+                                            Container(
+                                                decoration: BoxDecoration(
+                                                  color: Theme.of(context).colorScheme.surfaceContainer,
+                                                  borderRadius: BorderRadius.circular(15.wr),
+                                                ),
+                                                padding: EdgeInsets.symmetric(horizontal: 20.wr, vertical: 16.wr),
+                                                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                                  Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                                    Container(
+                                                        decoration: BoxDecoration(
+                                                            shape: BoxShape.circle,
+                                                            border: Border.all(
+                                                                width: 2.wr,
+                                                                color: Theme.of(context).colorScheme.primary)),
+                                                        child: UniformCircleAvatar(
+                                                            url: pfpUrl(competitor.id), radius: 26.wr)),
+                                                    SizedBox(width: 10.wr),
+                                                    Expanded(
+                                                        child: Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                          Text(competitor.alias, style: TextStyle(fontSize: 16.wr)),
+                                                          5.wr.verticalSpace,
+                                                          Text(
+                                                              profileInfo.accountSnapshot?.signature ??
+                                                                  'This user has not left a signature',
+                                                              style: TextStyle(
+                                                                  fontSize: 12.wr,
+                                                                  color: Theme.of(context)
+                                                                      .extension<TextColors>()!
+                                                                      .textSecondary)),
+                                                          10.wr.verticalSpace,
+                                                          Wrap(
+                                                              direction: Axis.horizontal,
+                                                              runSpacing: 4.wr,
+                                                              spacing: 10.wr,
+                                                              children: [
+                                                                Container(
+                                                                  padding: EdgeInsets.symmetric(
+                                                                      horizontal: 10.wr, vertical: 4.wr),
+                                                                  decoration: BoxDecoration(
+                                                                    color: Theme.of(context).colorScheme.surfaceBright,
+                                                                    borderRadius: BorderRadius.circular(10.wr),
+                                                                  ),
+                                                                  child: Row(mainAxisSize: MainAxisSize.min, children: [
+                                                                    Image.asset(
+                                                                        'assets/icons/Ui_SystemOpenIcon_Obscurae.webp',
+                                                                        width: 16.wr),
+                                                                    5.horizontalSpace,
+                                                                    Text(
+                                                                        'WL ${profileInfo.accountSnapshot?.worldLevel}',
+                                                                        style: TextStyle(
+                                                                            fontSize: 12.wr,
+                                                                            color: Theme.of(context)
+                                                                                .extension<TextColors>()!
+                                                                                .textSecondary))
+                                                                  ]),
+                                                                ),
+                                                                Container(
+                                                                    padding: EdgeInsets.symmetric(
+                                                                        horizontal: 10.wr, vertical: 4.wr),
+                                                                    decoration: BoxDecoration(
+                                                                      color:
+                                                                          Theme.of(context).colorScheme.surfaceBright,
+                                                                      borderRadius: BorderRadius.circular(10.wr),
+                                                                    ),
+                                                                    child:
+                                                                        Row(mainAxisSize: MainAxisSize.min, children: [
+                                                                      Image.asset(
+                                                                          'assets/icons/UI_AchievementIcon_O001.webp',
+                                                                          width: 16.wr),
+                                                                      5.horizontalSpace,
+                                                                      Text(
+                                                                          '${profileInfo.accountSnapshot?.achievementCount} achievements',
+                                                                          style: TextStyle(
+                                                                              fontSize: 12.wr,
+                                                                              color: Theme.of(context)
+                                                                                  .extension<TextColors>()!
+                                                                                  .textSecondary))
+                                                                    ])),
+                                                              ])
+                                                        ])),
+                                                    Column(children: [
+                                                      IconButton(onPressed: () {}, icon: Icon(Icons.edit, size: 16.wr))
+                                                    ])
+                                                  ]),
+                                                  20.verticalSpace,
+                                                  Wrap(direction: Axis.horizontal, spacing: 10.wr, children: [
+                                                    RoleChip(widget.user.role.toCapitalized(),
+                                                        const Color.fromARGB(255, 245, 161, 93)),
+                                                    if (competitor.speedrunner == true)
+                                                      const RoleChip('Speedrunner', Color.fromARGB(255, 99, 190, 158)),
+                                                    if (competitor.dpser == true)
+                                                      const RoleChip('DPSer', Color.fromARGB(255, 246, 157, 251))
+                                                  ]),
+                                                  10.verticalSpace,
+                                                  Align(
+                                                      alignment: Alignment.centerRight,
+                                                      child: RichText(
+                                                          text: TextSpan(children: [
+                                                        TextSpan(
+                                                            text: 'View Character showcase',
+                                                            style: TextStyle(
+                                                                fontSize: 12.wr,
+                                                                decoration: TextDecoration.underline,
+                                                                color: Theme.of(context)
+                                                                    .extension<TextColors>()!
+                                                                    .textSecondary),
+                                                            recognizer: TapGestureRecognizer()..onTap = () {}),
+                                                      ]))),
+                                                ])),
+                                            10.verticalSpace,
+                                            Container(
+                                              width: double.infinity,
                                               decoration: BoxDecoration(
-                                                color: Theme.of(context).colorScheme.surfaceBright,
-                                                borderRadius: BorderRadius.circular(10.wr),
+                                                color: Theme.of(context).colorScheme.surfaceContainer,
+                                                borderRadius: BorderRadius.circular(15.wr),
                                               ),
-                                              child: Text(
-                                                  '${profileInfo.accountSnapshot?.achievementCount} achievements',
-                                                  style: TextStyle(
-                                                      fontSize: 12.wr,
-                                                      color: Theme.of(context).extension<TextColors>()!.textSecondary)))
-                                        ])
-                                      ])),
-                                      Column(
-                                          children: [IconButton(onPressed: () {}, icon: Icon(Icons.edit, size: 16.wr))])
-                                    ]),
-                                    20.verticalSpace,
-                                    Wrap(direction: Axis.horizontal, spacing: 10.wr, children: [
-                                      RoleChip(
-                                          widget.user.role.toCapitalized(), const Color.fromARGB(255, 245, 161, 93)),
-                                      if (competitor.speedrunner == true)
-                                        const RoleChip('Speedrunner', Color.fromARGB(255, 99, 190, 158)),
-                                      if (competitor.dpser == true)
-                                        const RoleChip('DPSer', Color.fromARGB(255, 246, 157, 251))
-                                    ]),
-                                    10.verticalSpace,
-                                    Align(
-                                        alignment: Alignment.centerRight,
-                                        child: RichText(
-                                            text: TextSpan(children: [
-                                          TextSpan(
-                                              text: 'View Character showcase',
-                                              style: TextStyle(
-                                                  fontSize: 12.wr,
-                                                  decoration: TextDecoration.underline,
-                                                  color: Theme.of(context).extension<TextColors>()!.textSecondary),
-                                              recognizer: TapGestureRecognizer()..onTap = () {}),
-                                        ]))),
-                                  ])),
-                              10.verticalSpace,
-                              Container(
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.surfaceContainer,
-                                  borderRadius: BorderRadius.circular(15.wr),
-                                ),
-                                padding: EdgeInsets.symmetric(horizontal: 20.wr, vertical: 16.wr),
-                                child: ProfileBody(user: widget.user, userProfileInfo: widget.userProfileInfo),
-                              )
-                            ])))))
+                                              padding: EdgeInsets.symmetric(horizontal: 20.wr, vertical: 16.wr),
+                                              child: ProfileBody(
+                                                  user: widget.user, userProfileInfo: widget.userProfileInfo),
+                                            )
+                                          ])))))
+                        ],
+                      ))
+                    ])))
           ],
         ),
       ],

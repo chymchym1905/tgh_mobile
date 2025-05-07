@@ -60,13 +60,13 @@ class DPS with _$DPS, DPSProperties {
     @JsonKey(name: 'created_at') DateTime? createdAt,
     @JsonKey(name: 'last_modified_by') String? lastModifiedBy,
     @JsonKey(name: 'updated_at') DateTime? updatedAt,
-    String? accountSnapshot,
+    @JsonKey(name: 'account_snapshot') String? accountSnapshot,
   }) = _DPS;
 
   factory DPS.fromJson(Map<String, dynamic> json) => _$DPSFromJson(json);
 
   @override
   String toString() {
-    return 'DPS(id: $id, competitor: $competitor, videolink: $videolink)';
+    return 'DPS(id: $id, competitor: $competitor, videolink: $videolink, accountSnapshot: $accountSnapshot)';
   }
 }

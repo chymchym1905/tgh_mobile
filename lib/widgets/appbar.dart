@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:tgh_mobile/widgets/overlays/filteroverlay.dart';
 
 import '../../imports.dart';
@@ -22,10 +23,12 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
                         fontWeight: FontWeight.bold,
                         color: Theme.of(context).colorScheme.primary,
                         letterSpacing: -2,
-                      ))))),
+                      ),
+                      recognizer: TapGestureRecognizer()..onTap = () {})))),
       pinned: true,
       floating: true,
       centerTitle: false,
+      leading: IconButton(onPressed: () {}, icon: const Icon(Icons.menu)),
       elevation: 0,
       shadowColor: Colors.transparent,
       surfaceTintColor: Colors.transparent,

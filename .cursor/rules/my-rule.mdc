@@ -8,3 +8,4 @@ alwaysApply: false
 
 - DO NOT REMOVE CODE/FEATURE UNLESS ASKED TO
 - Focus on current file if the prompt is ambigious or the prompt does not refer to previous answer
+- DO NOT MODIFY ANY CODE if I'm just asking for advice

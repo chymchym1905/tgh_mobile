@@ -12,6 +12,7 @@ export 'package:go_router/go_router.dart';
 export 'package:tgh_mobile/utils/extracodec.dart';
 export 'package:youtube_player_iframe/youtube_player_iframe.dart';
 export 'package:animated_custom_dropdown/custom_dropdown.dart';
+export 'package:easy_sidemenu/easy_sidemenu.dart';
 //----------------------------------- FILES -----------------------------------
 export 'utils/extension.dart';
 export './screens/index.dart';

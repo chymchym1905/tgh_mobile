@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'imports.dart';
@@ -27,6 +28,7 @@ class Root extends ConsumerWidget {
     final router = ref.watch(routerProvider);
     ref.watch(dioNetworkServiceProvider);
     ref.watch(gameAssetProvider);
+    log(MediaQuery.of(context).size.toString(), name: 'ScreenSize');
     return ScreenUtilInit(
         minTextAdapt: true,
         splitScreenMode: true,

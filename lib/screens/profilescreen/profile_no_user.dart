@@ -11,6 +11,7 @@ class ProfileNoUser extends StatefulWidget {
 class _ProfileNoUserState extends State<ProfileNoUser> {
   double _scrollProgress = 0.0;
   final double _scrollThreshold = 100.0;
+  bool _expanded = false;
 
   late final ScrollController _mainScrollController = ScrollController()
     ..addListener(() {
@@ -62,6 +63,20 @@ class _ProfileNoUserState extends State<ProfileNoUser> {
           surfaceTintColor: Colors.transparent,
           shadowColor: Colors.transparent,
           backgroundColor: backgroundColor,
+          leading: MediaQuery.of(context).size.width > kMaxWidthTablet
+              ? IconButton(
+                  onPressed: () {
+                    if (MediaQuery.of(context).size.width > kMaxWidthTabletLandscape) {
+                      setState(() {
+                        _expanded = !_expanded;
+                      });
+                    } else if (MediaQuery.of(context).size.width > kMaxWidthTablet &&
+                        MediaQuery.of(context).size.width < kMaxWidthTabletLandscape) {
+                      Scaffold.of(context).openDrawer();
+                    }
+                  },
+                  icon: const Icon(Icons.dehaze, size: 30, weight: 700, grade: 200, opticalSize: 24))
+              : null,
           actions: [
             IconButton(
               onPressed: () {
@@ -71,66 +86,98 @@ class _ProfileNoUserState extends State<ProfileNoUser> {
             ),
           ],
         ),
-        SliverToBoxAdapter(child: 120.verticalSpace),
         SliverToBoxAdapter(
-            child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 512),
-            child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.wr),
-                child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surfaceContainer,
-                        borderRadius: BorderRadius.circular(15.wr),
+          child: SizedBox(
+              height: MediaQuery.of(context).size.height - kToolbarHeight,
+              child: Row(
+                children: [
+                  if (MediaQuery.of(context).size.width > kMaxWidthTabletLandscape) ...[
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      width: _expanded ? 200 : 56,
+                      child: AnimatedSwitcher(
+                        duration: _expanded ? const Duration(milliseconds: 200) : const Duration(milliseconds: 500),
+                        child: DrawerWidget(
+                          key: ValueKey<bool>(_expanded),
+                          expanded: _expanded,
+                        ),
                       ),
-                      padding: EdgeInsets.symmetric(horizontal: 20.wr, vertical: 16.wr),
-                      child: Row(
-                        children: [
-                          Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(width: 2.wr, color: Theme.of(context).colorScheme.primary),
-                              ),
-                              child: UniformCircleAvatar(
-                                url: '',
-                                radius: 26.wr,
-                              )),
-                          10.horizontalSpace,
-                          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                            Text(widget.name ?? 'Guest User', style: TextStyle(fontSize: 16.wr)),
-                            5.wr.verticalSpace,
-                            widget.name == null
-                                ? Text('Create account to get started',
-                                    style: TextStyle(
-                                        fontSize: 12.wr,
-                                        color: Theme.of(context).extension<TextColors>()!.textSecondary),
-                                    overflow: TextOverflow.ellipsis)
-                                : Text('Create a competitor profile to get started',
-                                    style: TextStyle(
-                                        fontSize: 12.wr,
-                                        color: Theme.of(context).extension<TextColors>()!.textSecondary),
-                                    overflow: TextOverflow.ellipsis),
-                          ])
-                        ],
-                      ),
-                    ))),
-          ),
-        )),
-        SliverToBoxAdapter(child: 40.verticalSpace),
-        SliverToBoxAdapter(
-            child: Center(
-                child: Column(children: [
-          InkWellTextButton(
-              onTap: () {
-                if (widget.name == null) {
-                  context.go(Routes.register);
-                } else {}
-              },
-              text: widget.name == null ? 'Create account' : 'Create competitor profile',
-              fontSize: 16.wr),
-        ])))
+                    ),
+                    SizedBox(width: 10.wr)
+                  ] else if (MediaQuery.of(context).size.width > kMaxWidthTablet &&
+                      MediaQuery.of(context).size.width < kMaxWidthTabletLandscape) ...[
+                    const SizedBox(width: 56, child: DrawerWidget(expanded: false)),
+                    SizedBox(width: 10.wr)
+                  ],
+                  Expanded(
+                      child: CustomScrollView(
+                    slivers: [
+                      SliverToBoxAdapter(child: 120.verticalSpace),
+                      SliverToBoxAdapter(
+                          child: Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 512),
+                          child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 20.wr),
+                              child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context).colorScheme.surfaceContainer,
+                                      borderRadius: BorderRadius.circular(15.wr),
+                                    ),
+                                    padding: EdgeInsets.symmetric(horizontal: 20.wr, vertical: 16.wr),
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              border:
+                                                  Border.all(width: 2.wr, color: Theme.of(context).colorScheme.primary),
+                                            ),
+                                            child: UniformCircleAvatar(
+                                              url: '',
+                                              radius: 26.wr,
+                                            )),
+                                        10.horizontalSpace,
+                                        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                          Text(widget.name ?? 'Guest User', style: TextStyle(fontSize: 16.wr)),
+                                          5.wr.verticalSpace,
+                                          widget.name == null
+                                              ? Text('Create account to get started',
+                                                  style: TextStyle(
+                                                      fontSize: 12.wr,
+                                                      color: Theme.of(context).extension<TextColors>()!.textSecondary),
+                                                  overflow: TextOverflow.ellipsis)
+                                              : Text('Create a competitor profile to get started',
+                                                  style: TextStyle(
+                                                      fontSize: 12.wr,
+                                                      color: Theme.of(context).extension<TextColors>()!.textSecondary),
+                                                  overflow: TextOverflow.ellipsis),
+                                        ])
+                                      ],
+                                    ),
+                                  ))),
+                        ),
+                      )),
+                      SliverToBoxAdapter(child: 40.verticalSpace),
+                      SliverToBoxAdapter(
+                          child: Center(
+                              child: Column(children: [
+                        InkWellTextButton(
+                            onTap: () {
+                              if (widget.name == null) {
+                                context.go(Routes.register);
+                              } else {}
+                            },
+                            text: widget.name == null ? 'Create account' : 'Create competitor profile',
+                            fontSize: 16.wr),
+                      ])))
+                    ],
+                  ))
+                ],
+              )),
+        ),
       ])
     ]);
   }

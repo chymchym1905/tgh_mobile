@@ -1,7 +1,7 @@
 import 'package:tgh_mobile/imports.dart';
 
 import '../../shared/data_model/game_asset/game_asset_state.dart';
-import 'colsinfo.dart';
+import '../../utils/colsinfo.dart';
 
 class TableRowDps extends StatelessWidget {
   const TableRowDps({super.key, required this.dps});
@@ -91,21 +91,24 @@ class TableRowDps extends StatelessWidget {
                           maxLines: 2,
                           style: TextStyle(fontSize: 10.wr, fontWeight: FontWeight.bold)))),
               SizedBox(width: 10.wr),
-              Expanded(
-                  flex: colDps[5],
-                  child: Center(
-                      child: Material(
-                          shape: const CircleBorder(),
-                          color: Colors.transparent,
-                          child: InkWell(
-                              onTap: () {},
-                              borderRadius: BorderRadius.circular(50),
-                              child: Ink(
-                                  child: Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: Icon(Icons.more_vert, size: 20.wr),
-                              )))))),
-              SizedBox(width: 10.wr)
+              if (MediaQuery.of(context).size.width > kMaxWidthMobile) ...[
+                Expanded(
+                    flex: colDps[5],
+                    child: Center(
+                        child: Material(
+                            shape: const CircleBorder(),
+                            color: Colors.transparent,
+                            child: InkWell(
+                                onTap: () {},
+                                onLongPress: () {},
+                                borderRadius: BorderRadius.circular(50),
+                                child: Ink(
+                                    child: Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: Icon(Icons.more_vert, size: 20.wr),
+                                )))))),
+                SizedBox(width: 10.wr)
+              ]
             ])),
         Divider(color: Theme.of(context).colorScheme.outline, thickness: 1, height: 0),
       ],
