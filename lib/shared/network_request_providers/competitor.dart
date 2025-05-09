@@ -34,3 +34,13 @@ Future<Competitor> getCompetitorByAlias(Ref ref, String alias) async {
     (success) => success,
   );
 }
+
+@riverpod
+Future<List<Competitor>> searchCompetitors(Ref ref, String alias) async {
+  final cancelToken = await ref.cancelToken();
+  final result = await ref.watch(competitorApiProvider).searchCompetitors(alias, cancelToken: cancelToken);
+  return result.fold(
+    (failure) => throw failure,
+    (success) => success,
+  );
+}

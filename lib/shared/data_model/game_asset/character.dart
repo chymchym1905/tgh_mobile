@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:tgh_mobile/imports.dart';
 
 part 'character.freezed.dart';
 part 'character.g.dart';
@@ -23,4 +24,21 @@ class Character with _$Character {
   }) = _Character;
 
   factory Character.fromJson(Map<String, dynamic> json) => _$CharacterFromJson(json);
+}
+
+class CharacterSearchResult with CustomDropdownListFilter {
+  final String name;
+  final String element;
+
+  CharacterSearchResult({required this.name, required this.element});
+
+  @override
+  String toString() {
+    return name;
+  }
+
+  @override
+  bool filter(String query) {
+    return name.toLowerCase().contains(query.toLowerCase());
+  }
 }

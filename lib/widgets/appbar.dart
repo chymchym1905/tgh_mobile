@@ -79,15 +79,10 @@ class _BottomState extends State<Bottom> {
                   },
                   child: Opacity(
                       opacity: 0.5, child: Container(color: Theme.of(context).colorScheme.surfaceContainerLowest))),
-              Positioned(
-                top: 100.h,
-                left: 30.w,
-                right: 30.w,
-                bottom: 100.h,
-                child: Container(
-                    color: Theme.of(context).colorScheme.surfaceContainerLowest,
-                    child: FilterOverlay(onFilterChanged: _filterChanged)),
-              )
+              Center(
+                  child: Container(
+                color: Theme.of(context).colorScheme.surfaceContainerLowest,
+              ))
             ]));
     Overlay.of(context).insert(_filterOverlay!);
   }

@@ -117,11 +117,11 @@ class _HomeBodyState extends ConsumerState<HomeBody> {
                               fetchNextPage: fetchNextPage,
                               showNewPageProgressIndicatorAsGridChild: false,
                               gridDelegateBuilder: (_) {
+                                final width = MediaQuery.of(context).size.width;
                                 return SliverSimpleGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 1 +
-                                        ((MediaQuery.of(context).size.width - 200 - kMaxWidthMobile / 2).abs() /
-                                                kMaxWidthMobile)
-                                            .round());
+                                    crossAxisCount: width > kMaxWidthTabletLandscape
+                                        ? 1 + ((width - 200 - kMaxWidthMobile / 2).abs() / kMaxWidthMobile).round()
+                                        : 1 + ((width - kMaxWidthMobile / 2).abs() / kMaxWidthMobile).round());
                               },
                               builderDelegate: PagedChildBuilderDelegate(
                                   firstPageErrorIndicatorBuilder: (context) => Center(

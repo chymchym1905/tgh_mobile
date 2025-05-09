@@ -8,8 +8,12 @@ class ThemeSettingOverlay extends ConsumerWidget {
     final theme = ref.watch(themeNotifierProvider);
     return OverlayBase(
         width: 300.w,
-        submit: () {},
         title: 'Appearance',
+        footer: InkWellTextButton(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            text: 'Close'),
         child: Column(
           children: [
             ListTile(

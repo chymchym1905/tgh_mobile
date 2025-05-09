@@ -1,4 +1,3 @@
-
 import 'package:flutter/foundation.dart';
 import 'package:tgh_mobile/imports.dart';
 
@@ -30,24 +29,6 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
   int _dpsCategoryIndex = 0;
   String _currentDpsCategory = 'All';
 
-  final List<String> _speedrunCategoryOrder = [
-    'Abyss',
-    'Domain',
-    'Event',
-    'Weekly Boss',
-    'World Boss',
-  ];
-
-  final List<String> _dpsCategoryOrder = [
-    'All',
-    'Overworld',
-    'Weekly Boss',
-    'Event',
-    'World Boss',
-    'Reputation Bounty',
-    'Abyss',
-    'Domain',
-  ];
   Widget _shimmerRow() {
     return Row(
       children: [
@@ -96,7 +77,7 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
               speedruns.when(
                 data: (data) {
                   final uniqueCategories = data.$2.map((e) => e.speedrunCategory).toSet().toList()
-                    ..sort((a, b) => _speedrunCategoryOrder.indexOf(a).compareTo(_speedrunCategoryOrder.indexOf(b)));
+                    ..sort((a, b) => SPEEDRUN_CATEGORY_ORDER.indexOf(a).compareTo(SPEEDRUN_CATEGORY_ORDER.indexOf(b)));
                   final child = SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       controller: speedrunCategoryScrollController,
@@ -272,7 +253,7 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
                             decoration: CustomDropdownDecoration(
                               expandedShadow: [
                                 BoxShadow(
-                                    color: Theme.of(context).colorScheme.surfaceContainerLowest,
+                                    color: Theme.of(context).colorScheme.shadow,
                                     offset: const Offset(0, 3),
                                     blurRadius: 6,
                                     spreadRadius: 0)
@@ -362,7 +343,7 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
               dps.when(
                 data: (data) {
                   final uniqueCategories = ['All', ...data.$2.map((e) => e.dpsCategory).toSet()]
-                    ..sort((a, b) => _dpsCategoryOrder.indexOf(a).compareTo(_dpsCategoryOrder.indexOf(b)));
+                    ..sort((a, b) => DPS_CATEGORY_ORDER.indexOf(a).compareTo(DPS_CATEGORY_ORDER.indexOf(b)));
                   final child = SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       controller: dpsCategoryScrollController,
@@ -533,7 +514,7 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
                             decoration: CustomDropdownDecoration(
                               expandedShadow: [
                                 BoxShadow(
-                                    color: Theme.of(context).colorScheme.surfaceContainerLowest,
+                                    color: Theme.of(context).colorScheme.shadow,
                                     offset: const Offset(0, 3),
                                     blurRadius: 6,
                                     spreadRadius: 0)

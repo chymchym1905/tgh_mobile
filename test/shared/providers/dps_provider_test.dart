@@ -55,8 +55,8 @@ void main() {
       subscription.close();
 
       log(states.toString());
-      expect(dpsEntries, isA<List<DPS>>());
-      expect(dpsEntries, isNotEmpty);
+      expect(dpsEntries, isA<(int count, List<DPS> dps)>());
+      expect(dpsEntries.$2, isNotEmpty);
 
       for (final dps in dpsEntries.$2) {
         expect(dps.id, isNotEmpty);
@@ -86,7 +86,7 @@ void main() {
       subscription.close();
 
       log(states.toString());
-      expect(dpsEntries, isA<List<DPS>>());
+      expect(dpsEntries, isA<(int count, List<DPS> dps)>());
 
       for (final dps in dpsEntries.$2) {
         expect(dps.approved, isTrue);
@@ -127,8 +127,8 @@ void main() {
       subscription.close();
 
       log(states.toString());
-      expect(dpsEntries, isA<List<DPS>>());
-      expect(dpsEntries, isNotEmpty);
+      expect(dpsEntries, isA<(int count, List<DPS> dps)>());
+      expect(dpsEntries.$2, isNotEmpty);
 
       for (final dps in dpsEntries.$2) {
         expect(dps.id, isNotEmpty);

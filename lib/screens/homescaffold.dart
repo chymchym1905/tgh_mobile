@@ -49,6 +49,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // ));
 
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         drawer: MediaQuery.of(context).size.width > kMaxWidthTablet &&
                 MediaQuery.of(context).size.width < kMaxWidthTabletLandscape
             ? const Drawer(

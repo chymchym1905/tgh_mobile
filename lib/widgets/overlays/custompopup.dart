@@ -99,7 +99,7 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
         Widget menu = Center(
           child: Container(
             constraints: BoxConstraints(
-              maxWidth: _parentBox!.size.width - 2 * widget.horizontalMargin,
+              maxWidth: _parentBox!.size.width - widget.horizontalMargin * 2,
               minWidth: 0,
             ),
             child: CustomMultiChildLayout(
