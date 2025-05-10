@@ -161,12 +161,12 @@ const ATTACK_TYPES = [
 ];
 
 const ATTACK_TYPES_MAP = {
-  'normal_attack': 'Normal Attack',
-  'charged_attack': 'Charged Attack',
-  'plunge_attack': 'Plunge Attack',
-  'elemental_skill': 'Elemental Skill',
-  'elemental_burst': 'Elemental Burst',
-  'a1_talent': 'A1 Talent',
-  'a4_talent': 'A4 Talent',
-  'Other': 'Other'
+  'normal_attack': 'normal_attack_talent',
+  'charged_attack': 'normal_attack_talent',
+  'plunge_attack': 'normal_attack_talent',
+  'elemental_skill': 'elemental_skill_talent',
+  'elemental_burst': 'elemental_burst_talent',
+  'a1_talent': 'a1_talent',
+  'a4_talent': 'a4_talent',
+  'other': 'other'
 };

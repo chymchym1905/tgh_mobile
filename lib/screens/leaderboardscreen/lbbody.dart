@@ -26,6 +26,10 @@ class _LeaderboardBodyState extends ConsumerState<LeaderboardBody> {
 
   @override
   Widget build(BuildContext context) {
+    final speedruns = ref.watch(fetchSpeedrunProvider(
+        sortBy: 'time', sortDir: 'asc', page: pageSpeedrun, limit: limitSpeedrun, approved: true, queryParam: _filter));
+    final dps = ref.watch(fetchDpsProvider(
+        sortBy: 'time', sortDir: 'asc', page: pageDps, limit: limitDps, approved: true, queryParam: _filter));
     return Container(
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surfaceContainer,
@@ -61,7 +65,7 @@ class _LeaderboardBodyState extends ConsumerState<LeaderboardBody> {
                                   }))))),
           const SizedBox(height: 8),
           Divider(color: Theme.of(context).colorScheme.outline, height: 32),
-          if (MediaQuery.of(context).size.width <= 520)
+          if (MediaQuery.of(context).size.width <= 565)
             SizedBox(
                 width: 30.wr,
                 height: 30.wr,
@@ -74,7 +78,16 @@ class _LeaderboardBodyState extends ConsumerState<LeaderboardBody> {
             Filter(
                 type: widget.currentLeaderboardCategory,
                 category:
-                    widget.currentLeaderboardCategory == 'Speedrun' ? _currentSpeedrunCategory : _currentDpsCategory)
+                    widget.currentLeaderboardCategory == 'Speedrun' ? _currentSpeedrunCategory : _currentDpsCategory),
+          Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surfaceContainerLowest,
+                    borderRadius: BorderRadius.circular(5.wr),
+                  ),
+                  width: double.infinity,
+                  child: Column(children: [])))
         ]));
   }
 

@@ -11,9 +11,14 @@ SpeedrunApiBase speedrunApi(Ref ref) {
 }
 
 @riverpod
-Future<(int count, List<Speedrun> speedruns)> fetchCompetitorSpeedruns(
-    Ref ref, String competitorId, String sortBy, String sortDir, int page, int limit,
-    {bool? approved, Map<String, dynamic>? queryParam}) async {
+Future<(int count, List<Speedrun> speedruns)> fetchCompetitorSpeedruns(Ref ref,
+    {required String competitorId,
+    required String sortBy,
+    required String sortDir,
+    required int page,
+    required int limit,
+    bool? approved,
+    Map<String, dynamic>? queryParam}) async {
   final cancelToken = await ref.cancelToken();
   final result = await ref.watch(speedrunApiProvider).fetchCompetitorSpeedruns(
         competitorId,
@@ -32,8 +37,13 @@ Future<(int count, List<Speedrun> speedruns)> fetchCompetitorSpeedruns(
 }
 
 @riverpod
-Future<(int count, List<Speedrun> speedruns)> fetchSpeedrun(Ref ref, String sortBy, String sortDir, int page, int limit,
-    {bool? approved, Map<String, dynamic>? queryParam}) async {
+Future<(int count, List<Speedrun> speedruns)> fetchSpeedrun(Ref ref,
+    {required String sortBy,
+    required String sortDir,
+    required int page,
+    required int limit,
+    bool? approved,
+    Map<String, dynamic>? queryParam}) async {
   final speedrunApi = ref.watch(speedrunApiProvider);
   final cancelToken = await ref.cancelToken();
   final result = await speedrunApi.fetchSpeedrun(
@@ -52,9 +62,13 @@ Future<(int count, List<Speedrun> speedruns)> fetchSpeedrun(Ref ref, String sort
 }
 
 @riverpod
-Future<(int count, List<Speedrun> speedruns)> fetchSpeedrunAgent(
-    Ref ref, String sortBy, String sortDir, int page, int limit,
-    {bool? approved, Map<String, dynamic>? queryParam}) async {
+Future<(int count, List<Speedrun> speedruns)> fetchSpeedrunAgent(Ref ref,
+    {required String sortBy,
+    required String sortDir,
+    required int page,
+    required int limit,
+    bool? approved,
+    Map<String, dynamic>? queryParam}) async {
   final speedrunApi = ref.watch(speedrunApiProvider);
   final cancelToken = await ref.cancelToken();
   final result = await speedrunApi.fetchSpeedrunAgent(

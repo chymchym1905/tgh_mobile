@@ -9,3 +9,4 @@ export 'errorwidget.dart';
 export 'circleavatar.dart';
 export 'categorytab.dart';
 export 'drawer.dart';
+export 'table/index.dart';

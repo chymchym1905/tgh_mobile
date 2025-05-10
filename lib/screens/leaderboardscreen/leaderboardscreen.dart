@@ -39,10 +39,10 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                 position: PreferredPosition.bottom,
                 verticalMargin: 0,
                 horizontalMargin: 80.wr,
-                arrowColor: Theme.of(context).colorScheme.surfaceContainerLowest,
+                arrowColor: Theme.of(context).colorScheme.surfaceContainerHigh,
                 menuBuilder: () => Container(
                     decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surfaceContainerLowest,
+                        color: Theme.of(context).colorScheme.surfaceContainerHigh,
                         borderRadius: BorderRadius.circular(5.wr)),
                     child: Material(
                         color: Colors.transparent,
@@ -137,13 +137,19 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                   SizedBox(width: 10.wr)
                 ],
                 Expanded(
-                    child: Center(
-                        child: ConstrainedBox(
-                            constraints:
-                                BoxConstraints(maxWidth: kMaxWidthTabletLandscape.toDouble() - (_expanded ? 200 : 56)),
-                            child: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 16.wr),
-                                child: LeaderboardBody(currentLeaderboardCategory: selectedLeaderboardCategory)))))
+                    child: CustomScrollView(
+                  slivers: [
+                    SliverToBoxAdapter(
+                      child: Center(
+                          child: ConstrainedBox(
+                              constraints: BoxConstraints(maxWidth: 1680 - (_expanded ? 200 : 56)),
+                              child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: MediaQuery.of(context).size.width > kMaxWidthMobile ? 32.wr : 16.wr),
+                                  child: LeaderboardBody(currentLeaderboardCategory: selectedLeaderboardCategory)))),
+                    ),
+                  ],
+                ))
               ])),
         )
       ],

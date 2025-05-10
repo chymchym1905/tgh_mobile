@@ -1,12 +1,14 @@
 import 'package:tgh_mobile/imports.dart';
 
-import '../../shared/data_model/game_asset/game_asset_state.dart';
-import '../../utils/colsinfo.dart';
+import '../../../shared/data_model/game_asset/game_asset_state.dart';
+import '../../../utils/colsinfo.dart';
 
 class TableRowAbyss extends StatelessWidget {
-  const TableRowAbyss({super.key, required this.speedrun});
+  const TableRowAbyss({super.key, required this.speedrun, this.isLeaderboard = false, this.rank, this.characterUsage});
   final Speedrun speedrun;
-
+  final List<CharacterUsage>? characterUsage;
+  final bool isLeaderboard;
+  final String? rank;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -15,7 +17,7 @@ class TableRowAbyss extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: 10.wr),
             child: Row(children: [
               SizedBox(width: 10.wr),
-              if (MediaQuery.of(context).size.width > thresholdWidth + 100) ...[
+              if (MediaQuery.of(context).size.width > tableThresholdWidth + 100) ...[
                 Expanded(
                     flex: colAbyssSpeedrun[0],
                     child: Center(
@@ -26,15 +28,39 @@ class TableRowAbyss extends StatelessWidget {
                                 : const Icon(Icons.cancel_rounded, fill: 1, color: Colors.red)))),
                 SizedBox(width: 10.wr),
               ],
-              Expanded(
-                  flex: colAbyssSpeedrun[0],
-                  child: Center(
-                      child: Text(speedrun.abyssVersion ?? '',
-                          textAlign: TextAlign.center,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
-                          style: TextStyle(fontSize: 10.wr, fontWeight: FontWeight.bold)))),
-              SizedBox(width: 10.wr),
+              if (isLeaderboard) ...[
+                Expanded(
+                    flex: colAbyssSpeedrun[0],
+                    child: Center(
+                        child: Text(rank ?? '',
+                            textAlign: TextAlign.center,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            style: TextStyle(fontSize: 10.wr, fontWeight: FontWeight.bold)))),
+                SizedBox(width: 10.wr),
+              ],
+              if (!isLeaderboard) ...[
+                Expanded(
+                    flex: colAbyssSpeedrun[0],
+                    child: Center(
+                        child: Text(speedrun.abyssVersion ?? '',
+                            textAlign: TextAlign.center,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                            style: TextStyle(fontSize: 10.wr, fontWeight: FontWeight.bold)))),
+                SizedBox(width: 10.wr)
+              ],
+              if (MediaQuery.of(context).size.width > tableThresholdWidth + 100) ...[
+                Expanded(
+                    flex: colAbyssSpeedrun[3],
+                    child: Center(
+                        child: Text(parseTime(speedrun.time),
+                            textAlign: TextAlign.center,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            style: TextStyle(fontSize: 10.wr, fontWeight: FontWeight.bold)))),
+                SizedBox(width: 10.wr),
+              ],
               Expanded(
                   flex: colAbyssSpeedrun[1],
                   child: Center(
@@ -44,7 +70,7 @@ class TableRowAbyss extends StatelessWidget {
                           maxLines: 2,
                           style: TextStyle(fontSize: 10.wr, fontWeight: FontWeight.bold)))),
               SizedBox(width: 10.wr),
-              if (MediaQuery.of(context).size.width < thresholdWidth) ...[
+              if (MediaQuery.of(context).size.width < tableThresholdWidth) ...[
                 Consumer(builder: (context, ref, child) {
                   final assets = ref.read(gameAssetProvider);
                   return Expanded(
@@ -151,16 +177,33 @@ class TableRowAbyss extends StatelessWidget {
                       ));
                 })
               ],
-              if (MediaQuery.of(context).size.width > thresholdWidth + 100) ...[
-                Expanded(
-                    flex: colAbyssSpeedrun[3],
-                    child: Center(
-                        child: Text(parseTime(speedrun.time),
-                            textAlign: TextAlign.center,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                            style: TextStyle(fontSize: 10.wr, fontWeight: FontWeight.bold)))),
-                SizedBox(width: 10.wr),
+              if (isLeaderboard && characterUsage != null) ...[
+                Consumer(builder: (context, ref, child) {
+                  final assets = ref.read(gameAssetProvider);
+                  return Expanded(
+                      flex: colAbyssSpeedrun[2],
+                      child: Center(
+                        child: characterUsage!.isNotEmpty
+                            ? Wrap(direction: Axis.horizontal, spacing: 4.wr, children: [
+                                ...characterUsage!.take(3).map((e) => assets.maybeWhen(
+                                    data: (data) {
+                                      switch (data) {
+                                        case GameAssetStateLoaded(:final characters):
+                                          return UniformCircleAvatar(
+                                              url: characters!
+                                                  .firstWhere((element) => element.name == e.character)
+                                                  .avatar!,
+                                              radius: 13.wr);
+                                        default:
+                                          return UniformCircleAvatar(url: '', radius: 13.wr);
+                                      }
+                                    },
+                                    orElse: () => UniformCircleAvatar(url: '', radius: 13.wr))),
+                                if (characterUsage!.length > 3) Icon(Icons.more_vert, size: 13.wr)
+                              ])
+                            : const SizedBox.shrink(),
+                      ));
+                })
               ],
               if (MediaQuery.of(context).size.width > kMaxWidthMobile) ...[
                 Expanded(

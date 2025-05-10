@@ -18,8 +18,9 @@ class _FilterState extends ConsumerState<Filter> {
   final SingleSelectController<String?> floorController = SingleSelectController<String?>(null);
   final MultiSelectController<String?> charactersController = MultiSelectController<String?>([]);
   final SingleSelectController<String?> enemyController = SingleSelectController<String?>(null);
-  final SingleSelectController<String?> domainController = SingleSelectController<String?>(null);
-  final SingleSelectController<String?> eventController = SingleSelectController<String?>(null);
+  final SingleSelectController<String> domainController = SingleSelectController<String>(DOMAIN.first);
+  late final SingleSelectController<String> eventController =
+      SingleSelectController<String>(widget.type == 'Speedrun' ? SPEEDRUN_EVENTS.first : DPS_EVENTS.first);
   final SingleSelectController<String?> attackTypeController = SingleSelectController<String?>(null);
   double _dragAccumulator = 0.0;
 
@@ -264,7 +265,7 @@ class _FilterState extends ConsumerState<Filter> {
                       _dragAccumulator = 0.0;
                     }
                   },
-                  child: CustomDropdown<String?>(
+                  child: CustomDropdown<String>(
                       decoration: CustomDropdownDecoration(
                         expandedShadow: [
                           BoxShadow(
@@ -282,17 +283,7 @@ class _FilterState extends ConsumerState<Filter> {
                         hintStyle:
                             TextStyle(fontSize: 12.wr, color: Theme.of(context).extension<TextColors>()?.textSecondary),
                         expandedSuffixIcon: Icon(Icons.arrow_drop_up, size: 10.wr),
-                        closedSuffixIcon: floorController.hasValue
-                            ? SizedBox(
-                                width: 12.wr,
-                                height: 12.wr,
-                                child: IconButton(
-                                    onPressed: () {
-                                      domainController.clear();
-                                    },
-                                    padding: const EdgeInsets.all(0),
-                                    icon: Icon(Icons.close, size: 10.wr)))
-                            : Icon(Icons.arrow_drop_down, size: 10.wr),
+                        closedSuffixIcon: Icon(Icons.arrow_drop_down, size: 10.wr),
                       ),
                       closedHeaderPadding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 10),
                       expandedHeaderPadding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 10),
@@ -302,9 +293,7 @@ class _FilterState extends ConsumerState<Filter> {
                       items: DOMAIN,
                       controller: domainController,
                       onChanged: (p0) {
-                        setState(() {
-                          domain = p0;
-                        });
+                        domain = p0;
                       }))
             ])),
       if (widget.category == 'Event')
@@ -339,7 +328,7 @@ class _FilterState extends ConsumerState<Filter> {
                       _dragAccumulator = 0.0;
                     }
                   },
-                  child: CustomDropdown<String?>(
+                  child: CustomDropdown<String>(
                       decoration: CustomDropdownDecoration(
                         expandedShadow: [
                           BoxShadow(
@@ -377,9 +366,7 @@ class _FilterState extends ConsumerState<Filter> {
                       items: widget.type == 'Speedrun' ? SPEEDRUN_EVENTS : DPS_EVENTS,
                       controller: eventController,
                       onChanged: (p0) {
-                        setState(() {
-                          event = p0;
-                        });
+                        event = p0;
                       }))
             ])),
       if ((widget.type == 'DPS' || widget.category == 'Weekly Boss' || widget.category == 'World Boss') &&

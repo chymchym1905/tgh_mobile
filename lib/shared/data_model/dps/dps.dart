@@ -45,6 +45,7 @@ class DPS with _$DPS, DPSProperties {
     @JsonKey(name: 'character_ceiling') required CharacterCeiling characterCeiling,
     @JsonKey(name: 'damage_dealt') required int damageDealt,
     @JsonKey(name: 'attack_type') required String attackType,
+    @JsonKey(name: 'event') String? event,
     @JsonKey(name: 'dps_category') required String dpsCategory,
     required String enemy,
     @JsonKey(name: 'enemy_lv') required int enemyLevel,

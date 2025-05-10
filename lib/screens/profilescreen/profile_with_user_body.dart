@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:tgh_mobile/imports.dart';
 
-import 'tableheader_dps.dart';
-import 'tableheader_speedrun.dart';
-import 'tablerow_dps.dart';
-import 'tablerow_speedrun.dart';
+import 'table/tableheader_dps.dart';
+import 'table/tableheader_speedrun.dart';
+import 'table/tablerow_dps.dart';
+import 'table/tablerow_speedrun.dart';
 
 class ProfileBody extends ConsumerStatefulWidget {
   const ProfileBody({super.key, required this.user, required this.userProfileInfo});
@@ -27,7 +27,7 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
   int limitDps = 10;
   int pageDps = 0;
   int _dpsCategoryIndex = 0;
-  String _currentDpsCategory = 'All';
+  String _currentDpsCategory = 'Overworld';
 
   Widget _shimmerRow() {
     return Row(
@@ -50,11 +50,11 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
   @override
   Widget build(BuildContext context) {
     final speedruns = ref.watch(fetchCompetitorSpeedrunsProvider(
-      widget.user.competitor!.id,
-      SortBy.createdAt.value,
-      SortDir.desc.value,
-      pageSpeedrun,
-      limitSpeedrun,
+      competitorId: widget.user.competitor!.id,
+      sortBy: SortBy.createdAt.value,
+      sortDir: SortDir.desc.value,
+      page: pageSpeedrun,
+      limit: limitSpeedrun,
     ));
     final dps = ref.watch(fetchCompetitorDpsProvider(
         competitorId: widget.user.competitor!.id,
@@ -107,6 +107,7 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
                 ),
               ),
               10.verticalSpace,
+              // Table header and body
               Container(
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.surfaceDim,
@@ -114,6 +115,7 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
                     border: Border.all(color: Theme.of(context).colorScheme.outline),
                   ),
                   child: Column(children: [
+                    // Table header
                     ClipRRect(
                       borderRadius: BorderRadius.vertical(top: Radius.circular(5.wr)),
                       child: Container(
@@ -140,6 +142,7 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
                           )),
                     ),
                     Divider(color: Theme.of(context).colorScheme.outline, thickness: 1, height: 0),
+                    // Table body
                     ClipRRect(
                         borderRadius: BorderRadius.vertical(bottom: Radius.circular(5.wr)),
                         child: Container(
@@ -151,6 +154,16 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
                                         children: data.$2
                                             .where((e) => e.speedrunCategory == _currentSpeedrunCategory)
                                             .map((e) {
+                                      Widget child;
+                                      if (_currentSpeedrunCategory == 'Abyss') {
+                                        child = TableRowSpeedrunAbyss(speedrun: e);
+                                      } else if (_currentSpeedrunCategory == 'Domain') {
+                                        child = TableRowSpeedrunDomain(speedrun: e);
+                                      } else if (_currentSpeedrunCategory == 'Event') {
+                                        child = TableRowSpeedrunEvent(speedrun: e);
+                                      } else {
+                                        child = TableRowSpeedrunBoss(speedrun: e);
+                                      }
                                       return CustomPopupMenu(
                                           pressType: PressType.longPress,
                                           position: PreferredPosition.bottom,
@@ -220,7 +233,7 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
                                                                         style: TextStyle(fontSize: 12.wr))
                                                                   ]))),
                                                       ])))),
-                                          child: TableRowAbyss(speedrun: e));
+                                          child: child);
                                     }).toList()),
                                 error: (error, stackTrace) =>
                                     Center(child: AppErrorWidget(message: [error.toString(), stackTrace.toString()])),
@@ -342,7 +355,7 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
             children: [
               dps.when(
                 data: (data) {
-                  final uniqueCategories = ['All', ...data.$2.map((e) => e.dpsCategory).toSet()]
+                  final uniqueCategories = data.$2.map((e) => e.dpsCategory).toSet().toList()
                     ..sort((a, b) => DPS_CATEGORY_ORDER.indexOf(a).compareTo(DPS_CATEGORY_ORDER.indexOf(b)));
                   final child = SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
@@ -392,7 +405,11 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
                           padding: const EdgeInsets.symmetric(vertical: 8),
                           child: dps.when(
                             data: (data) {
-                              return const TableHeaderDps();
+                              if (_currentDpsCategory == 'Event') {
+                                return const TableHeaderEvent();
+                              } else {
+                                return const TableHeaderDps();
+                              }
                             },
                             error: (error, stack) => Text(error.toString(), style: TextStyle(fontSize: 12.wr)),
                             loading: () => _shimmerRow(),
@@ -408,8 +425,7 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
                             child: dps.when(
                                 data: (data) => Column(
                                     children: data.$2
-                                        .where((e) =>
-                                            _currentDpsCategory == 'All' ? true : e.dpsCategory == _currentDpsCategory)
+                                        .where((e) => e.dpsCategory == _currentDpsCategory)
                                         .map((e) => CustomPopupMenu(
                                             pressType: PressType.longPress,
                                             position: PreferredPosition.bottom,
@@ -481,7 +497,9 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
                                                                           style: TextStyle(fontSize: 12.wr))
                                                                     ]))),
                                                         ])))),
-                                            child: TableRowDps(dps: e)))
+                                            child: _currentDpsCategory == 'Event'
+                                                ? TableRowDpsEvent(dps: e)
+                                                : TableRowDps(dps: e)))
                                         .toList()),
                                 error: (error, stackTrace) =>
                                     Center(child: AppErrorWidget(message: [error.toString(), stackTrace.toString()])),

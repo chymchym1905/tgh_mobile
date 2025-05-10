@@ -42,11 +42,11 @@ void main() {
     test('fetchCompetitorSpeedruns returns valid speedruns', () async {
       final states = List<AsyncValue<(int count, List<Speedrun> speedruns)>>.empty(growable: true);
       final provider = fetchCompetitorSpeedrunsProvider(
-        '621336b43e8e7f7628dce587',
-        'created_at',
-        'desc',
-        0,
-        10,
+        competitorId: '621336b43e8e7f7628dce587',
+        sortBy: 'created_at',
+        sortDir: 'desc',
+        page: 0,
+        limit: 10,
         approved: true,
       );
       final subscription = container.listen(
@@ -75,10 +75,10 @@ void main() {
     test('fetchSpeedrun returns paginated speedruns', () async {
       final states = List<AsyncValue<(int count, List<Speedrun> speedruns)>>.empty(growable: true);
       final provider = fetchSpeedrunProvider(
-        'created_at',
-        'desc',
-        0,
-        5,
+        sortBy: 'created_at',
+        sortDir: 'desc',
+        page: 0,
+        limit: 5,
         approved: true,
       );
       final subscription = container.listen(
@@ -118,10 +118,10 @@ void main() {
       // Now test the speedrun agent provider
       final states = List<AsyncValue<(int count, List<Speedrun> speedruns)>>.empty(growable: true);
       final provider = fetchSpeedrunAgentProvider(
-        'created_at',
-        'desc',
-        0,
-        10,
+        sortBy: 'created_at',
+        sortDir: 'desc',
+        page: 0,
+        limit: 10,
         approved: false,
         queryParam: {'speedrun_category': 'Abyss'},
       );

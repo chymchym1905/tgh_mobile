@@ -4,4 +4,4 @@ const kMaxWidthTablet = 840;
 // 840 is the width of the tablet screen
 const kMaxWidthTabletLandscape = 1280;
 // 1280 is the width of the tablet landscape screen
-const thresholdWidth = 730;
+const tableThresholdWidth = 730;
