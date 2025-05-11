@@ -16,7 +16,8 @@ abstract class SpeedrunApiBase {
     CancelToken? cancelToken,
   });
 
-  Future<Either<AppException, (int count, List<Speedrun> speedruns)>> fetchSpeedrun(
+  Future<Either<AppException, (int count, List<Speedrun> speedruns, List<CharUsageLbDisplay> charSnapshots)>>
+      fetchSpeedrun(
     String sortBy,
     String sortDir,
     int page,
@@ -87,7 +88,8 @@ class SpeedrunApi implements SpeedrunApiBase {
   }
 
   @override
-  Future<Either<AppException, (int count, List<Speedrun> speedruns)>> fetchSpeedrun(
+  Future<Either<AppException, (int count, List<Speedrun> speedruns, List<CharUsageLbDisplay> charSnapshots)>>
+      fetchSpeedrun(
     String sortBy,
     String sortDir,
     int page,
@@ -112,7 +114,14 @@ class SpeedrunApi implements SpeedrunApiBase {
       (response) {
         if (response.statusCode == 200 && (response.data as Map).containsKey('entries')) {
           final entries = (response.data['entries']['rows'] as List).map((e) => e as Map<String, dynamic>).toList();
-          return right((response.data['entries']['count'] as int, entries.map((e) => Speedrun.fromJson(e)).toList()));
+          final charUsageLbDisplay = (response.data['userProfileInformations'] as List)
+              .map((e) => CharUsageLbDisplay.fromJson(e as Map<String, dynamic>))
+              .toList();
+          return right((
+            response.data['entries']['count'] as int,
+            entries.map((e) => Speedrun.fromJson(e)).toList(),
+            charUsageLbDisplay
+          ));
         } else {
           return left(AppException(message: response.data.toString(), code: response.statusCode.toString()));
         }

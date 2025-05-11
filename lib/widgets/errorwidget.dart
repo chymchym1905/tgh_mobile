@@ -10,7 +10,7 @@ class AppErrorWidget extends StatelessWidget {
       child: Column(
         children: [
           Image.asset('assets/icons/Qiqidead.jpg'),
-          Text(message.join('\n')),
+          SelectableText(message.join('\n')),
         ],
       ),
     );

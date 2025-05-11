@@ -62,7 +62,7 @@ class TableRowSpeedrunEvent extends StatelessWidget {
                 verifiedColumnContent(context, speedrun.approved),
                 SizedBox(width: 10.wr),
               ],
-              abyssVersionColumnContent(context, speedrun.abyssVersion),
+              eventColumnContent(context, speedrun.abyssVersion),
               SizedBox(width: 10.wr),
               subCategoryColumnContent(context, speedrun.speedrunSubcategory),
               SizedBox(width: 10.wr),

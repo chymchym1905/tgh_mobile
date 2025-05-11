@@ -1,6 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:tgh_mobile/imports.dart';
 import 'package:tgh_mobile/screens/homescreen/homebody.dart';
+import 'package:tgh_mobile/screens/profilescreen/profilescreen_not_current.dart';
 import 'package:tgh_mobile/screens/settingscreen/cachesetting.dart';
 import 'package:tgh_mobile/screens/videoscreen/videoscreen.dart';
 import 'package:tgh_mobile/utils/observer.dart';
@@ -117,6 +118,14 @@ GoRouter router(Ref ref) {
           builder: (context, state) {
             final id = state.pathParameters['id'] ?? '';
             return VideoScreen(id: id);
+          },
+        ),
+        GoRoute(
+          path: Routes.profileNonCurrent,
+          name: 'profileNonCurrent',
+          builder: (context, state) {
+            final alias = state.pathParameters['alias'] ?? '';
+            return ProfileScreenNonCurrent(competitorAlias: alias);
           },
         )
       ],

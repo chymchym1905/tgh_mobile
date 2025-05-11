@@ -2,16 +2,11 @@ import 'package:tgh_mobile/imports.dart';
 import 'profile_no_user.dart';
 import 'profile_with_user.dart';
 
-class ProfileScreen extends ConsumerStatefulWidget {
+class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
   @override
-  ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
-}
-
-class _ProfileScreenState extends ConsumerState<ProfileScreen> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return ref.watch(authNotifierProvider).when(
           data: (authState) => authState.when(
             authenticated: (user, authToken) {

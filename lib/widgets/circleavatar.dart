@@ -19,7 +19,7 @@ class UniformCircleAvatar extends StatelessWidget {
                   url,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
-                    return Padding(padding: EdgeInsets.all(4.w), child: Icon(Icons.person, size: radius * 2 - 4.w * 2));
+                    return Icon(Icons.person, size: radius * 2 - 2.wr * 2);
                   },
                 ))));
   }

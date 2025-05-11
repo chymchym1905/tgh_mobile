@@ -8,7 +8,11 @@ class TableHeaderDps extends StatelessWidget {
     return Row(
       children: [
         SizedBox(width: 10.wr),
-        rankColumn(context),
+        if (MediaQuery.of(context).size.width > kMaxWidthMobile) ...[
+          rankColumn(context),
+          SizedBox(width: 10.wr),
+        ],
+        userColumn(context),
         SizedBox(width: 10.wr),
         gameVersionColumn(context),
         SizedBox(width: 10.wr),
@@ -43,7 +47,11 @@ class TableHeaderDpsEvent extends StatelessWidget {
     return Row(
       children: [
         SizedBox(width: 10.wr),
-        rankColumn(context),
+        if (MediaQuery.of(context).size.width > kMaxWidthMobile) ...[
+          rankColumn(context),
+          SizedBox(width: 10.wr),
+        ],
+        userColumn(context),
         SizedBox(width: 10.wr),
         gameVersionColumn(context),
         SizedBox(width: 10.wr),

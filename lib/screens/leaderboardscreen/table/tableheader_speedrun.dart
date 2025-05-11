@@ -8,7 +8,11 @@ class TableHeaderAbyss extends StatelessWidget {
     return Row(
       children: [
         SizedBox(width: 10.wr),
-        rankColumn(context),
+        if (MediaQuery.of(context).size.width > tableThresholdWidth) ...[
+          rankColumn(context),
+          SizedBox(width: 10.wr),
+        ],
+        userColumn(context),
         SizedBox(width: 10.wr),
         timeColumn(context),
         SizedBox(width: 10.wr),
@@ -42,7 +46,11 @@ class TableHeaderDomain extends StatelessWidget {
     return Row(
       children: [
         SizedBox(width: 10.wr),
-        rankColumn(context),
+        if (MediaQuery.of(context).size.width > tableThresholdWidth) ...[
+          rankColumn(context),
+          SizedBox(width: 10.wr),
+        ],
+        userColumn(context),
         SizedBox(width: 10.wr),
         timeColumn(context),
         SizedBox(width: 10.wr),
@@ -74,7 +82,11 @@ class TableHeaderEvent extends StatelessWidget {
     return Row(
       children: [
         SizedBox(width: 10.wr),
-        rankColumn(context),
+        if (MediaQuery.of(context).size.width > tableThresholdWidth) ...[
+          rankColumn(context),
+          SizedBox(width: 10.wr),
+        ],
+        userColumn(context),
         SizedBox(width: 10.wr),
         timeColumn(context),
         SizedBox(width: 10.wr),
@@ -108,7 +120,11 @@ class TableHeaderBoss extends StatelessWidget {
     return Row(
       children: [
         SizedBox(width: 10.wr),
-        rankColumn(context),
+        if (MediaQuery.of(context).size.width > tableThresholdWidth) ...[
+          rankColumn(context),
+          SizedBox(width: 10.wr),
+        ],
+        userColumn(context),
         SizedBox(width: 10.wr),
         enemyColumn(context),
         SizedBox(width: 10.wr),

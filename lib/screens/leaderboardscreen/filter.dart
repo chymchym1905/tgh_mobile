@@ -1,9 +1,10 @@
 import 'package:tgh_mobile/imports.dart';
 
 class Filter extends ConsumerStatefulWidget {
-  const Filter({super.key, required this.type, required this.category});
+  const Filter({super.key, required this.type, required this.category, required this.onFilterChanged});
   final String type;
   final String category;
+  final void Function(Map<String, dynamic>) onFilterChanged;
 
   @override
   ConsumerState<Filter> createState() => _FilterState();
@@ -33,6 +34,22 @@ class _FilterState extends ConsumerState<Filter> {
   String? domain;
   String? event;
   String? attackType;
+
+  void updateFilter() {
+    final filter = <String, dynamic>{};
+    if (abyssVersion != null) filter['abyss_version'] = abyssVersion;
+    if (floor != null) filter['speedrun_subcategory'] = floor;
+    if (region != null) filter['region'] = region;
+    if (name != null) filter['competitor'] = name;
+    if (characterFilter.isNotEmpty) filter['characters'] = characterFilter;
+    if (enemy != null) filter['enemy'] = enemy;
+    if (domain != null) filter['domain'] = domain;
+    if (event != null) filter['event'] = event;
+    if (attackType != null) filter['attack_type'] = attackType;
+
+    widget.onFilterChanged(filter);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Wrap(direction: Axis.horizontal, runSpacing: 10, spacing: 16.wr, children: [
@@ -90,7 +107,8 @@ class _FilterState extends ConsumerState<Filter> {
                   controller: nameController,
                   onChanged: (p0) {
                     setState(() {
-                      name = p0?.alias;
+                      name = p0?.id;
+                      updateFilter();
                     });
                   })
             ],
@@ -154,6 +172,7 @@ class _FilterState extends ConsumerState<Filter> {
                       controller: abyssVersionController,
                       onChanged: (p0) {
                         abyssVersion = p0;
+                        updateFilter();
                       }),
                 )
               ],
@@ -230,6 +249,7 @@ class _FilterState extends ConsumerState<Filter> {
                       onChanged: (p0) {
                         setState(() {
                           floor = p0;
+                          updateFilter();
                         });
                       }))
             ])),
@@ -294,6 +314,7 @@ class _FilterState extends ConsumerState<Filter> {
                       controller: domainController,
                       onChanged: (p0) {
                         domain = p0;
+                        updateFilter();
                       }))
             ])),
       if (widget.category == 'Event')
@@ -367,6 +388,7 @@ class _FilterState extends ConsumerState<Filter> {
                       controller: eventController,
                       onChanged: (p0) {
                         event = p0;
+                        updateFilter();
                       }))
             ])),
       if ((widget.type == 'DPS' || widget.category == 'Weekly Boss' || widget.category == 'World Boss') &&
@@ -451,6 +473,7 @@ class _FilterState extends ConsumerState<Filter> {
                       onChanged: (p0) {
                         setState(() {
                           enemy = p0;
+                          updateFilter();
                         });
                       }))
             ])),
@@ -526,6 +549,7 @@ class _FilterState extends ConsumerState<Filter> {
                       onChanged: (p0) {
                         setState(() {
                           attackType = p0;
+                          updateFilter();
                         });
                       }))
             ])),
@@ -600,6 +624,7 @@ class _FilterState extends ConsumerState<Filter> {
                     onChanged: (p0) {
                       setState(() {
                         region = p0;
+                        updateFilter();
                       });
                     }))
           ])),
@@ -658,6 +683,7 @@ class _FilterState extends ConsumerState<Filter> {
                       onListChanged: (p0) {
                         setState(() {
                           characterFilter = p0;
+                          updateFilter();
                         });
                       })
                 ]));

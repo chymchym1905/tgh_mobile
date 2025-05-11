@@ -43,7 +43,9 @@ class FeedEntryCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    context.push(Routes.profileNonCurrentWithAlias(feeditem.competitor.alias));
+                  },
                   child: UniformCircleAvatar(url: pfp, radius: 26),
                 ),
                 const SizedBox(width: 8),

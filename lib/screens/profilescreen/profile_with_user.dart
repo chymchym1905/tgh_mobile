@@ -75,49 +75,48 @@ class _ProfileWithUserState extends State<ProfileWithUser> {
         CustomScrollView(
           slivers: [
             SliverAppBar(
-              pinned: true,
-              shadowColor: Colors.transparent,
-              centerTitle: false,
-              toolbarHeight: 50.wr,
-              leading: MediaQuery.of(context).size.width > kMaxWidthTablet
-                  ? IconButton(
-                      onPressed: () {
-                        if (MediaQuery.of(context).size.width > kMaxWidthTabletLandscape) {
-                          setState(() {
-                            _expanded = !_expanded;
-                          });
-                        } else if (MediaQuery.of(context).size.width > kMaxWidthTablet &&
-                            MediaQuery.of(context).size.width < kMaxWidthTabletLandscape) {
-                          Scaffold.of(context).openDrawer();
-                        }
-                      },
-                      icon: const Icon(Icons.dehaze, size: 30, weight: 700, grade: 200, opticalSize: 24))
-                  : null,
-              title: Visibility(
-                visible: _scrollProgress == 1,
-                child: Row(
-                  children: [
-                    Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(width: 2, color: Theme.of(context).colorScheme.onSurface),
-                            shape: BoxShape.circle),
-                        child: UniformCircleAvatar(url: pfpUrl(competitor.id), radius: 16.wr)),
-                    SizedBox(width: 10.wr),
-                    Text(competitor.alias, style: TextStyle(fontSize: 16.wr)),
-                  ],
+                pinned: true,
+                shadowColor: Colors.transparent,
+                centerTitle: false,
+                toolbarHeight: 50.wr,
+                leading: MediaQuery.of(context).size.width > kMaxWidthTablet
+                    ? IconButton(
+                        onPressed: () {
+                          if (MediaQuery.of(context).size.width > kMaxWidthTabletLandscape) {
+                            setState(() {
+                              _expanded = !_expanded;
+                            });
+                          } else if (MediaQuery.of(context).size.width > kMaxWidthTablet &&
+                              MediaQuery.of(context).size.width < kMaxWidthTabletLandscape) {
+                            Scaffold.of(context).openDrawer();
+                          }
+                        },
+                        icon: const Icon(Icons.dehaze, size: 30, weight: 700, grade: 200, opticalSize: 24))
+                    : null,
+                title: Visibility(
+                  visible: _scrollProgress == 1,
+                  child: Row(
+                    children: [
+                      Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(width: 2, color: Theme.of(context).colorScheme.onSurface),
+                              shape: BoxShape.circle),
+                          child: UniformCircleAvatar(url: pfpUrl(competitor.id), radius: 16.wr)),
+                      SizedBox(width: 10.wr),
+                      Text(competitor.alias, style: TextStyle(fontSize: 16.wr)),
+                    ],
+                  ),
                 ),
-              ),
-              backgroundColor: backgroundColor,
-              elevation: 10,
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    context.go(Routes.settings);
-                  },
-                  icon: const Icon(Icons.settings),
-                ),
-              ],
-            ),
+                backgroundColor: backgroundColor,
+                elevation: 10,
+                actions: [
+                  IconButton(
+                    onPressed: () {
+                      context.go(Routes.settings);
+                    },
+                    icon: const Icon(Icons.settings),
+                  ),
+                ]),
             SliverToBoxAdapter(
                 child: SizedBox(
                     height: MediaQuery.of(context).size.height - kToolbarHeight,
@@ -274,6 +273,15 @@ class _ProfileWithUserState extends State<ProfileWithUser> {
                                               padding: EdgeInsets.symmetric(horizontal: 20.wr, vertical: 16.wr),
                                               child: ProfileBody(
                                                   user: widget.user, userProfileInfo: widget.userProfileInfo),
+                                            ),
+                                            10.verticalSpace,
+                                            Container(
+                                              width: double.infinity,
+                                              decoration: BoxDecoration(
+                                                color: Theme.of(context).colorScheme.surfaceContainer,
+                                                borderRadius: BorderRadius.circular(15.wr),
+                                              ),
+                                              height: 100,
                                             )
                                           ])))))
                         ],

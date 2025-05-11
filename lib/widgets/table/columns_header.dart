@@ -60,7 +60,7 @@ Widget chamberColumn(BuildContext context) {
 
 Widget teamColumn(BuildContext context) {
   return Expanded(
-      flex: MediaQuery.of(context).size.width > kMaxWidthMobile ? 1 : 3,
+      flex: MediaQuery.of(context).size.width > kMaxWidthMobile ? 4 : 3,
       child: Center(
           child: Text('Team',
               textAlign: TextAlign.center,
@@ -71,7 +71,7 @@ Widget teamColumn(BuildContext context) {
 
 Widget team1or2Column(BuildContext context, int team) {
   return Expanded(
-      flex: 1,
+      flex: 4,
       child: Center(
           child: Text('Team $team',
               textAlign: TextAlign.center,
@@ -115,7 +115,7 @@ Widget domainColumn(BuildContext context) {
 
 Widget eventColumn(BuildContext context) {
   return Expanded(
-      flex: 1,
+      flex: 2,
       child: Center(
           child: Text('Event',
               textAlign: TextAlign.center,
@@ -195,6 +195,17 @@ Widget attackTypeColumn(BuildContext context) {
       flex: 1,
       child: Center(
           child: Text('Attack',
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+              style: TextStyle(fontSize: 10.wr, fontWeight: FontWeight.bold))));
+}
+
+Widget userColumn(BuildContext context) {
+  return Expanded(
+      flex: 2,
+      child: Center(
+          child: Text('Alias',
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,

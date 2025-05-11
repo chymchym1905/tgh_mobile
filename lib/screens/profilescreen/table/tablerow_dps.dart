@@ -13,6 +13,10 @@ class TableRowDps extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: 10.wr),
             child: Row(children: [
               SizedBox(width: 10.wr),
+              if (MediaQuery.of(context).size.width > kMaxWidthMobile) ...[
+                verifiedColumnContent(context, dps.approved),
+                SizedBox(width: 10.wr),
+              ],
               gameVersionColumnContent(context, dps.gameVersion),
               SizedBox(width: 10.wr),
               enemyColumnContent(context, dps.enemy),
@@ -47,6 +51,10 @@ class TableRowDpsEvent extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: 10.wr),
             child: Row(children: [
               SizedBox(width: 10.wr),
+              if (MediaQuery.of(context).size.width > kMaxWidthMobile) ...[
+                verifiedColumnContent(context, dps.approved),
+                SizedBox(width: 10.wr),
+              ],
               gameVersionColumnContent(context, dps.gameVersion),
               SizedBox(width: 10.wr),
               abyssVersionColumnContent(context, dps.event),

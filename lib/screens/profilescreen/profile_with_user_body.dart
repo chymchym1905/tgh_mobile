@@ -78,6 +78,20 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
                 data: (data) {
                   final uniqueCategories = data.$2.map((e) => e.speedrunCategory).toSet().toList()
                     ..sort((a, b) => SPEEDRUN_CATEGORY_ORDER.indexOf(a).compareTo(SPEEDRUN_CATEGORY_ORDER.indexOf(b)));
+
+                  if (uniqueCategories.isEmpty) {
+                    return Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: Text(
+                          "No information to display",
+                          style: TextStyle(fontSize: 14.wr),
+                        ),
+                      ),
+                    );
+                  }
+
+                  _currentSpeedrunCategory = uniqueCategories[0];
                   final child = SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       controller: speedrunCategoryScrollController,
@@ -87,13 +101,19 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
                               uniqueCategories.length,
                               (index) => Padding(
                                   padding: EdgeInsets.only(right: 8.wr),
-                                  child: CategoryTab(
-                                      name: uniqueCategories[index],
-                                      selected: _speedrunCategoryIndex == index,
-                                      onTap: () => setState(() {
-                                            _speedrunCategoryIndex = index;
-                                            _currentSpeedrunCategory = uniqueCategories[index];
-                                          }))))));
+                                  child: Column(children: [
+                                    CategoryTab(
+                                        name: uniqueCategories[index],
+                                        selected: _speedrunCategoryIndex == index,
+                                        onTap: () => setState(() {
+                                              _speedrunCategoryIndex = index;
+                                              _currentSpeedrunCategory = uniqueCategories[index];
+                                            })),
+                                    const SizedBox(height: 10),
+                                    Text(
+                                        '${data.$2.where((e) => e.speedrunCategory == uniqueCategories[index]).length} entries',
+                                        style: TextStyle(fontSize: 12.wr))
+                                  ])))));
                   if (defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android) {
                     return child;
                   }
@@ -150,44 +170,80 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
                               color: Theme.of(context).colorScheme.onInverseSurface,
                             ),
                             child: speedruns.when(
-                                data: (data) => Column(
-                                        children: data.$2
-                                            .where((e) => e.speedrunCategory == _currentSpeedrunCategory)
-                                            .map((e) {
-                                      Widget child;
-                                      if (_currentSpeedrunCategory == 'Abyss') {
-                                        child = TableRowSpeedrunAbyss(speedrun: e);
-                                      } else if (_currentSpeedrunCategory == 'Domain') {
-                                        child = TableRowSpeedrunDomain(speedrun: e);
-                                      } else if (_currentSpeedrunCategory == 'Event') {
-                                        child = TableRowSpeedrunEvent(speedrun: e);
-                                      } else {
-                                        child = TableRowSpeedrunBoss(speedrun: e);
-                                      }
-                                      return CustomPopupMenu(
-                                          pressType: PressType.longPress,
-                                          position: PreferredPosition.bottom,
-                                          verticalMargin: 0,
-                                          horizontalMargin: 0,
-                                          arrowColor: Theme.of(context).colorScheme.surfaceContainerLowest,
-                                          onTap: () {
-                                            context.push(Routes.video(e.id));
-                                          },
-                                          menuBuilder: () => Container(
-                                              decoration: BoxDecoration(
-                                                  color: Theme.of(context).colorScheme.surfaceContainerLowest,
-                                                  border:
-                                                      Border.all(color: Theme.of(context).colorScheme.outlineVariant),
-                                                  borderRadius: BorderRadius.circular(5.wr)),
-                                              child: Material(
-                                                  color: Colors.transparent,
-                                                  shape:
-                                                      RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.wr)),
-                                                  child: IntrinsicWidth(
-                                                      child: Column(
-                                                          mainAxisSize: MainAxisSize.min,
-                                                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                                                          children: [
+                                data: (data) {
+                                  if (data.$2.isEmpty) {
+                                    return Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 10),
+                                        child: Text(
+                                          "No information to display",
+                                          style: TextStyle(fontSize: 14.wr),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                  return Column(
+                                      children:
+                                          data.$2.where((e) => e.speedrunCategory == _currentSpeedrunCategory).map((e) {
+                                    Widget child;
+                                    if (_currentSpeedrunCategory == 'Abyss') {
+                                      child = TableRowSpeedrunAbyss(speedrun: e);
+                                    } else if (_currentSpeedrunCategory == 'Domain') {
+                                      child = TableRowSpeedrunDomain(speedrun: e);
+                                    } else if (_currentSpeedrunCategory == 'Event') {
+                                      child = TableRowSpeedrunEvent(speedrun: e);
+                                    } else {
+                                      child = TableRowSpeedrunBoss(speedrun: e);
+                                    }
+                                    return CustomPopupMenu(
+                                        pressType: PressType.longPress,
+                                        position: PreferredPosition.bottom,
+                                        verticalMargin: 0,
+                                        horizontalMargin: 0,
+                                        arrowColor: Theme.of(context).colorScheme.surfaceContainerLowest,
+                                        onTap: () {
+                                          context.push(Routes.video(e.id));
+                                        },
+                                        menuBuilder: () => Container(
+                                            decoration: BoxDecoration(
+                                                color: Theme.of(context).colorScheme.surfaceContainerLowest,
+                                                border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+                                                borderRadius: BorderRadius.circular(5.wr)),
+                                            child: Material(
+                                                color: Colors.transparent,
+                                                shape:
+                                                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.wr)),
+                                                child: IntrinsicWidth(
+                                                    child: Column(
+                                                        mainAxisSize: MainAxisSize.min,
+                                                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                        children: [
+                                                      InkWell(
+                                                          onTap: () {},
+                                                          highlightColor:
+                                                              Theme.of(context).colorScheme.surfaceContainerHigh,
+                                                          splashColor:
+                                                              Theme.of(context).colorScheme.surfaceContainerHighest,
+                                                          borderRadius: BorderRadius.only(
+                                                              topLeft: Radius.circular(5.wr),
+                                                              topRight: Radius.circular(5.wr),
+                                                              bottomLeft: e.accountSnapshot != null &&
+                                                                      e.accountSnapshot!.isNotEmpty
+                                                                  ? const Radius.circular(0)
+                                                                  : Radius.circular(5.wr),
+                                                              bottomRight: e.accountSnapshot != null &&
+                                                                      e.accountSnapshot!.isNotEmpty
+                                                                  ? const Radius.circular(0)
+                                                                  : Radius.circular(5.wr)),
+                                                          child: Padding(
+                                                              padding: EdgeInsets.symmetric(
+                                                                  vertical: 10.wr, horizontal: 10.wr),
+                                                              child: Row(children: [
+                                                                Icon(Icons.flag, size: 16.wr),
+                                                                SizedBox(width: 5.wr),
+                                                                Text('Report', style: TextStyle(fontSize: 12.wr))
+                                                              ]))),
+                                                      if (e.accountSnapshot != null && e.accountSnapshot!.isNotEmpty)
                                                         InkWell(
                                                             onTap: () {},
                                                             highlightColor:
@@ -195,46 +251,20 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
                                                             splashColor:
                                                                 Theme.of(context).colorScheme.surfaceContainerHighest,
                                                             borderRadius: BorderRadius.only(
-                                                                topLeft: Radius.circular(5.wr),
-                                                                topRight: Radius.circular(5.wr),
-                                                                bottomLeft: e.accountSnapshot != null &&
-                                                                        e.accountSnapshot!.isNotEmpty
-                                                                    ? const Radius.circular(0)
-                                                                    : Radius.circular(5.wr),
-                                                                bottomRight: e.accountSnapshot != null &&
-                                                                        e.accountSnapshot!.isNotEmpty
-                                                                    ? const Radius.circular(0)
-                                                                    : Radius.circular(5.wr)),
+                                                                bottomLeft: Radius.circular(5.wr),
+                                                                bottomRight: Radius.circular(5.wr)),
                                                             child: Padding(
                                                                 padding: EdgeInsets.symmetric(
                                                                     vertical: 10.wr, horizontal: 10.wr),
                                                                 child: Row(children: [
-                                                                  Icon(Icons.flag, size: 16.wr),
+                                                                  Icon(Icons.zoom_in, size: 16.wr),
                                                                   SizedBox(width: 5.wr),
-                                                                  Text('Report', style: TextStyle(fontSize: 12.wr))
+                                                                  Text('View Builds', style: TextStyle(fontSize: 12.wr))
                                                                 ]))),
-                                                        if (e.accountSnapshot != null && e.accountSnapshot!.isNotEmpty)
-                                                          InkWell(
-                                                              onTap: () {},
-                                                              highlightColor:
-                                                                  Theme.of(context).colorScheme.surfaceContainerHigh,
-                                                              splashColor:
-                                                                  Theme.of(context).colorScheme.surfaceContainerHighest,
-                                                              borderRadius: BorderRadius.only(
-                                                                  bottomLeft: Radius.circular(5.wr),
-                                                                  bottomRight: Radius.circular(5.wr)),
-                                                              child: Padding(
-                                                                  padding: EdgeInsets.symmetric(
-                                                                      vertical: 10.wr, horizontal: 10.wr),
-                                                                  child: Row(children: [
-                                                                    Icon(Icons.zoom_in, size: 16.wr),
-                                                                    SizedBox(width: 5.wr),
-                                                                    Text('View Builds',
-                                                                        style: TextStyle(fontSize: 12.wr))
-                                                                  ]))),
-                                                      ])))),
-                                          child: child);
-                                    }).toList()),
+                                                    ])))),
+                                        child: child);
+                                  }).toList());
+                                },
                                 error: (error, stackTrace) =>
                                     Center(child: AppErrorWidget(message: [error.toString(), stackTrace.toString()])),
                                 loading: () => Column(children: [
@@ -346,17 +376,21 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
 
         ///DPS section
         Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surfaceContainer,
-            borderRadius: BorderRadius.circular(10.wr),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surfaceContainer,
+              borderRadius: BorderRadius.circular(10.wr),
+            ),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               dps.when(
                 data: (data) {
                   final uniqueCategories = data.$2.map((e) => e.dpsCategory).toSet().toList()
                     ..sort((a, b) => DPS_CATEGORY_ORDER.indexOf(a).compareTo(DPS_CATEGORY_ORDER.indexOf(b)));
+
+                  if (uniqueCategories.isEmpty) {
+                    return const SizedBox.shrink();
+                  }
+
+                  _currentDpsCategory = uniqueCategories[0];
                   final child = SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       controller: dpsCategoryScrollController,
@@ -368,13 +402,21 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
                                   uniqueCategories.length,
                                   (index) => Padding(
                                       padding: EdgeInsets.only(right: 8.wr),
-                                      child: CategoryTab(
-                                          name: uniqueCategories[index],
-                                          selected: _dpsCategoryIndex == index,
-                                          onTap: () => setState(() {
-                                                _dpsCategoryIndex = index;
-                                                _currentDpsCategory = uniqueCategories[index];
-                                              })))))));
+                                      child: Column(
+                                        children: [
+                                          CategoryTab(
+                                              name: uniqueCategories[index],
+                                              selected: _dpsCategoryIndex == index,
+                                              onTap: () => setState(() {
+                                                    _dpsCategoryIndex = index;
+                                                    _currentDpsCategory = uniqueCategories[index];
+                                                  })),
+                                          const SizedBox(height: 10),
+                                          Text(
+                                              '${data.$2.where((e) => e.dpsCategory == uniqueCategories[index]).length} entries',
+                                              style: TextStyle(fontSize: 12.wr))
+                                        ],
+                                      ))))));
                   if (defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android) {
                     return child;
                   } else {
@@ -388,6 +430,7 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
                   child: const CircularProgressIndicator(),
                 ),
               ),
+              10.verticalSpace,
               10.verticalSpace,
               Container(
                   decoration: BoxDecoration(
@@ -423,60 +466,45 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
                               color: Theme.of(context).colorScheme.onInverseSurface,
                             ),
                             child: dps.when(
-                                data: (data) => Column(
-                                    children: data.$2
-                                        .where((e) => e.dpsCategory == _currentDpsCategory)
-                                        .map((e) => CustomPopupMenu(
-                                            pressType: PressType.longPress,
-                                            position: PreferredPosition.bottom,
-                                            verticalMargin: 0,
-                                            horizontalMargin: 0,
-                                            arrowColor: Theme.of(context).colorScheme.surfaceContainerLowest,
-                                            onTap: () {
-                                              context.push(Routes.video(e.id));
-                                            },
-                                            menuBuilder: () => Container(
-                                                decoration: BoxDecoration(
-                                                    color: Theme.of(context).colorScheme.surfaceContainerLowest,
-                                                    border:
-                                                        Border.all(color: Theme.of(context).colorScheme.outlineVariant),
-                                                    borderRadius: BorderRadius.circular(5.wr)),
-                                                child: Material(
-                                                    color: Colors.transparent,
-                                                    shape: RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius.circular(5.wr)),
-                                                    child: IntrinsicWidth(
-                                                        child: Column(
-                                                            mainAxisSize: MainAxisSize.min,
-                                                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                                                            children: [
-                                                          InkWell(
-                                                              onTap: () {},
-                                                              highlightColor:
-                                                                  Theme.of(context).colorScheme.surfaceContainerHigh,
-                                                              splashColor:
-                                                                  Theme.of(context).colorScheme.surfaceContainerHighest,
-                                                              borderRadius: BorderRadius.only(
-                                                                  topLeft: Radius.circular(5.wr),
-                                                                  topRight: Radius.circular(5.wr),
-                                                                  bottomLeft: e.accountSnapshot != null &&
-                                                                          e.accountSnapshot!.isNotEmpty
-                                                                      ? const Radius.circular(0)
-                                                                      : Radius.circular(5.wr),
-                                                                  bottomRight: e.accountSnapshot != null &&
-                                                                          e.accountSnapshot!.isNotEmpty
-                                                                      ? const Radius.circular(0)
-                                                                      : Radius.circular(5.wr)),
-                                                              child: Padding(
-                                                                  padding: EdgeInsets.symmetric(
-                                                                      vertical: 10.wr, horizontal: 10.wr),
-                                                                  child: Row(children: [
-                                                                    Icon(Icons.flag, size: 16.wr),
-                                                                    SizedBox(width: 5.wr),
-                                                                    Text('Report', style: TextStyle(fontSize: 12.wr))
-                                                                  ]))),
-                                                          if (e.accountSnapshot != null &&
-                                                              e.accountSnapshot!.isNotEmpty)
+                                data: (data) {
+                                  if (data.$2.isEmpty) {
+                                    return Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 10),
+                                        child: Text(
+                                          "No information to display",
+                                          style: TextStyle(fontSize: 14.wr),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                  return Column(
+                                      children: data.$2
+                                          .where((e) => e.dpsCategory == _currentDpsCategory)
+                                          .map((e) => CustomPopupMenu(
+                                              pressType: PressType.longPress,
+                                              position: PreferredPosition.bottom,
+                                              verticalMargin: 0,
+                                              horizontalMargin: 0,
+                                              arrowColor: Theme.of(context).colorScheme.surfaceContainerLowest,
+                                              onTap: () {
+                                                context.push(Routes.video(e.id));
+                                              },
+                                              menuBuilder: () => Container(
+                                                  decoration: BoxDecoration(
+                                                      color: Theme.of(context).colorScheme.surfaceContainerLowest,
+                                                      border: Border.all(
+                                                          color: Theme.of(context).colorScheme.outlineVariant),
+                                                      borderRadius: BorderRadius.circular(5.wr)),
+                                                  child: Material(
+                                                      color: Colors.transparent,
+                                                      shape: RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.circular(5.wr)),
+                                                      child: IntrinsicWidth(
+                                                          child: Column(
+                                                              mainAxisSize: MainAxisSize.min,
+                                                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                              children: [
                                                             InkWell(
                                                                 onTap: () {},
                                                                 highlightColor:
@@ -485,22 +513,52 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
                                                                     .colorScheme
                                                                     .surfaceContainerHighest,
                                                                 borderRadius: BorderRadius.only(
-                                                                    bottomLeft: Radius.circular(5.wr),
-                                                                    bottomRight: Radius.circular(5.wr)),
+                                                                    topLeft: Radius.circular(5.wr),
+                                                                    topRight: Radius.circular(5.wr),
+                                                                    bottomLeft: e.accountSnapshot != null &&
+                                                                            e.accountSnapshot!.isNotEmpty
+                                                                        ? const Radius.circular(0)
+                                                                        : Radius.circular(5.wr),
+                                                                    bottomRight: e.accountSnapshot != null &&
+                                                                            e.accountSnapshot!.isNotEmpty
+                                                                        ? const Radius.circular(0)
+                                                                        : Radius.circular(5.wr)),
                                                                 child: Padding(
                                                                     padding: EdgeInsets.symmetric(
                                                                         vertical: 10.wr, horizontal: 10.wr),
                                                                     child: Row(children: [
-                                                                      Icon(Icons.zoom_in, size: 16.wr),
+                                                                      Icon(Icons.flag, size: 16.wr),
                                                                       SizedBox(width: 5.wr),
-                                                                      Text('View Builds',
-                                                                          style: TextStyle(fontSize: 12.wr))
+                                                                      Text('Report', style: TextStyle(fontSize: 12.wr))
                                                                     ]))),
-                                                        ])))),
-                                            child: _currentDpsCategory == 'Event'
-                                                ? TableRowDpsEvent(dps: e)
-                                                : TableRowDps(dps: e)))
-                                        .toList()),
+                                                            if (e.accountSnapshot != null &&
+                                                                e.accountSnapshot!.isNotEmpty)
+                                                              InkWell(
+                                                                  onTap: () {},
+                                                                  highlightColor: Theme.of(context)
+                                                                      .colorScheme
+                                                                      .surfaceContainerHigh,
+                                                                  splashColor: Theme.of(context)
+                                                                      .colorScheme
+                                                                      .surfaceContainerHighest,
+                                                                  borderRadius: BorderRadius.only(
+                                                                      bottomLeft: Radius.circular(5.wr),
+                                                                      bottomRight: Radius.circular(5.wr)),
+                                                                  child: Padding(
+                                                                      padding: EdgeInsets.symmetric(
+                                                                          vertical: 10.wr, horizontal: 10.wr),
+                                                                      child: Row(children: [
+                                                                        Icon(Icons.zoom_in, size: 16.wr),
+                                                                        SizedBox(width: 5.wr),
+                                                                        Text('View Builds',
+                                                                            style: TextStyle(fontSize: 12.wr))
+                                                                      ]))),
+                                                          ])))),
+                                              child: _currentDpsCategory == 'Event'
+                                                  ? TableRowDpsEvent(dps: e)
+                                                  : TableRowDps(dps: e)))
+                                          .toList());
+                                },
                                 error: (error, stackTrace) =>
                                     Center(child: AppErrorWidget(message: [error.toString(), stackTrace.toString()])),
                                 loading: () => Column(children: [
@@ -519,49 +577,47 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
                                     ]))))
                   ])),
               10.verticalSpace,
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Text('Rows per page:', style: TextStyle(fontSize: 12.wr)),
-                      SizedBox(width: 5.wr),
-                      SizedBox(
-                        width: 60.wr,
-                        child: CustomDropdown(
-                            decoration: CustomDropdownDecoration(
-                              expandedShadow: [
-                                BoxShadow(
-                                    color: Theme.of(context).colorScheme.shadow,
-                                    offset: const Offset(0, 3),
-                                    blurRadius: 6,
-                                    spreadRadius: 0)
-                              ],
-                              closedFillColor: Theme.of(context).colorScheme.surfaceContainerLow,
-                              closedBorder: Border.all(color: Theme.of(context).colorScheme.outline),
-                              expandedBorder: Border.all(color: Theme.of(context).colorScheme.outline),
-                              expandedFillColor: Theme.of(context).colorScheme.surfaceContainerHigh,
-                              listItemStyle: TextStyle(fontSize: 12.wr),
-                              headerStyle: TextStyle(fontSize: 12.wr),
-                              expandedSuffixIcon: Icon(Icons.arrow_drop_up, size: 10.wr),
-                              closedSuffixIcon: Icon(Icons.arrow_drop_down, size: 10.wr),
-                            ),
-                            closedHeaderPadding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 5.wr),
-                            expandedHeaderPadding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 5.wr),
-                            itemsListPadding: const EdgeInsets.all(0),
-                            listItemPadding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 5.wr),
-                            items: const [10, 20, 50, 100],
-                            onChanged: (p0) {
-                              setState(() {
-                                limitDps = p0!;
-                                pageDps = 0;
-                              });
-                            },
-                            initialItem: limitDps),
-                      ),
-                    ],
-                  ),
-                  dps.when(
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                Row(
+                  children: [
+                    Text('Rows per page:', style: TextStyle(fontSize: 12.wr)),
+                    SizedBox(width: 5.wr),
+                    SizedBox(
+                      width: 60.wr,
+                      child: CustomDropdown(
+                          decoration: CustomDropdownDecoration(
+                            expandedShadow: [
+                              BoxShadow(
+                                  color: Theme.of(context).colorScheme.shadow,
+                                  offset: const Offset(0, 3),
+                                  blurRadius: 6,
+                                  spreadRadius: 0)
+                            ],
+                            closedFillColor: Theme.of(context).colorScheme.surfaceContainerLow,
+                            closedBorder: Border.all(color: Theme.of(context).colorScheme.outline),
+                            expandedBorder: Border.all(color: Theme.of(context).colorScheme.outline),
+                            expandedFillColor: Theme.of(context).colorScheme.surfaceContainerHigh,
+                            listItemStyle: TextStyle(fontSize: 12.wr),
+                            headerStyle: TextStyle(fontSize: 12.wr),
+                            expandedSuffixIcon: Icon(Icons.arrow_drop_up, size: 10.wr),
+                            closedSuffixIcon: Icon(Icons.arrow_drop_down, size: 10.wr),
+                          ),
+                          closedHeaderPadding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 5.wr),
+                          expandedHeaderPadding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 5.wr),
+                          itemsListPadding: const EdgeInsets.all(0),
+                          listItemPadding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 5.wr),
+                          items: const [10, 20, 50, 100],
+                          onChanged: (p0) {
+                            setState(() {
+                              limitDps = p0!;
+                              pageDps = 0;
+                            });
+                          },
+                          initialItem: limitDps),
+                    ),
+                  ],
+                ),
+                dps.when(
                     data: (data) {
                       final hasNextPage = (pageDps + 1) * limitDps < data.$1;
                       return Row(
@@ -600,14 +656,9 @@ class _ProfileBodyState extends ConsumerState<ProfileBody> {
                       );
                     },
                     error: (_, __) => const SizedBox.shrink(),
-                    loading: () => SizedBox(width: 20.wr, height: 20.wr, child: const CircularProgressIndicator()),
-                  ),
-                ],
-              ),
-              200.verticalSpace,
-            ],
-          ),
-        ),
+                    loading: () => SizedBox(width: 20.wr, height: 20.wr, child: const CircularProgressIndicator()))
+              ])
+            ])),
       ],
     );
   }

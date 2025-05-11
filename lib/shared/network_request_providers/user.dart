@@ -94,7 +94,7 @@ Future<void> resendVerificationEmail(Ref ref, String email) async {
 }
 
 @riverpod
-Future<UserProfileInfo> fetchPublicAccountInfo(Ref ref, String competitorId) async {
+Future<(User user, UserProfileInfo accountInfo)> fetchPublicAccountInfo(Ref ref, String competitorId) async {
   final cancelToken = await ref.cancelToken();
   final result = await ref.watch(userApiProvider).fetchPublicAccountInfo(competitorId, cancelToken: cancelToken);
   return result.fold(

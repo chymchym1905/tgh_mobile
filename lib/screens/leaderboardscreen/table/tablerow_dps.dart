@@ -15,7 +15,11 @@ class TableRowDps extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: 10.wr),
             child: Row(children: [
               SizedBox(width: 10.wr),
-              rankColumnContent(context, rank ?? ''),
+              if (MediaQuery.of(context).size.width > kMaxWidthMobile) ...[
+                rankColumnContent(context, rank ?? ''),
+                SizedBox(width: 10.wr),
+              ],
+              userColumnContent(context, dps.competitor.id, dps.competitor.alias),
               SizedBox(width: 10.wr),
               gameVersionColumnContent(context, dps.gameVersion),
               SizedBox(width: 10.wr),
@@ -59,7 +63,11 @@ class TableRowDpsEvent extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: 10.wr),
             child: Row(children: [
               SizedBox(width: 10.wr),
-              rankColumnContent(context, rank ?? ''),
+              if (MediaQuery.of(context).size.width > kMaxWidthMobile) ...[
+                rankColumnContent(context, rank ?? ''),
+                SizedBox(width: 10.wr),
+              ],
+              userColumnContent(context, dps.competitor.id, dps.competitor.alias),
               SizedBox(width: 10.wr),
               gameVersionColumnContent(context, dps.gameVersion),
               SizedBox(width: 10.wr),

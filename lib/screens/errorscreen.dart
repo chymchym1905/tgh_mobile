@@ -9,11 +9,18 @@ class ErrorScreen extends StatelessWidget {
     return Scaffold(
       body: ListView(
         children: [
-          SizedBox(width: 200, child: Image.asset('assets/icons/Qiqidead.jpg')),
+          Center(
+              child: SizedBox(
+                  width: MediaQuery.of(context).size.height * 0.5,
+                  height: MediaQuery.of(context).size.height * 0.5,
+                  child: Image.asset('assets/icons/Qiqidead.jpg'))),
           8.verticalSpace,
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Text(error.join('\n'), textAlign: TextAlign.start),
+            child: Center(
+                child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.6,
+                    child: SelectableText(error.join('\n'), textAlign: TextAlign.start))),
           ),
           8.verticalSpace,
           Center(child: InkWellTextButton(onTap: () => context.pop(), text: 'Back')),

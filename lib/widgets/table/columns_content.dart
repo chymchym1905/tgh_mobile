@@ -1,4 +1,5 @@
 import 'package:tgh_mobile/imports.dart';
+import 'package:collection/collection.dart';
 
 Widget verifiedColumnContent(BuildContext context, bool verified) {
   return Expanded(
@@ -27,6 +28,17 @@ Widget abyssVersionColumnContent(BuildContext context, String? abyssVersion) {
       flex: 1,
       child: Center(
           child: Text(abyssVersion ?? '',
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+              style: TextStyle(fontSize: 10.wr, fontWeight: FontWeight.bold))));
+}
+
+Widget eventColumnContent(BuildContext context, String? event) {
+  return Expanded(
+      flex: 2,
+      child: Center(
+          child: Text(event ?? '',
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
@@ -73,7 +85,7 @@ Widget teamColumnContent(BuildContext context, List<String?> team1, List<String?
                               switch (data) {
                                 case GameAssetStateLoaded(:final characters):
                                   return UniformCircleAvatar(
-                                      url: characters!.firstWhere((element) => element.name == e).avatar!,
+                                      url: characters?.firstWhereOrNull((element) => element.name == e)?.avatar ?? '',
                                       radius: 13.wr);
                                 default:
                                   return UniformCircleAvatar(url: '', radius: 13.wr);
@@ -94,7 +106,8 @@ Widget teamColumnContent(BuildContext context, List<String?> team1, List<String?
                                   switch (data) {
                                     case GameAssetStateLoaded(:final characters):
                                       return UniformCircleAvatar(
-                                          url: characters!.firstWhere((element) => element.name == e).avatar!,
+                                          url: characters!.firstWhereOrNull((element) => element.name == e)?.avatar ??
+                                              '',
                                           radius: 13.wr);
                                     default:
                                       return UniformCircleAvatar(url: '', radius: 13.wr);
@@ -122,7 +135,7 @@ Widget team1ColumnContent(BuildContext context, List<String?> team1) {
                               switch (data) {
                                 case GameAssetStateLoaded(:final characters):
                                   return UniformCircleAvatar(
-                                      url: characters!.firstWhere((element) => element.name == e).avatar!,
+                                      url: characters?.firstWhereOrNull((element) => element.name == e)?.avatar ?? '',
                                       radius: 13.wr);
                                 default:
                                   return UniformCircleAvatar(url: '', radius: 13.wr);
@@ -150,7 +163,7 @@ Widget team2ColumnContent(BuildContext context, List<String?>? team2) {
                               switch (data) {
                                 case GameAssetStateLoaded(:final characters):
                                   return UniformCircleAvatar(
-                                      url: characters!.firstWhere((element) => element.name == e).avatar!,
+                                      url: characters?.firstWhereOrNull((element) => element.name == e)?.avatar ?? '',
                                       radius: 13.wr);
                                 default:
                                   return UniformCircleAvatar(url: '', radius: 13.wr);
@@ -169,21 +182,25 @@ Widget characterUsageColumnContent(BuildContext context, List<CharacterUsage>? c
         flex: 4,
         child: Center(
             child: characterUsage != null && characterUsage.isNotEmpty
-                ? Wrap(direction: Axis.horizontal, spacing: 4.wr, children: [
-                    ...characterUsage.take(3).map((e) => assets.maybeWhen(
-                        data: (data) {
-                          switch (data) {
-                            case GameAssetStateLoaded(:final characters):
-                              return UniformCircleAvatar(
-                                  url: characters!.firstWhere((element) => element.name == e.character).avatar!,
-                                  radius: 13.wr);
-                            default:
-                              return UniformCircleAvatar(url: '', radius: 13.wr);
-                          }
-                        },
-                        orElse: () => UniformCircleAvatar(url: '', radius: 13.wr))),
-                    if (characterUsage.length > 3) Icon(Icons.more_vert, size: 13.wr)
-                  ])
+                ? Wrap(
+                    direction: Axis.horizontal,
+                    spacing: 4.wr,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                        ...characterUsage.take(3).map((e) => assets.maybeWhen(
+                            data: (data) {
+                              switch (data) {
+                                case GameAssetStateLoaded(:final characters):
+                                  return UniformCircleAvatar(
+                                      url: characters!.firstWhere((element) => element.name == e.character).avatar!,
+                                      radius: 13.wr);
+                                default:
+                                  return UniformCircleAvatar(url: '', radius: 13.wr);
+                              }
+                            },
+                            orElse: () => UniformCircleAvatar(url: '', radius: 13.wr))),
+                        if (characterUsage.length > 3) Icon(Icons.more_horiz, size: 13.wr * 2)
+                      ])
                 : const SizedBox.shrink()));
   });
 }
@@ -255,23 +272,26 @@ Widget supportsColumnContent(BuildContext context, List<String?> supports) {
     return Expanded(
         flex: 4,
         child: Center(
-            child:
-                Wrap(crossAxisAlignment: WrapCrossAlignment.end, direction: Axis.horizontal, spacing: 4.wr, children: [
-          ...supports.take(3).map((e) => assets.maybeWhen(
-              data: (data) {
-                switch (data) {
-                  case GameAssetStateLoaded(:final characters):
-                    return UniformCircleAvatar(
-                        url: characters!.firstWhere((element) => element.name == e).avatar!, radius: 13.wr);
-                  default:
-                    return UniformCircleAvatar(url: '', radius: 13.wr);
-                }
-              },
-              orElse: () => UniformCircleAvatar(url: '', radius: 13.wr))),
-          if (supports.length > 3) ...[
-            Icon(Icons.more_horiz, size: 13.wr),
-          ],
-        ])));
+            child: Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                direction: Axis.horizontal,
+                spacing: 4.wr,
+                children: [
+              ...supports.take(3).map((e) => assets.maybeWhen(
+                  data: (data) {
+                    switch (data) {
+                      case GameAssetStateLoaded(:final characters):
+                        return UniformCircleAvatar(
+                            url: characters!.firstWhere((element) => element.name == e).avatar!, radius: 13.wr);
+                      default:
+                        return UniformCircleAvatar(url: '', radius: 13.wr);
+                    }
+                  },
+                  orElse: () => UniformCircleAvatar(url: '', radius: 13.wr))),
+              if (supports.length > 3) ...[
+                Icon(Icons.more_horiz, size: 13.wr),
+              ],
+            ])));
   });
 }
 
@@ -323,4 +343,19 @@ Widget attackTypeColumnContent(BuildContext context, String char, String attackT
           orElse: () => UniformCircleAvatar(url: '', radius: 13.wr),
         )));
   });
+}
+
+Widget userColumnContent(BuildContext context, String pfpurl, String alias) {
+  return Expanded(
+      flex: 2,
+      child: Center(
+          child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+        UniformCircleAvatar(url: pfpUrl(pfpurl), radius: 13.wr),
+        const SizedBox(height: 6),
+        Text(alias,
+            textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 2,
+            style: TextStyle(fontSize: 10.wr, fontWeight: FontWeight.bold))
+      ])));
 }

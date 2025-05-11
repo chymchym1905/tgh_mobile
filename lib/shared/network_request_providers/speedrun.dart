@@ -37,7 +37,7 @@ Future<(int count, List<Speedrun> speedruns)> fetchCompetitorSpeedruns(Ref ref,
 }
 
 @riverpod
-Future<(int count, List<Speedrun> speedruns)> fetchSpeedrun(Ref ref,
+Future<(int count, List<Speedrun> speedruns, List<CharUsageLbDisplay> charSnapshots)> fetchSpeedrun(Ref ref,
     {required String sortBy,
     required String sortDir,
     required int page,

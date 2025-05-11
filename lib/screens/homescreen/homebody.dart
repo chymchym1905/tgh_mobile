@@ -81,7 +81,7 @@ class _HomeBodyState extends ConsumerState<HomeBody> {
         ),
         SliverToBoxAdapter(
           child: SizedBox(
-            height: MediaQuery.of(context).size.height - kToolbarHeight - 24,
+            height: MediaQuery.of(context).size.height - kToolbarHeight,
             child: Row(children: [
               if (MediaQuery.of(context).size.width > kMaxWidthTabletLandscape) ...[
                 AnimatedContainer(

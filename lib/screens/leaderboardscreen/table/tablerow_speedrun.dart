@@ -13,12 +13,15 @@ class TableRowAbyss extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: 10.wr),
             child: Row(children: [
               SizedBox(width: 10.wr),
-              rankColumnContent(context, rank ?? ''),
+              if (MediaQuery.of(context).size.width > tableThresholdWidth) ...[
+                rankColumnContent(context, rank ?? ''),
+                SizedBox(width: 10.wr),
+              ],
+              userColumnContent(context, speedrun.competitor.id, speedrun.competitor.alias),
               SizedBox(width: 10.wr),
               timeColumnContent(context, speedrun.time),
               SizedBox(width: 10.wr),
               subCategoryColumnContent(context, speedrun.speedrunSubcategory ?? ''),
-              SizedBox(width: 10.wr),
               SizedBox(width: 10.wr),
               if (MediaQuery.of(context).size.width < tableThresholdWidth) ...[
                 teamColumnContent(context, speedrun.team1, speedrun.team2),
@@ -55,7 +58,11 @@ class TableRowDomain extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: 10.wr),
             child: Row(children: [
               SizedBox(width: 10.wr),
-              rankColumnContent(context, rank ?? ''),
+              if (MediaQuery.of(context).size.width > tableThresholdWidth) ...[
+                rankColumnContent(context, rank ?? ''),
+                SizedBox(width: 10.wr),
+              ],
+              userColumnContent(context, speedrun.competitor.id, speedrun.competitor.alias),
               SizedBox(width: 10.wr),
               timeColumnContent(context, speedrun.time),
               SizedBox(width: 10.wr),
@@ -95,7 +102,11 @@ class TableRowEvent extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: 10.wr),
             child: Row(children: [
               SizedBox(width: 10.wr),
-              rankColumnContent(context, rank ?? ''),
+              if (MediaQuery.of(context).size.width > tableThresholdWidth) ...[
+                rankColumnContent(context, rank ?? ''),
+                SizedBox(width: 10.wr),
+              ],
+              userColumnContent(context, speedrun.competitor.id, speedrun.competitor.alias),
               SizedBox(width: 10.wr),
               timeColumnContent(context, speedrun.time),
               SizedBox(width: 10.wr),
@@ -137,7 +148,11 @@ class TableRowBoss extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: 10.wr),
             child: Row(children: [
               SizedBox(width: 10.wr),
-              rankColumnContent(context, rank ?? ''),
+              if (MediaQuery.of(context).size.width > tableThresholdWidth) ...[
+                rankColumnContent(context, rank ?? ''),
+                SizedBox(width: 10.wr),
+              ],
+              userColumnContent(context, speedrun.competitor.id, speedrun.competitor.alias),
               SizedBox(width: 10.wr),
               enemyColumnContent(context, speedrun.speedrunSubcategory ?? ''),
               SizedBox(width: 10.wr),

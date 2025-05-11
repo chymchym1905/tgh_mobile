@@ -25,6 +25,6 @@ class FilterOverlay extends StatelessWidget {
             constraints: BoxConstraints(maxHeight: 350.h, minHeight: 200.h),
             child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 10),
-                child: Filter(type: type, category: category))));
+                child: Filter(type: type, category: category, onFilterChanged: onFilterChanged))));
   }
 }

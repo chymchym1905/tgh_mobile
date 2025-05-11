@@ -16,3 +16,4 @@ export 'user_profile_info/accountsnapshot/accountsnapshot.dart';
 export 'user_profile_info/character_usage/character_usage.dart';
 export 'user_profile_info/character_snapshot/character_snapshot_all.dart';
 export 'user_profile_info/userprofileinfo.dart';
+export 'user_profile_info/char_usage_lb_display/char_usage_lb_display.dart';
