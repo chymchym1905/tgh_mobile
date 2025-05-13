@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:tgh_mobile/imports.dart';
 
 class Filter extends ConsumerStatefulWidget {
@@ -7,47 +9,131 @@ class Filter extends ConsumerStatefulWidget {
   final void Function(Map<String, dynamic>) onFilterChanged;
 
   @override
-  ConsumerState<Filter> createState() => _FilterState();
+  ConsumerState<Filter> createState() => FilterState();
 }
 
-class _FilterState extends ConsumerState<Filter> {
-  final SingleSelectController<String> abyssVersionController =
-      SingleSelectController<String>(ABYSS_VERSION_HISTORY.last);
-  final SingleSelectController<String?> regionController = SingleSelectController<String?>(null);
-  final SingleSelectController<CompetitorSearchResult?> nameController =
+class FilterState extends ConsumerState<Filter> {
+  SingleSelectController<String> abyssVersionController = SingleSelectController<String>(ABYSS_VERSION_HISTORY.last);
+  SingleSelectController<String?> regionController = SingleSelectController<String?>(null);
+  SingleSelectController<CompetitorSearchResult?> nameController =
       SingleSelectController<CompetitorSearchResult?>(null);
-  final SingleSelectController<String?> floorController = SingleSelectController<String?>(null);
-  final MultiSelectController<String?> charactersController = MultiSelectController<String?>([]);
-  final SingleSelectController<String?> enemyController = SingleSelectController<String?>(null);
-  final SingleSelectController<String> domainController = SingleSelectController<String>(DOMAIN.first);
-  late final SingleSelectController<String> eventController =
-      SingleSelectController<String>(widget.type == 'Speedrun' ? SPEEDRUN_EVENTS.first : DPS_EVENTS.first);
-  final SingleSelectController<String?> attackTypeController = SingleSelectController<String?>(null);
+  SingleSelectController<String?> floorController = SingleSelectController<String?>(null);
+  MultiSelectController<String?> charactersController = MultiSelectController<String?>([]);
+  SingleSelectController<String?> enemyController = SingleSelectController<String?>(null);
+  SingleSelectController<String?> domainController = SingleSelectController<String?>(null);
+  SingleSelectController<String?> eventController = SingleSelectController<String?>(null);
+  SingleSelectController<String?> attackTypeController = SingleSelectController<String?>(null);
   double _dragAccumulator = 0.0;
 
-  String? abyssVersion;
-  String? floor;
-  String? region;
-  String? name;
-  List<String?> characterFilter = [];
-  String? enemy;
-  String? domain;
-  String? event;
-  String? attackType;
+  // Flag to track if changes are being made programmatically
+  bool _isInitializing = false;
 
-  void updateFilter() {
-    final filter = <String, dynamic>{};
-    if (abyssVersion != null) filter['abyss_version'] = abyssVersion;
-    if (floor != null) filter['speedrun_subcategory'] = floor;
-    if (region != null) filter['region'] = region;
-    if (name != null) filter['competitor'] = name;
-    if (characterFilter.isNotEmpty) filter['characters'] = characterFilter;
-    if (enemy != null) filter['enemy'] = enemy;
-    if (domain != null) filter['domain'] = domain;
-    if (event != null) filter['event'] = event;
-    if (attackType != null) filter['attack_type'] = attackType;
+  Map<String, dynamic> localFilter = <String, dynamic>{};
 
-    widget.onFilterChanged(filter);
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _initFilter();
+    });
+
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(Filter oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.category != widget.category) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        _initFilter();
+      });
+    }
+  }
+
+  void updateFilter(String filter) {
+    // Skip updates during initialization
+    if (_isInitializing) return;
+
+    if (widget.type == 'Speedrun') {
+      if (filter == 'Alias') {
+        localFilter['competitor'] =
+            CompetitorSearchResult(alias: nameController.value?.alias ?? '', id: nameController.value?.id ?? '');
+      } else if (filter == 'Abyss Version') {
+        localFilter['abyss_version'] = abyssVersionController.value;
+      } else if (filter == 'Floor') {
+        localFilter['speedrun_subcategory'] = floorController.value;
+      } else if (filter == 'Domain') {
+        localFilter['speedrun_subcategory'] = domainController.value;
+      } else if (filter == 'Event') {
+        localFilter['abyss_version'] = eventController.value;
+      } else if (filter == 'Enemy') {
+        localFilter['speedrun_subcategory'] = enemyController.value;
+      } else if (filter == 'Region') {
+        localFilter['region'] = regionController.value;
+      } else if (filter == 'Characters') {
+        log(charactersController.value.toString(), name: 'Character controller');
+        final charactersList = List<String?>.from(charactersController.value);
+
+        // Create a new map with the correct type and copy all existing entries
+        final newFilter = <String, dynamic>{};
+        localFilter.forEach((key, value) {
+          newFilter[key] = value;
+        });
+
+        // Add the characters list to the new map
+        newFilter['characters'] = charactersList;
+
+        // Replace the old map with the new one
+        localFilter = newFilter;
+
+        if (charactersList.isEmpty) {
+          localFilter.remove('characters');
+        }
+      }
+    } else if (widget.type == 'DPS' || widget.type == 'Restricted DPS') {
+      if (filter == 'Alias') {
+        localFilter['competitor'] =
+            CompetitorSearchResult(alias: nameController.value?.alias ?? '', id: nameController.value?.id ?? '');
+      } else if (filter == 'Region') {
+        localFilter['region'] = regionController.value;
+      } else if (filter == 'Characters') {
+        log(charactersController.value.toString(), name: 'Character controller');
+        final charactersList = List<String?>.from(charactersController.value);
+
+        // Create a new map with the correct type and copy all existing entries
+        final newFilter = <String, dynamic>{};
+        localFilter.forEach((key, value) {
+          newFilter[key] = value;
+        });
+
+        // Add the characters list to the new map
+        newFilter['characters'] = charactersList;
+
+        // Replace the old map with the new one
+        localFilter = newFilter;
+
+        if (charactersList.isEmpty) {
+          localFilter.remove('characters');
+        }
+      } else if (filter == 'Attack Type') {
+        localFilter['attack_type'] = attackTypeController.value;
+      } else if (filter == 'Enemy') {
+        localFilter['speedrun_subcategory'] = enemyController.value;
+      } else if (filter == 'Domain') {
+        localFilter['speedrun_subcategory'] = domainController.value;
+      } else if (filter == 'Event') {
+        localFilter['abyss_version'] = eventController.value;
+      }
+    }
+    log('$localFilter', name: 'Local Filter');
+    widget.onFilterChanged(localFilter);
+  }
+
+  void resetFilter() {
+    if (widget.type == 'Speedrun') {
+      final filterStorage = ref.read(speedrunLeaderboardFilterNotifierProvider);
+      localFilter = filterStorage.defaultAppliedFilter[widget.category] as Map<String, dynamic>;
+      widget.onFilterChanged(localFilter);
+    }
   }
 
   @override
@@ -105,10 +191,10 @@ class _FilterState extends ConsumerState<Filter> {
                   itemsListPadding: const EdgeInsets.all(0),
                   listItemPadding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 10),
                   controller: nameController,
+                  futureRequestDelay: const Duration(milliseconds: 500),
                   onChanged: (p0) {
                     setState(() {
-                      name = p0?.id;
-                      updateFilter();
+                      updateFilter('Alias');
                     });
                   })
             ],
@@ -171,8 +257,9 @@ class _FilterState extends ConsumerState<Filter> {
                       items: ABYSS_VERSION_HISTORY.reversed.toList(),
                       controller: abyssVersionController,
                       onChanged: (p0) {
-                        abyssVersion = p0;
-                        updateFilter();
+                        setState(() {
+                          updateFilter('Abyss Version');
+                        });
                       }),
                 )
               ],
@@ -248,8 +335,7 @@ class _FilterState extends ConsumerState<Filter> {
                       controller: floorController,
                       onChanged: (p0) {
                         setState(() {
-                          floor = p0;
-                          updateFilter();
+                          updateFilter('Floor');
                         });
                       }))
             ])),
@@ -285,7 +371,7 @@ class _FilterState extends ConsumerState<Filter> {
                       _dragAccumulator = 0.0;
                     }
                   },
-                  child: CustomDropdown<String>(
+                  child: CustomDropdown<String?>(
                       decoration: CustomDropdownDecoration(
                         expandedShadow: [
                           BoxShadow(
@@ -313,8 +399,9 @@ class _FilterState extends ConsumerState<Filter> {
                       items: DOMAIN,
                       controller: domainController,
                       onChanged: (p0) {
-                        domain = p0;
-                        updateFilter();
+                        setState(() {
+                          updateFilter('Domain');
+                        });
                       }))
             ])),
       if (widget.category == 'Event')
@@ -349,7 +436,7 @@ class _FilterState extends ConsumerState<Filter> {
                       _dragAccumulator = 0.0;
                     }
                   },
-                  child: CustomDropdown<String>(
+                  child: CustomDropdown<String?>(
                       decoration: CustomDropdownDecoration(
                         expandedShadow: [
                           BoxShadow(
@@ -387,8 +474,9 @@ class _FilterState extends ConsumerState<Filter> {
                       items: widget.type == 'Speedrun' ? SPEEDRUN_EVENTS : DPS_EVENTS,
                       controller: eventController,
                       onChanged: (p0) {
-                        event = p0;
-                        updateFilter();
+                        setState(() {
+                          updateFilter('Event');
+                        });
                       }))
             ])),
       if ((widget.type == 'DPS' || widget.category == 'Weekly Boss' || widget.category == 'World Boss') &&
@@ -472,8 +560,7 @@ class _FilterState extends ConsumerState<Filter> {
                       controller: enemyController,
                       onChanged: (p0) {
                         setState(() {
-                          enemy = p0;
-                          updateFilter();
+                          updateFilter('Enemy');
                         });
                       }))
             ])),
@@ -548,8 +635,7 @@ class _FilterState extends ConsumerState<Filter> {
                       controller: attackTypeController,
                       onChanged: (p0) {
                         setState(() {
-                          attackType = p0;
-                          updateFilter();
+                          updateFilter('Attack Type');
                         });
                       }))
             ])),
@@ -623,8 +709,7 @@ class _FilterState extends ConsumerState<Filter> {
                     controller: regionController,
                     onChanged: (p0) {
                       setState(() {
-                        region = p0;
-                        updateFilter();
+                        updateFilter('Region');
                       });
                     }))
           ])),
@@ -682,12 +767,353 @@ class _FilterState extends ConsumerState<Filter> {
                       multiSelectController: charactersController,
                       onListChanged: (p0) {
                         setState(() {
-                          characterFilter = p0;
-                          updateFilter();
+                          updateFilter('Characters');
                         });
                       })
                 ]));
           })
     ]);
+  }
+
+  void _initFilter() {
+    try {
+      // Set the flag to prevent unwanted updates
+      _isInitializing = true;
+
+      if (widget.type == 'Speedrun') {
+        final filterStorage = ref.watch(speedrunLeaderboardFilterNotifierProvider);
+        log('Filter category: ${widget.category}'); // Debug print
+
+        if (widget.category == 'Abyss') {
+          if ((filterStorage.defaultAppliedFilter['Abyss'] as Map<String, dynamic>)
+              .contentNotEquals(filterStorage.appliedFilter)) {
+            abyssVersionController.value = filterStorage.rawFilter['abyss_version'] as String;
+            if (filterStorage.appliedFilter['region'] != null) {
+              regionController.value = filterStorage.appliedFilter['region'] as String?;
+            }
+            if (filterStorage.appliedFilter['speedrun_subcategory'] != null) {
+              floorController.value = filterStorage.rawFilter['speedrun_subcategory'] as String?;
+            }
+            if (filterStorage.appliedFilter['characters'] != null) {
+              charactersController.value = filterStorage.rawFilter['characters'] as List<String?>;
+            }
+            if (filterStorage.appliedFilter['competitor'] != null) {
+              nameController.value = filterStorage.rawFilter['competitor'] as CompetitorSearchResult?;
+            }
+            localFilter = filterStorage.appliedFilter;
+          } else {
+            nameController.value = filterStorage.defaultFitlerValuesAbyss['competitor'] as CompetitorSearchResult?;
+            abyssVersionController.value = filterStorage.defaultFitlerValuesAbyss['abyss_version'] as String;
+            regionController.value = filterStorage.defaultFitlerValuesAbyss['region'] as String?;
+            floorController.value = filterStorage.defaultFitlerValuesAbyss['speedrun_subcategory'] as String?;
+            charactersController.value = filterStorage.defaultFitlerValuesAbyss['characters'] as List<String?>;
+            localFilter = filterStorage.defaultAppliedFilter['Abyss'] as Map<String, dynamic>;
+          }
+        } else if (widget.category == 'Domain') {
+          if ((filterStorage.defaultAppliedFilter['Domain'] as Map<String, dynamic>)
+              .contentNotEquals(filterStorage.appliedFilter)) {
+            domainController.value = filterStorage.rawFilter['speedrun_subcategory'] as String;
+            if (filterStorage.appliedFilter['region'] != null) {
+              regionController.value = filterStorage.rawFilter['region'] as String?;
+            }
+            if (filterStorage.appliedFilter['characters'] != null) {
+              charactersController.value = filterStorage.rawFilter['characters'] as List<String?>;
+            }
+            if (filterStorage.appliedFilter['competitor'] != null) {
+              nameController.value = filterStorage.rawFilter['competitor'] as CompetitorSearchResult?;
+            }
+            localFilter = filterStorage.appliedFilter;
+          } else {
+            domainController.value = filterStorage.defaultFitlerValuesDomain['speedrun_subcategory'] as String;
+            regionController.value = filterStorage.defaultFitlerValuesDomain['region'] as String?;
+            charactersController.value = filterStorage.defaultFitlerValuesDomain['characters'] as List<String?>;
+            nameController.value = filterStorage.defaultFitlerValuesDomain['competitor'] as CompetitorSearchResult?;
+            localFilter = filterStorage.defaultAppliedFilter['Domain'] as Map<String, dynamic>;
+          }
+        } else if (widget.category == 'Event') {
+          if ((filterStorage.defaultAppliedFilter['Event'] as Map<String, dynamic>)
+              .contentNotEquals(filterStorage.appliedFilter)) {
+            eventController.value = filterStorage.rawFilter['abyss_version'] as String;
+            if (filterStorage.appliedFilter['region'] != null) {
+              regionController.value = filterStorage.rawFilter['region'] as String?;
+            }
+            if (filterStorage.appliedFilter['characters'] != null) {
+              charactersController.value = filterStorage.rawFilter['characters'] as List<String?>;
+            }
+            if (filterStorage.appliedFilter['competitor'] != null) {
+              nameController.value = filterStorage.rawFilter['competitor'] as CompetitorSearchResult?;
+            }
+            localFilter = filterStorage.appliedFilter;
+          } else {
+            eventController.value = filterStorage.defaultFitlerValuesEvent['abyss_version'] as String;
+            regionController.value = filterStorage.defaultFitlerValuesEvent['region'] as String?;
+            charactersController.value = filterStorage.defaultFitlerValuesEvent['characters'] as List<String?>;
+            nameController.value = filterStorage.defaultFitlerValuesEvent['competitor'] as CompetitorSearchResult?;
+            localFilter = filterStorage.defaultAppliedFilter['Event'] as Map<String, dynamic>;
+          }
+        } else if (widget.category == 'Weekly Boss') {
+          if ((filterStorage.defaultAppliedFilter['Weekly Boss'] as Map<String, dynamic>)
+              .contentNotEquals(filterStorage.appliedFilter)) {
+            enemyController.value = filterStorage.rawFilter['speedrun_subcategory'] as String?;
+            if (filterStorage.appliedFilter['region'] != null) {
+              regionController.value = filterStorage.rawFilter['region'] as String?;
+            }
+            if (filterStorage.appliedFilter['characters'] != null) {
+              charactersController.value = filterStorage.rawFilter['characters'] as List<String?>;
+            }
+            if (filterStorage.appliedFilter['competitor'] != null) {
+              nameController.value = filterStorage.rawFilter['competitor'] as CompetitorSearchResult?;
+            }
+            localFilter = filterStorage.appliedFilter;
+          } else {
+            enemyController.value = filterStorage.defaultFitlerValuesWeeklyBoss['speedrun_subcategory'] as String?;
+            regionController.value = filterStorage.defaultFitlerValuesWeeklyBoss['region'] as String?;
+            charactersController.value = filterStorage.defaultFitlerValuesWeeklyBoss['characters'] as List<String?>;
+            nameController.value = filterStorage.defaultFitlerValuesWeeklyBoss['competitor'] as CompetitorSearchResult?;
+            localFilter = filterStorage.defaultAppliedFilter['Weekly Boss'] as Map<String, dynamic>;
+          }
+        } else if (widget.category == 'World Boss') {
+          if ((filterStorage.defaultAppliedFilter['World Boss'] as Map<String, dynamic>)
+              .contentNotEquals(filterStorage.appliedFilter)) {
+            enemyController.value = filterStorage.rawFilter['speedrun_subcategory'] as String?;
+            if (filterStorage.appliedFilter['region'] != null) {
+              regionController.value = filterStorage.rawFilter['region'] as String?;
+            }
+            if (filterStorage.appliedFilter['characters'] != null) {
+              charactersController.value = filterStorage.rawFilter['characters'] as List<String?>;
+            }
+            if (filterStorage.appliedFilter['competitor'] != null) {
+              nameController.value = filterStorage.rawFilter['competitor'] as CompetitorSearchResult?;
+            }
+            localFilter = filterStorage.appliedFilter;
+          } else {
+            enemyController.value = filterStorage.defaultFitlerValuesWorldBoss['speedrun_subcategory'] as String?;
+            regionController.value = filterStorage.defaultFitlerValuesWorldBoss['region'] as String?;
+            charactersController.value = filterStorage.defaultFitlerValuesWorldBoss['characters'] as List<String?>;
+            nameController.value = filterStorage.defaultFitlerValuesWorldBoss['competitor'] as CompetitorSearchResult?;
+            localFilter = filterStorage.defaultAppliedFilter['World Boss'] as Map<String, dynamic>;
+          }
+        }
+      } else if (widget.type == 'DPS' || widget.type == 'Restricted DPS') {
+        final filterStorage = widget.type == 'DPS'
+            ? ref.watch(dpsLeaderboardFilterNotifierProvider)
+            : ref.watch(restrictedDpsLeaderboardFilterNotifierProvider);
+        log('Filter category: ${widget.category}'); // Debug print
+        log(filterStorage.toString());
+        if (widget.category == 'Overworld') {
+          if ((filterStorage.defaultAppliedFilter['Overworld'] as Map<String, dynamic>)
+              .contentNotEquals(filterStorage.appliedFilter)) {
+            if (filterStorage.appliedFilter['region'] != null) {
+              regionController.value = filterStorage.appliedFilter['region'] as String?;
+            }
+            if (filterStorage.appliedFilter['characters'] != null) {
+              charactersController.value = filterStorage.rawFilter['characters'] as List<String?>;
+            }
+            if (filterStorage.appliedFilter['attack_type'] != null) {
+              attackTypeController.value = filterStorage.rawFilter['attack_type'] as String?;
+            }
+            if (filterStorage.appliedFilter['competitor'] != null) {
+              nameController.value = filterStorage.rawFilter['competitor'] as CompetitorSearchResult?;
+            }
+            if (filterStorage.appliedFilter['enemy'] != null) {
+              enemyController.value = filterStorage.rawFilter['enemy'] as String?;
+            }
+            localFilter = filterStorage.appliedFilter;
+          } else {
+            regionController.value = filterStorage.defaultFitlerValuesOverworld['region'] as String?;
+            charactersController.value = filterStorage.defaultFitlerValuesOverworld['characters'] as List<String?>;
+            attackTypeController.value = filterStorage.defaultFitlerValuesOverworld['attack_type'] as String?;
+            nameController.value = filterStorage.defaultFitlerValuesOverworld['competitor'] as CompetitorSearchResult?;
+            enemyController.value = filterStorage.defaultFitlerValuesOverworld['enemy'] as String?;
+            localFilter = filterStorage.defaultAppliedFilter['Overworld'] as Map<String, dynamic>;
+          }
+        } else if (widget.category == 'Weekly Boss') {
+          if ((filterStorage.defaultAppliedFilter['Weekly Boss'] as Map<String, dynamic>)
+              .contentNotEquals(filterStorage.appliedFilter)) {
+            if (filterStorage.appliedFilter['region'] != null) {
+              regionController.value = filterStorage.appliedFilter['region'] as String?;
+            }
+            if (filterStorage.appliedFilter['characters'] != null) {
+              charactersController.value = filterStorage.rawFilter['characters'] as List<String?>;
+            }
+            if (filterStorage.appliedFilter['attack_type'] != null) {
+              attackTypeController.value = filterStorage.rawFilter['attack_type'] as String?;
+            }
+            if (filterStorage.appliedFilter['competitor'] != null) {
+              nameController.value = filterStorage.rawFilter['competitor'] as CompetitorSearchResult?;
+            }
+            if (filterStorage.appliedFilter['enemy'] != null) {
+              enemyController.value = filterStorage.rawFilter['enemy'] as String?;
+            }
+            localFilter = filterStorage.appliedFilter;
+          } else {
+            regionController.value = filterStorage.defaultFitlerValuesWeeklyBoss['region'] as String?;
+            charactersController.value = filterStorage.defaultFitlerValuesWeeklyBoss['characters'] as List<String?>;
+            attackTypeController.value = filterStorage.defaultFitlerValuesWeeklyBoss['attack_type'] as String?;
+            nameController.value = filterStorage.defaultFitlerValuesWeeklyBoss['competitor'] as CompetitorSearchResult?;
+            enemyController.value = filterStorage.defaultFitlerValuesWeeklyBoss['enemy'] as String?;
+            localFilter = filterStorage.defaultAppliedFilter['Weekly Boss'] as Map<String, dynamic>;
+          }
+        } else if (widget.category == 'World Boss') {
+          if ((filterStorage.defaultAppliedFilter['World Boss'] as Map<String, dynamic>)
+              .contentNotEquals(filterStorage.appliedFilter)) {
+            if (filterStorage.appliedFilter['region'] != null) {
+              regionController.value = filterStorage.appliedFilter['region'] as String?;
+            }
+            if (filterStorage.appliedFilter['characters'] != null) {
+              charactersController.value = filterStorage.rawFilter['characters'] as List<String?>;
+            }
+            if (filterStorage.appliedFilter['attack_type'] != null) {
+              attackTypeController.value = filterStorage.rawFilter['attack_type'] as String?;
+            }
+            if (filterStorage.appliedFilter['competitor'] != null) {
+              nameController.value = filterStorage.rawFilter['competitor'] as CompetitorSearchResult?;
+            }
+            if (filterStorage.appliedFilter['enemy'] != null) {
+              enemyController.value = filterStorage.rawFilter['enemy'] as String?;
+            }
+            localFilter = filterStorage.appliedFilter;
+          } else {
+            regionController.value = filterStorage.defaultFitlerValuesWorldBoss['region'] as String?;
+            charactersController.value = filterStorage.defaultFitlerValuesWorldBoss['characters'] as List<String?>;
+            attackTypeController.value = filterStorage.defaultFitlerValuesWorldBoss['attack_type'] as String?;
+            nameController.value = filterStorage.defaultFitlerValuesWorldBoss['competitor'] as CompetitorSearchResult?;
+            enemyController.value = filterStorage.defaultFitlerValuesWorldBoss['enemy'] as String?;
+            localFilter = filterStorage.defaultAppliedFilter['World Boss'] as Map<String, dynamic>;
+          }
+        } else if (widget.category == 'Reputation Bounty') {
+          if ((filterStorage.defaultAppliedFilter['Reputation Bounty'] as Map<String, dynamic>)
+              .contentNotEquals(filterStorage.appliedFilter)) {
+            if (filterStorage.appliedFilter['region'] != null) {
+              regionController.value = filterStorage.appliedFilter['region'] as String?;
+            }
+            if (filterStorage.appliedFilter['characters'] != null) {
+              charactersController.value = filterStorage.rawFilter['characters'] as List<String?>;
+            }
+            if (filterStorage.appliedFilter['attack_type'] != null) {
+              attackTypeController.value = filterStorage.rawFilter['attack_type'] as String?;
+            }
+            if (filterStorage.appliedFilter['competitor'] != null) {
+              nameController.value = filterStorage.rawFilter['competitor'] as CompetitorSearchResult?;
+            }
+            if (filterStorage.appliedFilter['enemy'] != null) {
+              enemyController.value = filterStorage.rawFilter['enemy'] as String?;
+            }
+            localFilter = filterStorage.appliedFilter;
+          } else {
+            regionController.value = filterStorage.defaultFitlerValuesReputationBounty['region'] as String?;
+            charactersController.value =
+                filterStorage.defaultFitlerValuesReputationBounty['characters'] as List<String?>;
+            attackTypeController.value = filterStorage.defaultFitlerValuesReputationBounty['attack_type'] as String?;
+            nameController.value =
+                filterStorage.defaultFitlerValuesReputationBounty['competitor'] as CompetitorSearchResult?;
+            enemyController.value = filterStorage.defaultFitlerValuesReputationBounty['enemy'] as String?;
+            localFilter = filterStorage.defaultAppliedFilter['Reputation Bounty'] as Map<String, dynamic>;
+          }
+        } else if (widget.category == 'Abyss') {
+          if ((filterStorage.defaultAppliedFilter['Abyss'] as Map<String, dynamic>)
+              .contentNotEquals(filterStorage.appliedFilter)) {
+            if (filterStorage.appliedFilter['region'] != null) {
+              regionController.value = filterStorage.appliedFilter['region'] as String?;
+            }
+            if (filterStorage.appliedFilter['characters'] != null) {
+              charactersController.value = filterStorage.rawFilter['characters'] as List<String?>;
+            }
+            if (filterStorage.appliedFilter['attack_type'] != null) {
+              attackTypeController.value = filterStorage.rawFilter['attack_type'] as String?;
+            }
+            if (filterStorage.appliedFilter['competitor'] != null) {
+              nameController.value = filterStorage.rawFilter['competitor'] as CompetitorSearchResult?;
+            }
+            if (filterStorage.appliedFilter['enemy'] != null) {
+              enemyController.value = filterStorage.rawFilter['enemy'] as String?;
+            }
+            localFilter = filterStorage.appliedFilter;
+          } else {
+            regionController.value = filterStorage.defaultFitlerValuesAbyss['region'] as String?;
+            charactersController.value = filterStorage.defaultFitlerValuesAbyss['characters'] as List<String?>;
+            attackTypeController.value = filterStorage.defaultFitlerValuesAbyss['attack_type'] as String?;
+            nameController.value = filterStorage.defaultFitlerValuesAbyss['competitor'] as CompetitorSearchResult?;
+            enemyController.value = filterStorage.defaultFitlerValuesAbyss['enemy'] as String?;
+            localFilter = filterStorage.defaultAppliedFilter['Abyss'] as Map<String, dynamic>;
+          }
+        } else if (widget.category == 'Domain') {
+          if ((filterStorage.defaultAppliedFilter['Domain'] as Map<String, dynamic>)
+              .contentNotEquals(filterStorage.appliedFilter)) {
+            if (filterStorage.appliedFilter['region'] != null) {
+              regionController.value = filterStorage.appliedFilter['region'] as String?;
+            }
+            if (filterStorage.appliedFilter['characters'] != null) {
+              charactersController.value = filterStorage.rawFilter['characters'] as List<String?>;
+            }
+            if (filterStorage.appliedFilter['attack_type'] != null) {
+              attackTypeController.value = filterStorage.rawFilter['attack_type'] as String?;
+            }
+            if (filterStorage.appliedFilter['competitor'] != null) {
+              nameController.value = filterStorage.rawFilter['competitor'] as CompetitorSearchResult?;
+            }
+            if (filterStorage.appliedFilter['domain'] != null) {
+              domainController.value = filterStorage.rawFilter['domain'] as String;
+            }
+            localFilter = filterStorage.appliedFilter;
+          } else {
+            regionController.value = filterStorage.defaultFitlerValuesDomain['region'] as String?;
+            charactersController.value = filterStorage.defaultFitlerValuesDomain['characters'] as List<String?>;
+            attackTypeController.value = filterStorage.defaultFitlerValuesDomain['attack_type'] as String?;
+            nameController.value = filterStorage.defaultFitlerValuesDomain['competitor'] as CompetitorSearchResult?;
+            domainController.value = filterStorage.defaultFitlerValuesDomain['domain'] as String;
+            localFilter = filterStorage.defaultAppliedFilter['Domain'] as Map<String, dynamic>;
+          }
+        } else if (widget.category == 'Event') {
+          if ((filterStorage.defaultAppliedFilter['Event'] as Map<String, dynamic>)
+              .contentNotEquals(filterStorage.appliedFilter)) {
+            if (filterStorage.appliedFilter['region'] != null) {
+              regionController.value = filterStorage.appliedFilter['region'] as String?;
+            }
+            if (filterStorage.appliedFilter['characters'] != null) {
+              charactersController.value = filterStorage.rawFilter['characters'] as List<String?>;
+            }
+            if (filterStorage.appliedFilter['attack_type'] != null) {
+              attackTypeController.value = filterStorage.rawFilter['attack_type'] as String?;
+            }
+            if (filterStorage.appliedFilter['competitor'] != null) {
+              nameController.value = filterStorage.rawFilter['competitor'] as CompetitorSearchResult?;
+            }
+            if (filterStorage.appliedFilter['event'] != null) {
+              eventController.value = filterStorage.rawFilter['event'] as String;
+            }
+            localFilter = filterStorage.appliedFilter;
+          } else {
+            regionController.value = filterStorage.defaultFitlerValuesEvent['region'] as String?;
+            charactersController.value = filterStorage.defaultFitlerValuesEvent['characters'] as List<String?>;
+            attackTypeController.value = filterStorage.defaultFitlerValuesEvent['attack_type'] as String?;
+            nameController.value = filterStorage.defaultFitlerValuesEvent['competitor'] as CompetitorSearchResult?;
+            eventController.value = filterStorage.defaultFitlerValuesEvent['event'] as String;
+            localFilter = filterStorage.defaultAppliedFilter['Event'] as Map<String, dynamic>;
+          }
+        }
+      }
+    } catch (e, stackTrace) {
+      log(e.toString(), name: 'Error in Filter');
+      log(stackTrace.toString(), name: 'Error in Filter');
+    } finally {
+      // Reset the flag after initialization is complete
+      _isInitializing = false;
+    }
+  }
+
+  @override
+  void dispose() {
+    // Clean up listeners to prevent memory leaks
+    charactersController.dispose();
+    nameController.dispose();
+    regionController.dispose();
+    abyssVersionController.dispose();
+    floorController.dispose();
+    enemyController.dispose();
+    domainController.dispose();
+    eventController.dispose();
+    attackTypeController.dispose();
+    super.dispose();
   }
 }

@@ -85,6 +85,16 @@ const DPS_CATEGORY_ORDER = [
   'Domain',
 ];
 
+const RESTRICTED_DPS_CATEGORY_ORDER = [
+  'Weekly Boss',
+  'Overworld',
+  'World Boss',
+  'Reputation Bounty',
+  'Abyss',
+  'Event',
+  'Domain',
+];
+
 const REGIONS = [
   'America',
   'China',

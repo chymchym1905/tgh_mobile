@@ -13,6 +13,8 @@ mixin DPSProperties {
   String? get dpsCharElement;
   CharacterCeiling get characterCeiling;
   int get damageDealt;
+  String? get event;
+  String? get domain;
   String get attackType;
   String get dpsCategory;
   String get enemy;
@@ -46,6 +48,7 @@ class DPS with _$DPS, DPSProperties {
     @JsonKey(name: 'damage_dealt') required int damageDealt,
     @JsonKey(name: 'attack_type') required String attackType,
     @JsonKey(name: 'event') String? event,
+    @JsonKey(name: 'domain') String? domain,
     @JsonKey(name: 'dps_category') required String dpsCategory,
     required String enemy,
     @JsonKey(name: 'enemy_lv') required int enemyLevel,

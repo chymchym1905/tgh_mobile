@@ -9,6 +9,7 @@ export 'game_asset/character.dart';
 export 'game_asset/weapon.dart';
 export 'game_asset/artifact.dart';
 export 'game_asset/game_asset_state.dart';
+export 'filter_state/filterstate.dart';
 export 'video_metadata/video_metadata.dart';
 export 'user_profile_info/ranking/ranking.dart';
 export 'user_profile_info/ranking/breakdown.dart';

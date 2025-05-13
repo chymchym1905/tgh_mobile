@@ -1,7 +1,8 @@
 enum SortBy {
   createdAt('created_at'),
   updatedAt('updated_at'),
-  time('time');
+  time('time'),
+  damageDealt('damage_dealt');
 
   const SortBy(this.value);
   final String value;

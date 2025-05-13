@@ -22,18 +22,18 @@ class Competitor with _$Competitor {
 }
 
 class CompetitorSearchResult with CustomDropdownListFilter {
-  final String alias;
-  final String id;
+  String? alias;
+  String? id;
 
-  CompetitorSearchResult({required this.alias, required this.id});
+  CompetitorSearchResult({this.alias, this.id});
 
   @override
   String toString() {
-    return alias;
+    return alias ?? 'null Competitor';
   }
 
   @override
   bool filter(String query) {
-    return alias.contains(query);
+    return alias?.contains(query) ?? false;
   }
 }

@@ -77,3 +77,42 @@ class TableHeaderDpsEvent extends StatelessWidget {
     );
   }
 }
+
+class TableHeaderDpsDomain extends StatelessWidget {
+  const TableHeaderDpsDomain({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        SizedBox(width: 10.wr),
+        if (MediaQuery.of(context).size.width > kMaxWidthMobile) ...[
+          rankColumn(context),
+          SizedBox(width: 10.wr),
+        ],
+        userColumn(context),
+        SizedBox(width: 10.wr),
+        gameVersionColumn(context),
+        SizedBox(width: 10.wr),
+        domainColumn(context),
+        SizedBox(width: 10.wr),
+        nukerColumn(context),
+        SizedBox(width: 10.wr),
+        if (MediaQuery.of(context).size.width > kMaxWidthMobile) ...[
+          supportsColumn(context),
+          SizedBox(width: 10.wr),
+        ],
+        damageColumn(context),
+        SizedBox(width: 10.wr),
+        if (MediaQuery.of(context).size.width > tableThresholdWidth) ...[
+          characterUsageColumn(context),
+          SizedBox(width: 10.wr),
+        ],
+        if (MediaQuery.of(context).size.width > kMaxWidthMobile) ...[
+          optionsColumn(context),
+          SizedBox(width: 10.wr),
+        ]
+      ],
+    );
+  }
+}

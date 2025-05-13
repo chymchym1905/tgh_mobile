@@ -6,3 +6,4 @@ export 'feed.dart';
 export 'game_asset.dart';
 export 'speedrun.dart';
 export 'user.dart';
+export 'restricted_dps.dart';

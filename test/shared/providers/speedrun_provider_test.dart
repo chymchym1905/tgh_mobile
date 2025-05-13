@@ -73,7 +73,8 @@ void main() {
     });
 
     test('fetchSpeedrun returns paginated speedruns', () async {
-      final states = List<AsyncValue<(int count, List<Speedrun> speedruns)>>.empty(growable: true);
+      final states = List<AsyncValue<(int count, List<Speedrun> speedruns, List<CharUsageLbDisplay> charUsage)>>.empty(
+          growable: true);
       final provider = fetchSpeedrunProvider(
         sortBy: 'created_at',
         sortDir: 'desc',
@@ -94,7 +95,7 @@ void main() {
       final data = states.last.value;
       log(states.toString());
       expect(data, isNotNull);
-      expect(data, isA<(int count, List<Speedrun> speedruns)>());
+      expect(data, isA<(int count, List<Speedrun> speedruns, List<CharUsageLbDisplay> charUsage)>());
 
       for (final speedrun in data!.$2) {
         expect(speedrun.approved, isTrue);

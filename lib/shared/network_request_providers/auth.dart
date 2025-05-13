@@ -22,7 +22,11 @@ class AuthNotifier extends _$AuthNotifier {
       final cancelToken = await ref.cancelToken();
       final currentUser = await _authApi.checkAuth(cancelToken: cancelToken);
       return currentUser.fold(
-        (failure) => const AuthStateLoggedOut(),
+        (failure) {
+          _dioNetworkService.removeAuthHeader();
+          _sharedPrefs.remove(APP_AUTH_TOKEN_STORAGE_KEY);
+          return const AuthStateLoggedOut();
+        },
         (success) => AuthState.authenticated(success, localAuthToken),
       );
     }

@@ -44,6 +44,7 @@ class Feed with _$Feed {
     @JsonKey(name: 'attack_type') required String attackType,
     @JsonKey(name: 'dps_category') required String dpsCategory,
     @JsonKey(name: 'event') String? event,
+    @JsonKey(name: 'domain') String? domain,
     required String enemy,
     @JsonKey(name: 'enemy_lv') required int enemyLevel,
     required bool stunned,

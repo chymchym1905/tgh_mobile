@@ -46,14 +46,27 @@ Widget eventColumnContent(BuildContext context, String? event) {
 }
 
 Widget timeColumnContent(BuildContext context, int time) {
+  final timeString = parseTime(time);
   return Expanded(
       flex: 1,
       child: Center(
-          child: Text(parseTime(time),
-              textAlign: TextAlign.center,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-              style: TextStyle(fontSize: 10.wr, fontWeight: FontWeight.bold))));
+          child: Tooltip(
+              message: timeString,
+              preferBelow: false,
+              showDuration: const Duration(seconds: 2),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.9),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              textStyle: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface,
+                fontSize: 12.wr,
+              ),
+              child: Text(timeString,
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  style: TextStyle(fontSize: 10.wr, fontWeight: FontWeight.bold)))));
 }
 
 Widget subCategoryColumnContent(BuildContext context, String? subCategory) {
@@ -79,6 +92,7 @@ Widget teamColumnContent(BuildContext context, List<String?> team1, List<String?
                 child: Wrap(
                     direction: Axis.horizontal,
                     spacing: 4.wr,
+                    runSpacing: 4,
                     children: team1
                         .map((e) => assets.maybeWhen(
                             data: (data) {
@@ -100,6 +114,7 @@ Widget teamColumnContent(BuildContext context, List<String?> team1, List<String?
                     child: Wrap(
                         direction: Axis.horizontal,
                         spacing: 4.wr,
+                        runSpacing: 4,
                         children: team2
                             .map((e) => assets.maybeWhen(
                                 data: (data) {
@@ -129,6 +144,7 @@ Widget team1ColumnContent(BuildContext context, List<String?> team1) {
                 ? Wrap(
                     direction: Axis.horizontal,
                     spacing: 4.wr,
+                    runSpacing: 4,
                     children: team1
                         .map((e) => assets.maybeWhen(
                             data: (data) {
@@ -157,6 +173,7 @@ Widget team2ColumnContent(BuildContext context, List<String?>? team2) {
                 ? Wrap(
                     direction: Axis.horizontal,
                     spacing: 4.wr,
+                    runSpacing: 4,
                     children: team2
                         .map((e) => assets.maybeWhen(
                             data: (data) {
@@ -185,6 +202,7 @@ Widget characterUsageColumnContent(BuildContext context, List<CharacterUsage>? c
                 ? Wrap(
                     direction: Axis.horizontal,
                     spacing: 4.wr,
+                    runSpacing: 4,
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                         ...characterUsage.take(3).map((e) => assets.maybeWhen(

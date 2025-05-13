@@ -67,7 +67,7 @@ void main() {
     });
 
     test('fetchDps returns paginated dps entries', () async {
-      final states = <AsyncValue<(int count, List<DPS> dps)>>[];
+      final states = <AsyncValue<(int count, List<DPS> dps, List<CharUsageLbDisplay> charSnapshots)>>[];
       final provider = fetchDpsProvider(
         sortBy: 'created_at',
         sortDir: 'desc',
@@ -86,7 +86,7 @@ void main() {
       subscription.close();
 
       log(states.toString());
-      expect(dpsEntries, isA<(int count, List<DPS> dps)>());
+      expect(dpsEntries, isA<(int count, List<DPS> dps, List<CharUsageLbDisplay> charSnapshots)>());
 
       for (final dps in dpsEntries.$2) {
         expect(dps.approved, isTrue);

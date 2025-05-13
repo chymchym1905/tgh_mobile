@@ -13,6 +13,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
   bool _expanded = false;
   final leaderboardCategories = ['Speedrun, DPS, Restricted DPS'];
   String selectedLeaderboardCategory = 'Speedrun';
+  final customPopupMenuController = CustomPopupMenuController();
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +37,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                     icon: const Icon(Icons.dehaze, size: 30, weight: 700, grade: 200, opticalSize: 24))
                 : null,
             title: CustomPopupMenu(
+                controller: customPopupMenuController,
                 position: PreferredPosition.bottom,
                 verticalMargin: 0,
                 horizontalMargin: 80.wr,
@@ -57,6 +59,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                                     setState(() {
                                       selectedLeaderboardCategory = 'Speedrun';
                                     });
+                                    customPopupMenuController.hideMenu();
                                   },
                                   highlightColor: Theme.of(context).colorScheme.surfaceContainerHigh,
                                   splashColor: Theme.of(context).colorScheme.surfaceContainerHighest,
@@ -76,6 +79,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                                     setState(() {
                                       selectedLeaderboardCategory = 'DPS';
                                     });
+                                    customPopupMenuController.hideMenu();
                                   },
                                   highlightColor: Theme.of(context).colorScheme.surfaceContainerHigh,
                                   splashColor: Theme.of(context).colorScheme.surfaceContainerHighest,
@@ -93,6 +97,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                                     setState(() {
                                       selectedLeaderboardCategory = 'Restricted DPS';
                                     });
+                                    customPopupMenuController.hideMenu();
                                   },
                                   highlightColor: Theme.of(context).colorScheme.surfaceContainerHigh,
                                   splashColor: Theme.of(context).colorScheme.surfaceContainerHighest,

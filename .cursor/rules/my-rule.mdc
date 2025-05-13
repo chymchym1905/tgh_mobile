@@ -1,7 +1,7 @@
 ---
 description: 
 globs: 
-alwaysApply: false
+alwaysApply: true
 ---
 
 # Your rule content
@@ -9,3 +9,4 @@ alwaysApply: false
 - DO NOT REMOVE CODE/FEATURE UNLESS ASKED TO
 - Focus on current file if the prompt is ambigious or the prompt does not refer to previous answer
 - DO NOT MODIFY ANY CODE if I'm just asking for advice
+- Don't use try catch unless asked to

@@ -7,10 +7,16 @@ part 'char_usage_lb_display.g.dart';
 
 @freezed
 class CharUsageLbDisplay with _$CharUsageLbDisplay {
+  const CharUsageLbDisplay._();
   @JsonSerializable(explicitToJson: true)
   const factory CharUsageLbDisplay(
       {@JsonKey(name: 'competitor') required String competitorId,
       @JsonKey(name: 'characterUsage') required List<CharacterUsage> characterUsage}) = _CharUsageLbDisplay;
 
   factory CharUsageLbDisplay.fromJson(Map<String, dynamic> json) => _$CharUsageLbDisplayFromJson(json);
+
+  @override
+  String toString() {
+    return 'CharUsageLbDisplay(competitorId: $competitorId, characterUsage: ${characterUsage.length})';
+  }
 }

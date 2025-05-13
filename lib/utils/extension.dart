@@ -27,6 +27,27 @@ extension AsyncValueToString<T> on AsyncValue<T> {
   }
 }
 
+extension MapContentEquality<K, V> on Map<K, V> {
+  /// Compares this map with another map for content equality.
+  /// Returns true if both maps have the same keys and values.
+  bool contentEquals(Map<K, V> other) {
+    if (length != other.length) return false;
+
+    for (final key in keys) {
+      if (!other.containsKey(key) || other[key] != this[key]) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  /// Opposite of contentEquals - returns true if the maps have different content
+  bool contentNotEquals(Map<K, V> other) {
+    return !contentEquals(other);
+  }
+}
+
 extension ResponsiveSize on num {
   /// Returns a responsive size for ProfileScreen only
   double get wr {

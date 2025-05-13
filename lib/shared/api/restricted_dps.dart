@@ -3,8 +3,8 @@ import 'package:tgh_mobile/imports.dart';
 import '../exception.dart';
 import '../network.dart';
 
-abstract class DpsApiBase {
-  Future<Either<AppException, (int count, List<DPS> dps)>> fetchCompetitorDps(
+abstract class RestrictedDpsApiBase {
+  Future<Either<AppException, (int count, List<DPS> dps)>> fetchCompetitorRestrictedDps(
     String competitorId,
     String sortBy,
     String sortDir,
@@ -15,7 +15,7 @@ abstract class DpsApiBase {
     CancelToken? cancelToken,
   });
 
-  Future<Either<AppException, (int count, List<DPS> dps, List<CharUsageLbDisplay> charSnapshots)>> fetchDps(
+  Future<Either<AppException, (int count, List<DPS> dps, List<CharUsageLbDisplay> charSnapshots)>> fetchRestrictedDps(
     String sortBy,
     String sortDir,
     int page,
@@ -25,7 +25,7 @@ abstract class DpsApiBase {
     CancelToken? cancelToken,
   });
 
-  Future<Either<AppException, (int count, List<DPS> dps)>> fetchDpsAgent(
+  Future<Either<AppException, (int count, List<DPS> dps)>> fetchRestrictedDpsAgent(
     String sortBy,
     String sortDir,
     int page,
@@ -38,13 +38,13 @@ abstract class DpsApiBase {
   Future<Either<AppException, DPS>> fetchDpsById(String id);
 }
 
-class DpsApi implements DpsApiBase {
+class RestrictedDpsApi implements RestrictedDpsApiBase {
   final NetworkService _networkService;
 
-  DpsApi(this._networkService);
+  RestrictedDpsApi(this._networkService);
 
   @override
-  Future<Either<AppException, (int count, List<DPS> dps)>> fetchCompetitorDps(
+  Future<Either<AppException, (int count, List<DPS> dps)>> fetchCompetitorRestrictedDps(
     String competitorId,
     String sortBy,
     String sortDir,
@@ -54,7 +54,7 @@ class DpsApi implements DpsApiBase {
     Map<String, dynamic>? queryParam,
     CancelToken? cancelToken,
   }) async {
-    const url = '/dps-entries/all';
+    const url = '/f2p-entries/all';
     final response = await _networkService.get(url,
         queryParameters: {
           'competitor': competitorId,
@@ -84,7 +84,7 @@ class DpsApi implements DpsApiBase {
   }
 
   @override
-  Future<Either<AppException, (int count, List<DPS> dps, List<CharUsageLbDisplay> charSnapshots)>> fetchDps(
+  Future<Either<AppException, (int count, List<DPS> dps, List<CharUsageLbDisplay> charSnapshots)>> fetchRestrictedDps(
     String sortBy,
     String sortDir,
     int page,
@@ -93,7 +93,7 @@ class DpsApi implements DpsApiBase {
     Map<String, dynamic>? queryParam,
     CancelToken? cancelToken,
   }) async {
-    const url = '/dps-entries/all-detailed';
+    const url = '/f2p-entries/all-detailed';
     final response = await _networkService.get(url,
         queryParameters: {
           'sortBy': sortBy,
@@ -129,7 +129,7 @@ class DpsApi implements DpsApiBase {
   }
 
   @override
-  Future<Either<AppException, (int count, List<DPS> dps)>> fetchDpsAgent(
+  Future<Either<AppException, (int count, List<DPS> dps)>> fetchRestrictedDpsAgent(
     String sortBy,
     String sortDir,
     int page,
@@ -138,7 +138,7 @@ class DpsApi implements DpsApiBase {
     Map<String, dynamic>? queryParam,
     CancelToken? cancelToken,
   }) async {
-    const url = '/dps-entries/agent-all';
+    const url = '/f2p-entries/agent-all';
     final response = await _networkService.get(url,
         queryParameters: {
           'sortBy': sortBy,
@@ -168,7 +168,7 @@ class DpsApi implements DpsApiBase {
 
   @override
   Future<Either<AppException, DPS>> fetchDpsById(String id) async {
-    final url = '/dps-entries/$id';
+    final url = '/f2p-entries/$id';
     final response = await _networkService.get(url);
     return response.fold(
       (exception) => left(exception),

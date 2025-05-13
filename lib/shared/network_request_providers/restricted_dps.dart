@@ -1,16 +1,16 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:tgh_mobile/imports.dart';
 
-part 'dps.g.dart';
+part 'restricted_dps.g.dart';
 
 @riverpod
-DpsApiBase dpsApi(Ref ref) {
+RestrictedDpsApiBase restrictedDpsApi(Ref ref) {
   final networkService = ref.watch(dioNetworkServiceProvider);
-  return DpsApi(networkService);
+  return RestrictedDpsApi(networkService);
 }
 
 @riverpod
-Future<(int count, List<DPS> dps)> fetchCompetitorDps(
+Future<(int count, List<DPS> dps)> fetchCompetitorRestrictedDps(
   Ref ref, {
   required String competitorId,
   required String sortBy,
@@ -22,8 +22,8 @@ Future<(int count, List<DPS> dps)> fetchCompetitorDps(
 }) async {
   final cancelToken = await ref.cancelToken();
 
-  final api = ref.watch(dpsApiProvider);
-  final result = await api.fetchCompetitorDps(
+  final api = ref.watch(restrictedDpsApiProvider);
+  final result = await api.fetchCompetitorRestrictedDps(
     competitorId,
     sortBy,
     sortDir,
@@ -41,7 +41,7 @@ Future<(int count, List<DPS> dps)> fetchCompetitorDps(
 }
 
 @riverpod
-Future<(int count, List<DPS> dps, List<CharUsageLbDisplay> charSnapshots)> fetchDps(
+Future<(int count, List<DPS> dps, List<CharUsageLbDisplay> charSnapshots)> fetchRestrictedDps(
   Ref ref, {
   required String sortBy,
   required String sortDir,
@@ -52,8 +52,8 @@ Future<(int count, List<DPS> dps, List<CharUsageLbDisplay> charSnapshots)> fetch
 }) async {
   final cancelToken = await ref.cancelToken();
 
-  final api = ref.watch(dpsApiProvider);
-  final result = await api.fetchDps(
+  final api = ref.watch(restrictedDpsApiProvider);
+  final result = await api.fetchRestrictedDps(
     sortBy,
     sortDir,
     page,
@@ -70,7 +70,7 @@ Future<(int count, List<DPS> dps, List<CharUsageLbDisplay> charSnapshots)> fetch
 }
 
 @riverpod
-Future<(int count, List<DPS> dps)> fetchDpsAgent(
+Future<(int count, List<DPS> dps)> fetchRestrictedDpsAgent(
   Ref ref, {
   required String sortBy,
   required String sortDir,
@@ -81,8 +81,8 @@ Future<(int count, List<DPS> dps)> fetchDpsAgent(
 }) async {
   final cancelToken = await ref.cancelToken();
 
-  final api = ref.watch(dpsApiProvider);
-  final result = await api.fetchDpsAgent(
+  final api = ref.watch(restrictedDpsApiProvider);
+  final result = await api.fetchRestrictedDpsAgent(
     sortBy,
     sortDir,
     page,
