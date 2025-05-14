@@ -92,6 +92,16 @@ class SpeedrunLeaderboardFilterNotifier extends _$SpeedrunLeaderboardFilterNotif
     }
     state = currState.copyWith(appliedFilter: filterCopy, rawFilter: filter);
   }
+
+  void resetFilter() {
+    final currState = state;
+    final currStateCategory = currState.appliedFilter['speedrun_category'] as String;
+    state = currState.copyWith(
+        appliedFilter:
+            Map<String, dynamic>.from(currState.defaultAppliedFilter[currStateCategory] as Map<String, dynamic>),
+        rawFilter:
+            Map<String, dynamic>.from(currState.defaultAppliedFilter[currStateCategory] as Map<String, dynamic>));
+  }
 }
 
 @riverpod
@@ -100,7 +110,7 @@ class DpsLeaderboardFilterNotifier extends _$DpsLeaderboardFilterNotifier {
   static const String? _defaultValueAttackType = null;
   static const String? _defaultValueRegion = null;
   static const CompetitorSearchResult? _defaultValueName = null;
-  static final List<String?> _defaultValueCharacters = [];
+  static const String? _defaultValueDpsCharacter = null;
   static const String? _defaultValueEnemy = null;
   static const String? _defaultValueDomain = null;
   static const String? _defaultValueEvent = null;
@@ -138,7 +148,7 @@ class DpsLeaderboardFilterNotifier extends _$DpsLeaderboardFilterNotifier {
         'attack_type': _defaultValueAttackType,
         'region': _defaultValueRegion,
         'competitor': _defaultValueName,
-        'characters': _defaultValueCharacters,
+        'dps_character': _defaultValueDpsCharacter,
         'enemy': _defaultValueEnemy,
       },
       defaultFitlerValuesWeeklyBoss: {
@@ -146,7 +156,7 @@ class DpsLeaderboardFilterNotifier extends _$DpsLeaderboardFilterNotifier {
         'attack_type': _defaultValueAttackType,
         'region': _defaultValueRegion,
         'competitor': _defaultValueName,
-        'characters': _defaultValueCharacters,
+        'dps_character': _defaultValueDpsCharacter,
         'enemy': _defaultValueEnemy,
       },
       defaultFitlerValuesWorldBoss: {
@@ -154,7 +164,7 @@ class DpsLeaderboardFilterNotifier extends _$DpsLeaderboardFilterNotifier {
         'attack_type': _defaultValueAttackType,
         'region': _defaultValueRegion,
         'competitor': _defaultValueName,
-        'characters': _defaultValueCharacters,
+        'dps_character': _defaultValueDpsCharacter,
         'enemy': _defaultValueEnemy,
       },
       defaultFitlerValuesEvent: {
@@ -162,7 +172,7 @@ class DpsLeaderboardFilterNotifier extends _$DpsLeaderboardFilterNotifier {
         'attack_type': _defaultValueAttackType,
         'region': _defaultValueRegion,
         'competitor': _defaultValueName,
-        'characters': _defaultValueCharacters,
+        'dps_character': _defaultValueDpsCharacter,
         'event': _defaultValueEvent,
       },
       defaultFitlerValuesAbyss: {
@@ -170,7 +180,7 @@ class DpsLeaderboardFilterNotifier extends _$DpsLeaderboardFilterNotifier {
         'attack_type': _defaultValueAttackType,
         'region': _defaultValueRegion,
         'competitor': _defaultValueName,
-        'characters': _defaultValueCharacters,
+        'dps_character': _defaultValueDpsCharacter,
         'enemy': _defaultValueEnemy,
       },
       defaultFitlerValuesDomain: {
@@ -178,7 +188,7 @@ class DpsLeaderboardFilterNotifier extends _$DpsLeaderboardFilterNotifier {
         'attack_type': _defaultValueAttackType,
         'region': _defaultValueRegion,
         'competitor': _defaultValueName,
-        'characters': _defaultValueCharacters,
+        'dps_character': _defaultValueDpsCharacter,
         'domain': _defaultValueDomain,
       },
       defaultFitlerValuesReputationBounty: {
@@ -186,7 +196,7 @@ class DpsLeaderboardFilterNotifier extends _$DpsLeaderboardFilterNotifier {
         'attack_type': _defaultValueAttackType,
         'region': _defaultValueRegion,
         'competitor': _defaultValueName,
-        'characters': _defaultValueCharacters,
+        'dps_character': _defaultValueDpsCharacter,
         'enemy': _defaultValueEnemy,
       },
     );
@@ -199,6 +209,16 @@ class DpsLeaderboardFilterNotifier extends _$DpsLeaderboardFilterNotifier {
       filterCopy['competitor'] = filter['competitor'].id;
     }
     state = currState.copyWith(appliedFilter: filterCopy, rawFilter: filter);
+  }
+
+  void resetFilter() {
+    final currState = state;
+    final currStateCategory = currState.appliedFilter['dps_category'] as String;
+    state = currState.copyWith(
+        appliedFilter:
+            Map<String, dynamic>.from(currState.defaultAppliedFilter[currStateCategory] as Map<String, dynamic>),
+        rawFilter:
+            Map<String, dynamic>.from(currState.defaultAppliedFilter[currStateCategory] as Map<String, dynamic>));
   }
 }
 
@@ -208,7 +228,7 @@ class RestrictedDpsLeaderboardFilterNotifier extends _$RestrictedDpsLeaderboardF
   static const String? _defaultValueAttackType = null;
   static const String? _defaultValueRegion = null;
   static const CompetitorSearchResult? _defaultValueName = null;
-  static final List<String?> _defaultValueCharacters = [];
+  static const String? _defaultValueDpsCharacter = null;
   static const String? _defaultValueEnemy = null;
   static const String? _defaultValueDomain = null;
   static const String? _defaultValueEvent = null;
@@ -246,7 +266,7 @@ class RestrictedDpsLeaderboardFilterNotifier extends _$RestrictedDpsLeaderboardF
         'attack_type': _defaultValueAttackType,
         'region': _defaultValueRegion,
         'competitor': _defaultValueName,
-        'characters': _defaultValueCharacters,
+        'dps_character': _defaultValueDpsCharacter,
         'enemy': _defaultValueEnemy,
       },
       defaultFitlerValuesWeeklyBoss: {
@@ -254,7 +274,7 @@ class RestrictedDpsLeaderboardFilterNotifier extends _$RestrictedDpsLeaderboardF
         'attack_type': _defaultValueAttackType,
         'region': _defaultValueRegion,
         'competitor': _defaultValueName,
-        'characters': _defaultValueCharacters,
+        'dps_character': _defaultValueDpsCharacter,
         'enemy': _defaultValueEnemy,
       },
       defaultFitlerValuesWorldBoss: {
@@ -262,7 +282,7 @@ class RestrictedDpsLeaderboardFilterNotifier extends _$RestrictedDpsLeaderboardF
         'attack_type': _defaultValueAttackType,
         'region': _defaultValueRegion,
         'competitor': _defaultValueName,
-        'characters': _defaultValueCharacters,
+        'dps_character': _defaultValueDpsCharacter,
         'enemy': _defaultValueEnemy,
       },
       defaultFitlerValuesEvent: {
@@ -270,7 +290,7 @@ class RestrictedDpsLeaderboardFilterNotifier extends _$RestrictedDpsLeaderboardF
         'attack_type': _defaultValueAttackType,
         'region': _defaultValueRegion,
         'competitor': _defaultValueName,
-        'characters': _defaultValueCharacters,
+        'dps_character': _defaultValueDpsCharacter,
         'event': _defaultValueEvent,
       },
       defaultFitlerValuesAbyss: {
@@ -278,7 +298,7 @@ class RestrictedDpsLeaderboardFilterNotifier extends _$RestrictedDpsLeaderboardF
         'attack_type': _defaultValueAttackType,
         'region': _defaultValueRegion,
         'competitor': _defaultValueName,
-        'characters': _defaultValueCharacters,
+        'dps_character': _defaultValueDpsCharacter,
         'enemy': _defaultValueEnemy,
       },
       defaultFitlerValuesDomain: {
@@ -286,7 +306,7 @@ class RestrictedDpsLeaderboardFilterNotifier extends _$RestrictedDpsLeaderboardF
         'attack_type': _defaultValueAttackType,
         'region': _defaultValueRegion,
         'competitor': _defaultValueName,
-        'characters': _defaultValueCharacters,
+        'dps_character': _defaultValueDpsCharacter,
         'domain': _defaultValueDomain,
       },
       defaultFitlerValuesReputationBounty: {
@@ -294,7 +314,7 @@ class RestrictedDpsLeaderboardFilterNotifier extends _$RestrictedDpsLeaderboardF
         'attack_type': _defaultValueAttackType,
         'region': _defaultValueRegion,
         'competitor': _defaultValueName,
-        'characters': _defaultValueCharacters,
+        'dps_character': _defaultValueDpsCharacter,
         'enemy': _defaultValueEnemy,
       },
     );
@@ -308,4 +328,16 @@ class RestrictedDpsLeaderboardFilterNotifier extends _$RestrictedDpsLeaderboardF
     }
     state = currState.copyWith(appliedFilter: filterCopy, rawFilter: filter);
   }
+
+  void resetFilter() {
+    final currState = state;
+    final currStateCategory = currState.appliedFilter['dps_category'] as String;
+    state = currState.copyWith(
+        appliedFilter:
+            Map<String, dynamic>.from(currState.defaultAppliedFilter[currStateCategory] as Map<String, dynamic>),
+        rawFilter:
+            Map<String, dynamic>.from(currState.defaultAppliedFilter[currStateCategory] as Map<String, dynamic>));
+  }
 }
+
+final appliedDisplayFilterProvider = StateProvider<Map<String, dynamic>>((ref) => {});

@@ -19,6 +19,7 @@ class FilterState extends ConsumerState<Filter> {
       SingleSelectController<CompetitorSearchResult?>(null);
   SingleSelectController<String?> floorController = SingleSelectController<String?>(null);
   MultiSelectController<String?> charactersController = MultiSelectController<String?>([]);
+  SingleSelectController<String?> dpsCharacterController = SingleSelectController<String?>(null);
   SingleSelectController<String?> enemyController = SingleSelectController<String?>(null);
   SingleSelectController<String?> domainController = SingleSelectController<String?>(null);
   SingleSelectController<String?> eventController = SingleSelectController<String?>(null);
@@ -29,7 +30,6 @@ class FilterState extends ConsumerState<Filter> {
   bool _isInitializing = false;
 
   Map<String, dynamic> localFilter = <String, dynamic>{};
-  Map<String, dynamic> appliedDisplayFilter = <String, dynamic>{};
 
   @override
   void initState() {
@@ -54,6 +54,8 @@ class FilterState extends ConsumerState<Filter> {
     // Skip updates during initialization
     if (_isInitializing) return;
 
+    final appliedDisplayFilter = ref.watch(appliedDisplayFilterProvider);
+
     if (widget.type == 'Speedrun') {
       if (filter == 'Alias') {
         final newFilter = <String, dynamic>{};
@@ -62,25 +64,43 @@ class FilterState extends ConsumerState<Filter> {
         });
         newFilter['competitor'] =
             CompetitorSearchResult(alias: nameController.value?.alias ?? '', id: nameController.value?.id ?? '');
-        localFilter = newFilter;
+        localFilter = Map<String, dynamic>.from(newFilter);
+        if (nameController.value == null) {
+          localFilter.remove('competitor');
+        }
         appliedDisplayFilter['From competitor'] = nameController.value?.alias;
       } else if (filter == 'Abyss Version') {
         localFilter['abyss_version'] = abyssVersionController.value;
         appliedDisplayFilter['Abyss version'] = abyssVersionController.value;
       } else if (filter == 'Floor') {
         localFilter['speedrun_subcategory'] = floorController.value;
-        appliedDisplayFilter['Chmaber'] = floorController.value;
+        if (floorController.value == null) {
+          localFilter.remove('speedrun_subcategory');
+        }
+        appliedDisplayFilter['Chamber'] = floorController.value;
       } else if (filter == 'Domain') {
         localFilter['speedrun_subcategory'] = domainController.value;
+        if (domainController.value == null) {
+          localFilter.remove('speedrun_subcategory');
+        }
         appliedDisplayFilter['Domain'] = domainController.value;
       } else if (filter == 'Event') {
         localFilter['abyss_version'] = eventController.value;
+        if (eventController.value == null) {
+          localFilter.remove('abyss_version');
+        }
         appliedDisplayFilter['Event'] = eventController.value;
       } else if (filter == 'Enemy') {
         localFilter['speedrun_subcategory'] = enemyController.value;
+        if (enemyController.value == null) {
+          localFilter.remove('speedrun_subcategory');
+        }
         appliedDisplayFilter['Enemy'] = enemyController.value;
       } else if (filter == 'Region') {
         localFilter['region'] = regionController.value;
+        if (regionController.value == null) {
+          localFilter.remove('region');
+        }
         appliedDisplayFilter['Region'] = regionController.value;
       } else if (filter == 'Characters') {
         log(charactersController.value.toString(), name: 'Character controller');
@@ -96,10 +116,11 @@ class FilterState extends ConsumerState<Filter> {
         newFilter['characters'] = charactersList;
 
         // Replace the old map with the new one
-        localFilter = newFilter;
+        localFilter = Map<String, dynamic>.from(newFilter);
 
         if (charactersList.isEmpty) {
           localFilter.remove('characters');
+          return;
         }
         appliedDisplayFilter['Characters'] = charactersList;
       }
@@ -111,42 +132,46 @@ class FilterState extends ConsumerState<Filter> {
         });
         newFilter['competitor'] =
             CompetitorSearchResult(alias: nameController.value?.alias ?? '', id: nameController.value?.id ?? '');
-        localFilter = newFilter;
+        localFilter = Map<String, dynamic>.from(newFilter);
+        if (nameController.value == null) {
+          localFilter.remove('competitor');
+        }
         appliedDisplayFilter['From competitor'] = nameController.value?.alias;
       } else if (filter == 'Region') {
         localFilter['region'] = regionController.value;
-        appliedDisplayFilter['Region'] = regionController.value;
-      } else if (filter == 'Characters') {
-        log(charactersController.value.toString(), name: 'Character controller');
-        final charactersList = List<String?>.from(charactersController.value);
-
-        // Create a new map with the correct type and copy all existing entries
-        final newFilter = <String, dynamic>{};
-        localFilter.forEach((key, value) {
-          newFilter[key] = value;
-        });
-
-        // Add the characters list to the new map
-        newFilter['characters'] = charactersList;
-
-        // Replace the old map with the new one
-        localFilter = newFilter;
-
-        if (charactersList.isEmpty) {
-          localFilter.remove('characters');
+        if (regionController.value == null) {
+          localFilter.remove('region');
         }
-        appliedDisplayFilter['Characters'] = charactersList;
+        appliedDisplayFilter['Region'] = regionController.value;
+      } else if (filter == 'DpsCharacter') {
+        localFilter['dps_character'] = dpsCharacterController.value;
+        if (dpsCharacterController.value == null) {
+          localFilter.remove('dps_character');
+        }
+        appliedDisplayFilter['DpsCharacter'] = dpsCharacterController.value;
       } else if (filter == 'Attack Type') {
         localFilter['attack_type'] = attackTypeController.value;
+        if (attackTypeController.value == null) {
+          localFilter.remove('attack_type');
+        }
         appliedDisplayFilter['Ability'] = attackTypeController.value;
       } else if (filter == 'Enemy') {
         localFilter['enemy'] = enemyController.value;
+        if (enemyController.value == null) {
+          localFilter.remove('enemy');
+        }
         appliedDisplayFilter['Enemy'] = enemyController.value;
       } else if (filter == 'Domain') {
         localFilter['domain'] = domainController.value;
+        if (domainController.value == null) {
+          localFilter.remove('domain');
+        }
         appliedDisplayFilter['Domain'] = domainController.value;
       } else if (filter == 'Event') {
         localFilter['event'] = eventController.value;
+        if (eventController.value == null) {
+          localFilter.remove('event');
+        }
         appliedDisplayFilter['Event'] = eventController.value;
       }
     }
@@ -157,7 +182,21 @@ class FilterState extends ConsumerState<Filter> {
   void resetFilter() {
     if (widget.type == 'Speedrun') {
       final filterStorage = ref.read(speedrunLeaderboardFilterNotifierProvider);
-      localFilter = filterStorage.defaultAppliedFilter[widget.category] as Map<String, dynamic>;
+      ref.read(appliedDisplayFilterProvider.notifier).state = {};
+      localFilter =
+          Map<String, dynamic>.from(filterStorage.defaultAppliedFilter[widget.category] as Map<String, dynamic>);
+      widget.onFilterChanged(localFilter);
+    } else if (widget.type == 'DPS') {
+      final filterStorage = ref.read(dpsLeaderboardFilterNotifierProvider);
+      ref.read(appliedDisplayFilterProvider.notifier).state = {};
+      localFilter =
+          Map<String, dynamic>.from(filterStorage.defaultAppliedFilter[widget.category] as Map<String, dynamic>);
+      widget.onFilterChanged(localFilter);
+    } else {
+      final filterStorage = ref.read(restrictedDpsLeaderboardFilterNotifierProvider);
+      ref.read(appliedDisplayFilterProvider.notifier).state = {};
+      localFilter =
+          Map<String, dynamic>.from(filterStorage.defaultAppliedFilter[widget.category] as Map<String, dynamic>);
       widget.onFilterChanged(localFilter);
     }
   }
@@ -739,65 +778,128 @@ class FilterState extends ConsumerState<Filter> {
                       });
                     }))
           ])),
-      ref.watch(gameAssetProvider).maybeWhen(
-          orElse: () => const SizedBox.shrink(),
-          data: (value) {
-            List<String> characters = value.maybeMap(
-                    orElse: () => [], loaded: (value) => value.characters?.map((e) => e.name).toList() ?? []) ??
-                [];
-            return SizedBox(
-                width: 200,
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
-                  // Text('Characters', style: TextStyle(fontSize: 12.wr)),
-                  CustomDropdown<String?>.multiSelectSearch(
-                      decoration: CustomDropdownDecoration(
-                        expandedShadow: [
-                          BoxShadow(
-                              color: Theme.of(context).colorScheme.shadow,
-                              offset: const Offset(0, 3),
-                              blurRadius: 6,
-                              spreadRadius: 0)
-                        ],
-                        closedFillColor: Theme.of(context).colorScheme.surfaceContainerLow,
-                        closedBorder: Border.all(color: Theme.of(context).colorScheme.outline),
-                        expandedBorder: Border.all(color: Theme.of(context).colorScheme.outline),
-                        expandedFillColor: Theme.of(context).colorScheme.surfaceContainerHigh,
-                        listItemStyle: TextStyle(fontSize: 12.wr),
-                        headerStyle: TextStyle(fontSize: 12.wr),
-                        hintStyle:
-                            TextStyle(fontSize: 12.wr, color: Theme.of(context).extension<TextColors>()?.textSecondary),
-                        expandedSuffixIcon: Icon(Icons.arrow_drop_up, size: 10.wr),
-                        closedSuffixIcon: charactersController.value.isNotEmpty
-                            ? SizedBox(
-                                width: 12.wr,
-                                height: 12.wr,
-                                child: IconButton(
-                                    onPressed: () {
-                                      charactersController.clear();
-                                    },
-                                    padding: const EdgeInsets.all(0),
-                                    icon: Icon(Icons.close, size: 10.wr)))
-                            : Icon(Icons.arrow_drop_down, size: 10.wr),
-                        searchFieldDecoration: SearchFieldDecoration(
-                            textStyle:
-                                TextStyle(fontSize: 12.wr, color: Theme.of(context).extension<TextColors>()!.text),
-                            fillColor: Theme.of(context).colorScheme.surfaceContainerLow,
-                            contentPadding: const EdgeInsets.all(0)),
-                      ),
-                      closedHeaderPadding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 10),
-                      expandedHeaderPadding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 10),
-                      hintText: 'Characters',
-                      itemsListPadding: const EdgeInsets.all(0),
-                      listItemPadding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 10),
-                      items: characters,
-                      multiSelectController: charactersController,
-                      onListChanged: (p0) {
-                        setState(() {
-                          updateFilter('Characters');
-                        });
-                      })
-                ]));
-          })
+      if (widget.type == 'DPS' || widget.type == 'Restricted DPS')
+        ref.watch(gameAssetProvider).maybeWhen(
+            orElse: () => const SizedBox.shrink(),
+            data: (value) {
+              List<String> characters = value.maybeMap(
+                      orElse: () => [], loaded: (value) => value.characters?.map((e) => e.name).toList() ?? []) ??
+                  [];
+              return SizedBox(
+                  width: 200,
+                  child:
+                      Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
+                    // Text('Characters', style: TextStyle(fontSize: 12.wr)),
+                    CustomDropdown<String?>.search(
+                        decoration: CustomDropdownDecoration(
+                          expandedShadow: [
+                            BoxShadow(
+                                color: Theme.of(context).colorScheme.shadow,
+                                offset: const Offset(0, 3),
+                                blurRadius: 6,
+                                spreadRadius: 0)
+                          ],
+                          closedFillColor: Theme.of(context).colorScheme.surfaceContainerLow,
+                          closedBorder: Border.all(color: Theme.of(context).colorScheme.outline),
+                          expandedBorder: Border.all(color: Theme.of(context).colorScheme.outline),
+                          expandedFillColor: Theme.of(context).colorScheme.surfaceContainerHigh,
+                          listItemStyle: TextStyle(fontSize: 12.wr),
+                          headerStyle: TextStyle(fontSize: 12.wr),
+                          hintStyle: TextStyle(
+                              fontSize: 12.wr, color: Theme.of(context).extension<TextColors>()?.textSecondary),
+                          expandedSuffixIcon: Icon(Icons.arrow_drop_up, size: 10.wr),
+                          closedSuffixIcon: charactersController.value.isNotEmpty
+                              ? SizedBox(
+                                  width: 12.wr,
+                                  height: 12.wr,
+                                  child: IconButton(
+                                      onPressed: () {
+                                        charactersController.clear();
+                                      },
+                                      padding: const EdgeInsets.all(0),
+                                      icon: Icon(Icons.close, size: 10.wr)))
+                              : Icon(Icons.arrow_drop_down, size: 10.wr),
+                          searchFieldDecoration: SearchFieldDecoration(
+                              textStyle:
+                                  TextStyle(fontSize: 12.wr, color: Theme.of(context).extension<TextColors>()!.text),
+                              fillColor: Theme.of(context).colorScheme.surfaceContainerLow,
+                              contentPadding: const EdgeInsets.all(0)),
+                        ),
+                        closedHeaderPadding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 10),
+                        expandedHeaderPadding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 10),
+                        hintText: 'Nuker',
+                        itemsListPadding: const EdgeInsets.all(0),
+                        listItemPadding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 10),
+                        items: characters,
+                        controller: dpsCharacterController,
+                        onChanged: (p0) {
+                          setState(() {
+                            updateFilter('DpsCharacter');
+                          });
+                        })
+                  ]));
+            }),
+      if (widget.type == 'Speedrun')
+        ref.watch(gameAssetProvider).maybeWhen(
+            orElse: () => const SizedBox.shrink(),
+            data: (value) {
+              List<String> characters = value.maybeMap(
+                      orElse: () => [], loaded: (value) => value.characters?.map((e) => e.name).toList() ?? []) ??
+                  [];
+              return SizedBox(
+                  width: 200,
+                  child:
+                      Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
+                    // Text('Characters', style: TextStyle(fontSize: 12.wr)),
+                    CustomDropdown<String?>.multiSelectSearch(
+                        decoration: CustomDropdownDecoration(
+                          expandedShadow: [
+                            BoxShadow(
+                                color: Theme.of(context).colorScheme.shadow,
+                                offset: const Offset(0, 3),
+                                blurRadius: 6,
+                                spreadRadius: 0)
+                          ],
+                          closedFillColor: Theme.of(context).colorScheme.surfaceContainerLow,
+                          closedBorder: Border.all(color: Theme.of(context).colorScheme.outline),
+                          expandedBorder: Border.all(color: Theme.of(context).colorScheme.outline),
+                          expandedFillColor: Theme.of(context).colorScheme.surfaceContainerHigh,
+                          listItemStyle: TextStyle(fontSize: 12.wr),
+                          headerStyle: TextStyle(fontSize: 12.wr),
+                          hintStyle: TextStyle(
+                              fontSize: 12.wr, color: Theme.of(context).extension<TextColors>()?.textSecondary),
+                          expandedSuffixIcon: Icon(Icons.arrow_drop_up, size: 10.wr),
+                          closedSuffixIcon: charactersController.value.isNotEmpty
+                              ? SizedBox(
+                                  width: 12.wr,
+                                  height: 12.wr,
+                                  child: IconButton(
+                                      onPressed: () {
+                                        charactersController.clear();
+                                      },
+                                      padding: const EdgeInsets.all(0),
+                                      icon: Icon(Icons.close, size: 10.wr)))
+                              : Icon(Icons.arrow_drop_down, size: 10.wr),
+                          searchFieldDecoration: SearchFieldDecoration(
+                              textStyle:
+                                  TextStyle(fontSize: 12.wr, color: Theme.of(context).extension<TextColors>()!.text),
+                              fillColor: Theme.of(context).colorScheme.surfaceContainerLow,
+                              contentPadding: const EdgeInsets.all(0)),
+                        ),
+                        closedHeaderPadding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 10),
+                        expandedHeaderPadding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 10),
+                        hintText: 'Characters',
+                        itemsListPadding: const EdgeInsets.all(0),
+                        listItemPadding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 10),
+                        items: characters,
+                        multiSelectController: charactersController,
+                        onListChanged: (p0) {
+                          setState(() {
+                            updateFilter('Characters');
+                          });
+                        })
+                  ]));
+            })
     ]);
   }
 
@@ -826,14 +928,15 @@ class FilterState extends ConsumerState<Filter> {
             if (filterStorage.appliedFilter['competitor'] != null) {
               nameController.value = filterStorage.rawFilter['competitor'] as CompetitorSearchResult?;
             }
-            localFilter = filterStorage.appliedFilter;
+            localFilter = Map<String, dynamic>.from(filterStorage.appliedFilter);
           } else {
             nameController.value = filterStorage.defaultFitlerValuesAbyss['competitor'] as CompetitorSearchResult?;
             abyssVersionController.value = filterStorage.defaultFitlerValuesAbyss['abyss_version'] as String;
             regionController.value = filterStorage.defaultFitlerValuesAbyss['region'] as String?;
             floorController.value = filterStorage.defaultFitlerValuesAbyss['speedrun_subcategory'] as String?;
             charactersController.value = filterStorage.defaultFitlerValuesAbyss['characters'] as List<String?>;
-            localFilter = filterStorage.defaultAppliedFilter['Abyss'] as Map<String, dynamic>;
+            localFilter =
+                Map<String, dynamic>.from(filterStorage.defaultAppliedFilter['Abyss'] as Map<String, dynamic>);
           }
         } else if (widget.category == 'Domain') {
           if ((filterStorage.defaultAppliedFilter['Domain'] as Map<String, dynamic>)
@@ -848,13 +951,14 @@ class FilterState extends ConsumerState<Filter> {
             if (filterStorage.appliedFilter['competitor'] != null) {
               nameController.value = filterStorage.rawFilter['competitor'] as CompetitorSearchResult?;
             }
-            localFilter = filterStorage.appliedFilter;
+            localFilter = Map<String, dynamic>.from(filterStorage.appliedFilter);
           } else {
             domainController.value = filterStorage.defaultFitlerValuesDomain['speedrun_subcategory'] as String;
             regionController.value = filterStorage.defaultFitlerValuesDomain['region'] as String?;
             charactersController.value = filterStorage.defaultFitlerValuesDomain['characters'] as List<String?>;
             nameController.value = filterStorage.defaultFitlerValuesDomain['competitor'] as CompetitorSearchResult?;
-            localFilter = filterStorage.defaultAppliedFilter['Domain'] as Map<String, dynamic>;
+            localFilter =
+                Map<String, dynamic>.from(filterStorage.defaultAppliedFilter['Domain'] as Map<String, dynamic>);
           }
         } else if (widget.category == 'Event') {
           if ((filterStorage.defaultAppliedFilter['Event'] as Map<String, dynamic>)
@@ -869,13 +973,14 @@ class FilterState extends ConsumerState<Filter> {
             if (filterStorage.appliedFilter['competitor'] != null) {
               nameController.value = filterStorage.rawFilter['competitor'] as CompetitorSearchResult?;
             }
-            localFilter = filterStorage.appliedFilter;
+            localFilter = Map<String, dynamic>.from(filterStorage.appliedFilter);
           } else {
             eventController.value = filterStorage.defaultFitlerValuesEvent['abyss_version'] as String;
             regionController.value = filterStorage.defaultFitlerValuesEvent['region'] as String?;
             charactersController.value = filterStorage.defaultFitlerValuesEvent['characters'] as List<String?>;
             nameController.value = filterStorage.defaultFitlerValuesEvent['competitor'] as CompetitorSearchResult?;
-            localFilter = filterStorage.defaultAppliedFilter['Event'] as Map<String, dynamic>;
+            localFilter =
+                Map<String, dynamic>.from(filterStorage.defaultAppliedFilter['Event'] as Map<String, dynamic>);
           }
         } else if (widget.category == 'Weekly Boss') {
           if ((filterStorage.defaultAppliedFilter['Weekly Boss'] as Map<String, dynamic>)
@@ -890,13 +995,14 @@ class FilterState extends ConsumerState<Filter> {
             if (filterStorage.appliedFilter['competitor'] != null) {
               nameController.value = filterStorage.rawFilter['competitor'] as CompetitorSearchResult?;
             }
-            localFilter = filterStorage.appliedFilter;
+            localFilter = Map<String, dynamic>.from(filterStorage.appliedFilter);
           } else {
             enemyController.value = filterStorage.defaultFitlerValuesWeeklyBoss['speedrun_subcategory'] as String?;
             regionController.value = filterStorage.defaultFitlerValuesWeeklyBoss['region'] as String?;
             charactersController.value = filterStorage.defaultFitlerValuesWeeklyBoss['characters'] as List<String?>;
             nameController.value = filterStorage.defaultFitlerValuesWeeklyBoss['competitor'] as CompetitorSearchResult?;
-            localFilter = filterStorage.defaultAppliedFilter['Weekly Boss'] as Map<String, dynamic>;
+            localFilter =
+                Map<String, dynamic>.from(filterStorage.defaultAppliedFilter['Weekly Boss'] as Map<String, dynamic>);
           }
         } else if (widget.category == 'World Boss') {
           if ((filterStorage.defaultAppliedFilter['World Boss'] as Map<String, dynamic>)
@@ -911,13 +1017,14 @@ class FilterState extends ConsumerState<Filter> {
             if (filterStorage.appliedFilter['competitor'] != null) {
               nameController.value = filterStorage.rawFilter['competitor'] as CompetitorSearchResult?;
             }
-            localFilter = filterStorage.appliedFilter;
+            localFilter = Map<String, dynamic>.from(filterStorage.appliedFilter);
           } else {
             enemyController.value = filterStorage.defaultFitlerValuesWorldBoss['speedrun_subcategory'] as String?;
             regionController.value = filterStorage.defaultFitlerValuesWorldBoss['region'] as String?;
             charactersController.value = filterStorage.defaultFitlerValuesWorldBoss['characters'] as List<String?>;
             nameController.value = filterStorage.defaultFitlerValuesWorldBoss['competitor'] as CompetitorSearchResult?;
-            localFilter = filterStorage.defaultAppliedFilter['World Boss'] as Map<String, dynamic>;
+            localFilter =
+                Map<String, dynamic>.from(filterStorage.defaultAppliedFilter['World Boss'] as Map<String, dynamic>);
           }
         }
       } else if (widget.type == 'DPS' || widget.type == 'Restricted DPS') {
@@ -932,8 +1039,8 @@ class FilterState extends ConsumerState<Filter> {
             if (filterStorage.appliedFilter['region'] != null) {
               regionController.value = filterStorage.appliedFilter['region'] as String?;
             }
-            if (filterStorage.appliedFilter['characters'] != null) {
-              charactersController.value = filterStorage.rawFilter['characters'] as List<String?>;
+            if (filterStorage.appliedFilter['dps_character'] != null) {
+              dpsCharacterController.value = filterStorage.rawFilter['dps_character'] as String?;
             }
             if (filterStorage.appliedFilter['attack_type'] != null) {
               attackTypeController.value = filterStorage.rawFilter['attack_type'] as String?;
@@ -944,14 +1051,15 @@ class FilterState extends ConsumerState<Filter> {
             if (filterStorage.appliedFilter['enemy'] != null) {
               enemyController.value = filterStorage.rawFilter['enemy'] as String?;
             }
-            localFilter = filterStorage.appliedFilter;
+            localFilter = Map<String, dynamic>.from(filterStorage.appliedFilter);
           } else {
             regionController.value = filterStorage.defaultFitlerValuesOverworld['region'] as String?;
-            charactersController.value = filterStorage.defaultFitlerValuesOverworld['characters'] as List<String?>;
+            dpsCharacterController.value = filterStorage.defaultFitlerValuesOverworld['dps_character'] as String?;
             attackTypeController.value = filterStorage.defaultFitlerValuesOverworld['attack_type'] as String?;
             nameController.value = filterStorage.defaultFitlerValuesOverworld['competitor'] as CompetitorSearchResult?;
             enemyController.value = filterStorage.defaultFitlerValuesOverworld['enemy'] as String?;
-            localFilter = filterStorage.defaultAppliedFilter['Overworld'] as Map<String, dynamic>;
+            localFilter =
+                Map<String, dynamic>.from(filterStorage.defaultAppliedFilter['Overworld'] as Map<String, dynamic>);
           }
         } else if (widget.category == 'Weekly Boss') {
           if ((filterStorage.defaultAppliedFilter['Weekly Boss'] as Map<String, dynamic>)
@@ -959,8 +1067,8 @@ class FilterState extends ConsumerState<Filter> {
             if (filterStorage.appliedFilter['region'] != null) {
               regionController.value = filterStorage.appliedFilter['region'] as String?;
             }
-            if (filterStorage.appliedFilter['characters'] != null) {
-              charactersController.value = filterStorage.rawFilter['characters'] as List<String?>;
+            if (filterStorage.appliedFilter['dps_character'] != null) {
+              dpsCharacterController.value = filterStorage.rawFilter['dps_character'] as String?;
             }
             if (filterStorage.appliedFilter['attack_type'] != null) {
               attackTypeController.value = filterStorage.rawFilter['attack_type'] as String?;
@@ -971,14 +1079,15 @@ class FilterState extends ConsumerState<Filter> {
             if (filterStorage.appliedFilter['enemy'] != null) {
               enemyController.value = filterStorage.rawFilter['enemy'] as String?;
             }
-            localFilter = filterStorage.appliedFilter;
+            localFilter = Map<String, dynamic>.from(filterStorage.appliedFilter);
           } else {
             regionController.value = filterStorage.defaultFitlerValuesWeeklyBoss['region'] as String?;
-            charactersController.value = filterStorage.defaultFitlerValuesWeeklyBoss['characters'] as List<String?>;
+            dpsCharacterController.value = filterStorage.defaultFitlerValuesWeeklyBoss['dps_character'] as String?;
             attackTypeController.value = filterStorage.defaultFitlerValuesWeeklyBoss['attack_type'] as String?;
             nameController.value = filterStorage.defaultFitlerValuesWeeklyBoss['competitor'] as CompetitorSearchResult?;
             enemyController.value = filterStorage.defaultFitlerValuesWeeklyBoss['enemy'] as String?;
-            localFilter = filterStorage.defaultAppliedFilter['Weekly Boss'] as Map<String, dynamic>;
+            localFilter =
+                Map<String, dynamic>.from(filterStorage.defaultAppliedFilter['Weekly Boss'] as Map<String, dynamic>);
           }
         } else if (widget.category == 'World Boss') {
           if ((filterStorage.defaultAppliedFilter['World Boss'] as Map<String, dynamic>)
@@ -986,8 +1095,8 @@ class FilterState extends ConsumerState<Filter> {
             if (filterStorage.appliedFilter['region'] != null) {
               regionController.value = filterStorage.appliedFilter['region'] as String?;
             }
-            if (filterStorage.appliedFilter['characters'] != null) {
-              charactersController.value = filterStorage.rawFilter['characters'] as List<String?>;
+            if (filterStorage.appliedFilter['dps_character'] != null) {
+              dpsCharacterController.value = filterStorage.rawFilter['dps_character'] as String?;
             }
             if (filterStorage.appliedFilter['attack_type'] != null) {
               attackTypeController.value = filterStorage.rawFilter['attack_type'] as String?;
@@ -998,14 +1107,15 @@ class FilterState extends ConsumerState<Filter> {
             if (filterStorage.appliedFilter['enemy'] != null) {
               enemyController.value = filterStorage.rawFilter['enemy'] as String?;
             }
-            localFilter = filterStorage.appliedFilter;
+            localFilter = Map<String, dynamic>.from(filterStorage.appliedFilter);
           } else {
             regionController.value = filterStorage.defaultFitlerValuesWorldBoss['region'] as String?;
-            charactersController.value = filterStorage.defaultFitlerValuesWorldBoss['characters'] as List<String?>;
+            dpsCharacterController.value = filterStorage.defaultFitlerValuesWorldBoss['dps_character'] as String?;
             attackTypeController.value = filterStorage.defaultFitlerValuesWorldBoss['attack_type'] as String?;
             nameController.value = filterStorage.defaultFitlerValuesWorldBoss['competitor'] as CompetitorSearchResult?;
             enemyController.value = filterStorage.defaultFitlerValuesWorldBoss['enemy'] as String?;
-            localFilter = filterStorage.defaultAppliedFilter['World Boss'] as Map<String, dynamic>;
+            localFilter =
+                Map<String, dynamic>.from(filterStorage.defaultAppliedFilter['World Boss'] as Map<String, dynamic>);
           }
         } else if (widget.category == 'Reputation Bounty') {
           if ((filterStorage.defaultAppliedFilter['Reputation Bounty'] as Map<String, dynamic>)
@@ -1013,8 +1123,8 @@ class FilterState extends ConsumerState<Filter> {
             if (filterStorage.appliedFilter['region'] != null) {
               regionController.value = filterStorage.appliedFilter['region'] as String?;
             }
-            if (filterStorage.appliedFilter['characters'] != null) {
-              charactersController.value = filterStorage.rawFilter['characters'] as List<String?>;
+            if (filterStorage.appliedFilter['dps_character'] != null) {
+              dpsCharacterController.value = filterStorage.rawFilter['dps_character'] as String?;
             }
             if (filterStorage.appliedFilter['attack_type'] != null) {
               attackTypeController.value = filterStorage.rawFilter['attack_type'] as String?;
@@ -1025,16 +1135,17 @@ class FilterState extends ConsumerState<Filter> {
             if (filterStorage.appliedFilter['enemy'] != null) {
               enemyController.value = filterStorage.rawFilter['enemy'] as String?;
             }
-            localFilter = filterStorage.appliedFilter;
+            localFilter = Map<String, dynamic>.from(filterStorage.appliedFilter);
           } else {
             regionController.value = filterStorage.defaultFitlerValuesReputationBounty['region'] as String?;
-            charactersController.value =
-                filterStorage.defaultFitlerValuesReputationBounty['characters'] as List<String?>;
+            dpsCharacterController.value =
+                filterStorage.defaultFitlerValuesReputationBounty['dps_character'] as String?;
             attackTypeController.value = filterStorage.defaultFitlerValuesReputationBounty['attack_type'] as String?;
             nameController.value =
                 filterStorage.defaultFitlerValuesReputationBounty['competitor'] as CompetitorSearchResult?;
             enemyController.value = filterStorage.defaultFitlerValuesReputationBounty['enemy'] as String?;
-            localFilter = filterStorage.defaultAppliedFilter['Reputation Bounty'] as Map<String, dynamic>;
+            localFilter = Map<String, dynamic>.from(
+                filterStorage.defaultAppliedFilter['Reputation Bounty'] as Map<String, dynamic>);
           }
         } else if (widget.category == 'Abyss') {
           if ((filterStorage.defaultAppliedFilter['Abyss'] as Map<String, dynamic>)
@@ -1042,8 +1153,8 @@ class FilterState extends ConsumerState<Filter> {
             if (filterStorage.appliedFilter['region'] != null) {
               regionController.value = filterStorage.appliedFilter['region'] as String?;
             }
-            if (filterStorage.appliedFilter['characters'] != null) {
-              charactersController.value = filterStorage.rawFilter['characters'] as List<String?>;
+            if (filterStorage.appliedFilter['dps_character'] != null) {
+              dpsCharacterController.value = filterStorage.rawFilter['dps_character'] as String?;
             }
             if (filterStorage.appliedFilter['attack_type'] != null) {
               attackTypeController.value = filterStorage.rawFilter['attack_type'] as String?;
@@ -1054,14 +1165,15 @@ class FilterState extends ConsumerState<Filter> {
             if (filterStorage.appliedFilter['enemy'] != null) {
               enemyController.value = filterStorage.rawFilter['enemy'] as String?;
             }
-            localFilter = filterStorage.appliedFilter;
+            localFilter = Map<String, dynamic>.from(filterStorage.appliedFilter);
           } else {
             regionController.value = filterStorage.defaultFitlerValuesAbyss['region'] as String?;
-            charactersController.value = filterStorage.defaultFitlerValuesAbyss['characters'] as List<String?>;
+            dpsCharacterController.value = filterStorage.defaultFitlerValuesAbyss['dps_character'] as String?;
             attackTypeController.value = filterStorage.defaultFitlerValuesAbyss['attack_type'] as String?;
             nameController.value = filterStorage.defaultFitlerValuesAbyss['competitor'] as CompetitorSearchResult?;
             enemyController.value = filterStorage.defaultFitlerValuesAbyss['enemy'] as String?;
-            localFilter = filterStorage.defaultAppliedFilter['Abyss'] as Map<String, dynamic>;
+            localFilter =
+                Map<String, dynamic>.from(filterStorage.defaultAppliedFilter['Abyss'] as Map<String, dynamic>);
           }
         } else if (widget.category == 'Domain') {
           if ((filterStorage.defaultAppliedFilter['Domain'] as Map<String, dynamic>)
@@ -1069,8 +1181,8 @@ class FilterState extends ConsumerState<Filter> {
             if (filterStorage.appliedFilter['region'] != null) {
               regionController.value = filterStorage.appliedFilter['region'] as String?;
             }
-            if (filterStorage.appliedFilter['characters'] != null) {
-              charactersController.value = filterStorage.rawFilter['characters'] as List<String?>;
+            if (filterStorage.appliedFilter['dps_character'] != null) {
+              dpsCharacterController.value = filterStorage.rawFilter['dps_character'] as String?;
             }
             if (filterStorage.appliedFilter['attack_type'] != null) {
               attackTypeController.value = filterStorage.rawFilter['attack_type'] as String?;
@@ -1081,14 +1193,15 @@ class FilterState extends ConsumerState<Filter> {
             if (filterStorage.appliedFilter['domain'] != null) {
               domainController.value = filterStorage.rawFilter['domain'] as String;
             }
-            localFilter = filterStorage.appliedFilter;
+            localFilter = Map<String, dynamic>.from(filterStorage.appliedFilter);
           } else {
             regionController.value = filterStorage.defaultFitlerValuesDomain['region'] as String?;
-            charactersController.value = filterStorage.defaultFitlerValuesDomain['characters'] as List<String?>;
+            dpsCharacterController.value = filterStorage.defaultFitlerValuesDomain['dps_character'] as String?;
             attackTypeController.value = filterStorage.defaultFitlerValuesDomain['attack_type'] as String?;
             nameController.value = filterStorage.defaultFitlerValuesDomain['competitor'] as CompetitorSearchResult?;
             domainController.value = filterStorage.defaultFitlerValuesDomain['domain'] as String;
-            localFilter = filterStorage.defaultAppliedFilter['Domain'] as Map<String, dynamic>;
+            localFilter =
+                Map<String, dynamic>.from(filterStorage.defaultAppliedFilter['Domain'] as Map<String, dynamic>);
           }
         } else if (widget.category == 'Event') {
           if ((filterStorage.defaultAppliedFilter['Event'] as Map<String, dynamic>)
@@ -1096,8 +1209,8 @@ class FilterState extends ConsumerState<Filter> {
             if (filterStorage.appliedFilter['region'] != null) {
               regionController.value = filterStorage.appliedFilter['region'] as String?;
             }
-            if (filterStorage.appliedFilter['characters'] != null) {
-              charactersController.value = filterStorage.rawFilter['characters'] as List<String?>;
+            if (filterStorage.appliedFilter['dps_character'] != null) {
+              dpsCharacterController.value = filterStorage.rawFilter['dps_character'] as String?;
             }
             if (filterStorage.appliedFilter['attack_type'] != null) {
               attackTypeController.value = filterStorage.rawFilter['attack_type'] as String?;
@@ -1108,14 +1221,15 @@ class FilterState extends ConsumerState<Filter> {
             if (filterStorage.appliedFilter['event'] != null) {
               eventController.value = filterStorage.rawFilter['event'] as String;
             }
-            localFilter = filterStorage.appliedFilter;
+            localFilter = Map<String, dynamic>.from(filterStorage.appliedFilter);
           } else {
             regionController.value = filterStorage.defaultFitlerValuesEvent['region'] as String?;
-            charactersController.value = filterStorage.defaultFitlerValuesEvent['characters'] as List<String?>;
+            dpsCharacterController.value = filterStorage.defaultFitlerValuesEvent['dps_character'] as String?;
             attackTypeController.value = filterStorage.defaultFitlerValuesEvent['attack_type'] as String?;
             nameController.value = filterStorage.defaultFitlerValuesEvent['competitor'] as CompetitorSearchResult?;
             eventController.value = filterStorage.defaultFitlerValuesEvent['event'] as String;
-            localFilter = filterStorage.defaultAppliedFilter['Event'] as Map<String, dynamic>;
+            localFilter =
+                Map<String, dynamic>.from(filterStorage.defaultAppliedFilter['Event'] as Map<String, dynamic>);
           }
         }
       }
@@ -1132,6 +1246,7 @@ class FilterState extends ConsumerState<Filter> {
   void dispose() {
     // Clean up listeners to prevent memory leaks
     charactersController.dispose();
+    dpsCharacterController.dispose();
     nameController.dispose();
     regionController.dispose();
     abyssVersionController.dispose();

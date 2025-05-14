@@ -72,6 +72,7 @@ class _ProfileWithUserState extends State<ProfileWithUser> {
           ),
         ),
         CustomScrollView(
+          controller: _mainScrollController,
           slivers: [
             SliverAppBar(
                 pinned: true,

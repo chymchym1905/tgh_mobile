@@ -125,6 +125,7 @@ class _LeaderboardBodyState extends ConsumerState<LeaderboardBody> {
                                   ref.read(speedrunLeaderboardFilterNotifierProvider.notifier).updateFilter(
                                       speedrunFilter.defaultAppliedFilter[SPEEDRUN_CATEGORY_ORDER[index]]
                                           as Map<String, dynamic>);
+                                  ref.read(appliedDisplayFilterProvider.notifier).state = {};
                                 }))))
                 : widget.currentLeaderboardCategory == 'DPS'
                     ? List<Widget>.generate(
@@ -139,6 +140,7 @@ class _LeaderboardBodyState extends ConsumerState<LeaderboardBody> {
                                       _currentDpsCategory = DPS_CATEGORY_ORDER[index];
                                       ref.read(dpsLeaderboardFilterNotifierProvider.notifier).updateFilter(dpsFilter
                                           .defaultAppliedFilter[DPS_CATEGORY_ORDER[index]] as Map<String, dynamic>);
+                                      ref.read(appliedDisplayFilterProvider.notifier).state = {};
                                     }))))
                     : List<Widget>.generate(
                         RESTRICTED_DPS_CATEGORY_ORDER.length,
@@ -153,52 +155,64 @@ class _LeaderboardBodyState extends ConsumerState<LeaderboardBody> {
                                       ref.read(restrictedDpsLeaderboardFilterNotifierProvider.notifier).updateFilter(
                                           restrictedDpsFilter.defaultAppliedFilter[RESTRICTED_DPS_CATEGORY_ORDER[index]]
                                               as Map<String, dynamic>);
+                                      ref.read(appliedDisplayFilterProvider.notifier).state = {};
                                     })))),
           ),
           const SizedBox(height: 8),
           Divider(color: Theme.of(context).colorScheme.outline, height: 32),
           if (MediaQuery.of(context).size.width <= 565)
-            Wrap(direction: Axis.horizontal, spacing: 4.wr, runSpacing: 8, children: [
-              SizedBox(
-                  width: 30.wr,
-                  height: 30.wr,
-                  child: IconButton(
-                      onPressed: _showFilterOverlay,
-                      icon: speedrunFilter.appliedFilter.isNotEmpty
-                          ? Icon(Icons.filter_alt, size: 16.wr)
-                          : Icon(Icons.filter_alt_off, size: 16.wr))),
-              ..._filterKey.currentState?.appliedDisplayFilter.entries.map((e) {
+            Wrap(
+                direction: Axis.horizontal,
+                spacing: 4.wr,
+                runSpacing: 8,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  SizedBox(
+                      width: 30.wr,
+                      height: 30.wr,
+                      child: IconButton(
+                          onPressed: _showFilterOverlay,
+                          icon: ref.read(appliedDisplayFilterProvider).isEmpty
+                              ? Icon(Icons.filter_alt, size: 16.wr)
+                              : Icon(Icons.filter_alt_off, size: 16.wr))),
+                  ...ref.watch(appliedDisplayFilterProvider).entries.map((e) {
                     final key = e.key;
                     final value = e.value;
                     String displayValue = '';
-                    if (key == 'Character') {
-                      displayValue = '{Characters: ${value.toString()}}';
+                    if (key == 'Characters') {
+                      displayValue = 'Characters: ${value.join(', ')}';
                     } else if (key == 'Domain') {
                       displayValue = value.toString();
                     } else if (key == 'Event') {
                       displayValue = value.toString();
                     } else if (key == 'Enemy') {
-                      displayValue = '{$key: ${value.toString()}}';
+                      displayValue = '$key: ${value.toString()}';
                     } else if (key == 'Region') {
                       displayValue = value.toString();
                     } else if (key == 'Abyss version') {
-                      displayValue = '{$key ${value.toString()}}';
+                      displayValue = '$key ${value.toString()}';
                     } else if (key == 'Attack Type') {
-                      displayValue = '{Ability: ${value.toString()}}';
-                    } else if (key == 'Floor') {
-                      displayValue = '{$key ${value.toString()}}';
+                      displayValue = 'Ability: ${value.toString()}';
+                    } else if (key == 'Chamber') {
+                      displayValue = '$key ${value.toString()}';
+                    } else if (key == 'From competitor') {
+                      displayValue = 'From competitor: ${value.toString()}';
+                    } else if (key == 'DpsCharacter') {
+                      displayValue = 'Nuker: ${value.toString()}';
                     }
                     return Container(
                         decoration: BoxDecoration(
                           color: Theme.of(context).colorScheme.onSecondaryFixedVariant,
                           border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
                         ),
-                        height: 30.wr,
-                        child: Text(displayValue,
-                            style: TextStyle(fontSize: 12.wr, color: Theme.of(context).colorScheme.secondaryFixedDim)));
-                  }) ??
-                  []
-            ])
+                        padding: EdgeInsets.symmetric(horizontal: 8.wr, vertical: 6),
+                        child: Center(
+                            widthFactor: 1,
+                            child: Text(displayValue,
+                                style: TextStyle(
+                                    fontSize: 12.wr, color: Theme.of(context).colorScheme.secondaryFixedDim))));
+                  })
+                ])
           else
             Filter(
                 key: _filterKey,

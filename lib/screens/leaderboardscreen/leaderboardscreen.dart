@@ -14,6 +14,11 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
   final leaderboardCategories = ['Speedrun, DPS, Restricted DPS'];
   String selectedLeaderboardCategory = 'Speedrun';
   final customPopupMenuController = CustomPopupMenuController();
+  final map = <String, ProviderOrFamily>{
+    'Speedrun': fetchSpeedrunProvider,
+    'DPS': fetchDpsProvider,
+    'Restricted DPS': fetchRestrictedDpsProvider,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -46,72 +51,121 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                     decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.surfaceContainerHigh,
                         borderRadius: BorderRadius.circular(5.wr)),
-                    child: Material(
-                        color: Colors.transparent,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.wr)),
-                        child: IntrinsicWidth(
-                            child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                              InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      selectedLeaderboardCategory = 'Speedrun';
-                                    });
-                                    customPopupMenuController.hideMenu();
-                                  },
-                                  highlightColor: Theme.of(context).colorScheme.surfaceContainerHigh,
-                                  splashColor: Theme.of(context).colorScheme.surfaceContainerHighest,
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(5.wr),
-                                    topRight: Radius.circular(5.wr),
-                                  ),
-                                  child: Padding(
-                                      padding: EdgeInsets.only(right: 10.wr, left: 10.wr, top: 10.wr, bottom: 5.wr),
-                                      child: Row(children: [
-                                        Icon(Icons.timer, size: 24.wr),
-                                        SizedBox(width: 5.wr),
-                                        Text('Speedrun', style: TextStyle(fontSize: 18.wr, fontWeight: FontWeight.bold))
-                                      ]))),
-                              InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      selectedLeaderboardCategory = 'DPS';
-                                    });
-                                    customPopupMenuController.hideMenu();
-                                  },
-                                  highlightColor: Theme.of(context).colorScheme.surfaceContainerHigh,
-                                  splashColor: Theme.of(context).colorScheme.surfaceContainerHighest,
-                                  borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(5.wr), bottomRight: Radius.circular(5.wr)),
-                                  child: Ink(
-                                      padding: EdgeInsets.symmetric(vertical: 5.wr, horizontal: 10.wr),
-                                      child: Row(children: [
-                                        SvgPicture.asset('assets/icons/whale.svg', width: 24.wr, height: 24.wr),
-                                        SizedBox(width: 5.wr),
-                                        Text('DPS', style: TextStyle(fontSize: 18.wr, fontWeight: FontWeight.bold))
-                                      ]))),
-                              InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      selectedLeaderboardCategory = 'Restricted DPS';
-                                    });
-                                    customPopupMenuController.hideMenu();
-                                  },
-                                  highlightColor: Theme.of(context).colorScheme.surfaceContainerHigh,
-                                  splashColor: Theme.of(context).colorScheme.surfaceContainerHighest,
-                                  borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(5.wr), bottomRight: Radius.circular(5.wr)),
-                                  child: Padding(
-                                      padding: EdgeInsets.only(right: 10.wr, left: 10.wr, top: 5.wr, bottom: 10.wr),
-                                      child: Row(children: [
-                                        SvgPicture.asset('assets/icons/fish.svg', width: 24.wr, height: 24.wr),
-                                        SizedBox(width: 5.wr),
-                                        Text('Restricted DPS',
-                                            style: TextStyle(fontSize: 18.wr, fontWeight: FontWeight.bold))
-                                      ])))
-                            ])))),
+                    child: Consumer(
+                      builder: (context, ref, child) {
+                        return Material(
+                            color: Colors.transparent,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.wr)),
+                            child: IntrinsicWidth(
+                                child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    children: [
+                                  InkWell(
+                                      onTap: () {
+                                        if (ref.read(appliedDisplayFilterProvider).isNotEmpty) {
+                                          ref.invalidate(map[selectedLeaderboardCategory]!);
+                                          // Call the appropriate resetFilter method based on the current category
+                                          if (selectedLeaderboardCategory == 'Speedrun') {
+                                            ref.read(speedrunLeaderboardFilterNotifierProvider.notifier).resetFilter();
+                                          } else if (selectedLeaderboardCategory == 'DPS') {
+                                            ref.read(dpsLeaderboardFilterNotifierProvider.notifier).resetFilter();
+                                          } else if (selectedLeaderboardCategory == 'Restricted DPS') {
+                                            ref
+                                                .read(restrictedDpsLeaderboardFilterNotifierProvider.notifier)
+                                                .resetFilter();
+                                          }
+                                        }
+                                        setState(() {
+                                          selectedLeaderboardCategory = 'Speedrun';
+                                          ref.read(appliedDisplayFilterProvider.notifier).state = {};
+                                        });
+
+                                        customPopupMenuController.hideMenu();
+                                      },
+                                      highlightColor: Theme.of(context).colorScheme.surfaceContainerHigh,
+                                      splashColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(5.wr),
+                                        topRight: Radius.circular(5.wr),
+                                      ),
+                                      child: Padding(
+                                          padding: EdgeInsets.only(right: 10.wr, left: 10.wr, top: 10.wr, bottom: 5.wr),
+                                          child: Row(children: [
+                                            Icon(Icons.timer, size: 24.wr),
+                                            SizedBox(width: 5.wr),
+                                            Text('Speedrun',
+                                                style: TextStyle(fontSize: 18.wr, fontWeight: FontWeight.bold))
+                                          ]))),
+                                  InkWell(
+                                      onTap: () {
+                                        if (ref.read(appliedDisplayFilterProvider).isNotEmpty) {
+                                          ref.invalidate(map[selectedLeaderboardCategory]!);
+                                          // Call the appropriate resetFilter method based on the current category
+                                          if (selectedLeaderboardCategory == 'Speedrun') {
+                                            ref.read(speedrunLeaderboardFilterNotifierProvider.notifier).resetFilter();
+                                          } else if (selectedLeaderboardCategory == 'DPS') {
+                                            ref.read(dpsLeaderboardFilterNotifierProvider.notifier).resetFilter();
+                                          } else if (selectedLeaderboardCategory == 'Restricted DPS') {
+                                            ref
+                                                .read(restrictedDpsLeaderboardFilterNotifierProvider.notifier)
+                                                .resetFilter();
+                                          }
+                                        }
+                                        setState(() {
+                                          selectedLeaderboardCategory = 'DPS';
+
+                                          ref.read(appliedDisplayFilterProvider.notifier).state = {};
+                                        });
+                                        customPopupMenuController.hideMenu();
+                                      },
+                                      highlightColor: Theme.of(context).colorScheme.surfaceContainerHigh,
+                                      splashColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                                      borderRadius: BorderRadius.only(
+                                          bottomLeft: Radius.circular(5.wr), bottomRight: Radius.circular(5.wr)),
+                                      child: Ink(
+                                          padding: EdgeInsets.symmetric(vertical: 5.wr, horizontal: 10.wr),
+                                          child: Row(children: [
+                                            SvgPicture.asset('assets/icons/whale.svg', width: 24.wr, height: 24.wr),
+                                            SizedBox(width: 5.wr),
+                                            Text('DPS', style: TextStyle(fontSize: 18.wr, fontWeight: FontWeight.bold))
+                                          ]))),
+                                  InkWell(
+                                      onTap: () {
+                                        if (ref.read(appliedDisplayFilterProvider).isNotEmpty) {
+                                          ref.invalidate(map[selectedLeaderboardCategory]!);
+                                          // Call the appropriate resetFilter method based on the current category
+                                          if (selectedLeaderboardCategory == 'Speedrun') {
+                                            ref.read(speedrunLeaderboardFilterNotifierProvider.notifier).resetFilter();
+                                          } else if (selectedLeaderboardCategory == 'DPS') {
+                                            ref.read(dpsLeaderboardFilterNotifierProvider.notifier).resetFilter();
+                                          } else if (selectedLeaderboardCategory == 'Restricted DPS') {
+                                            ref
+                                                .read(restrictedDpsLeaderboardFilterNotifierProvider.notifier)
+                                                .resetFilter();
+                                          }
+                                        }
+                                        setState(() {
+                                          selectedLeaderboardCategory = 'Restricted DPS';
+                                          ref.read(appliedDisplayFilterProvider.notifier).state = {};
+                                        });
+                                        customPopupMenuController.hideMenu();
+                                      },
+                                      highlightColor: Theme.of(context).colorScheme.surfaceContainerHigh,
+                                      splashColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                                      borderRadius: BorderRadius.only(
+                                          bottomLeft: Radius.circular(5.wr), bottomRight: Radius.circular(5.wr)),
+                                      child: Padding(
+                                          padding: EdgeInsets.only(right: 10.wr, left: 10.wr, top: 5.wr, bottom: 10.wr),
+                                          child: Row(children: [
+                                            SvgPicture.asset('assets/icons/fish.svg', width: 24.wr, height: 24.wr),
+                                            SizedBox(width: 5.wr),
+                                            Text('Restricted DPS',
+                                                style: TextStyle(fontSize: 18.wr, fontWeight: FontWeight.bold))
+                                          ])))
+                                ])));
+                      },
+                    )),
                 pressType: PressType.singleClick,
                 child: Text('$selectedLeaderboardCategory Leaderboard',
                     style: GoogleFonts.inter(

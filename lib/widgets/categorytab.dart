@@ -20,7 +20,7 @@ class CategoryTab extends StatelessWidget {
                         ? Theme.of(context).colorScheme.secondaryFixedDim
                         : Theme.of(context).colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(5.wr)),
-                padding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 4.wr),
+                padding: EdgeInsets.only(right: 10.wr, left: 8.wr, bottom: 4.wr, top: 4.wr),
                 child: Row(mainAxisSize: MainAxisSize.min, children: [
                   Image.asset(ASSET_MAPPING[name]!, width: 20.wr, height: 20.wr),
                   const SizedBox(width: 8),
