@@ -8,7 +8,9 @@ part 'ranking.g.dart';
 @freezed
 class RankInfo with _$RankInfo {
   @JsonSerializable(explicitToJson: true)
-  const factory RankInfo({required String version, required PerformanceDetail rank}) = _RankInfo;
+  const factory RankInfo(
+      {@JsonKey(name: 'version') required String version,
+      @JsonKey(name: 'rank') required PerformanceDetail rank}) = _RankInfo;
 
   factory RankInfo.fromJson(Map<String, dynamic> json) => _$RankInfoFromJson(json);
 }

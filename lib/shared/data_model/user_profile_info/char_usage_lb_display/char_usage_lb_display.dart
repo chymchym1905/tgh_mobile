@@ -17,6 +17,6 @@ class CharUsageLbDisplay with _$CharUsageLbDisplay {
 
   @override
   String toString() {
-    return 'CharUsageLbDisplay(competitorId: $competitorId, characterUsage: ${characterUsage.length})';
+    return 'CharUsageLbDisplay(competitorId: $competitorId, Number of characters used: ${characterUsage.length})';
   }
 }
