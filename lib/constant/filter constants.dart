@@ -85,6 +85,16 @@ const DPS_CATEGORY_ORDER = [
   'Domain',
 ];
 
+const ASSET_MAPPING = {
+  'Domain': 'assets/icons/Domain.png',
+  'Event': 'assets/icons/Icon_Events.webp',
+  'Overworld': 'assets/icons/Icon_Monster_Pin.webp',
+  'Abyss': 'assets/icons/spiral abyss.png',
+  'Reputation Bounty': 'assets/icons/UI_NPCTopIcon_Reputation.webp',
+  'Weekly Boss': 'assets/icons/Trouce_Domain.png',
+  'World Boss': 'assets/icons/UI_OnmyoMaze_Icon_Boss.webp'
+};
+
 const RESTRICTED_DPS_CATEGORY_ORDER = [
   'Weekly Boss',
   'Overworld',

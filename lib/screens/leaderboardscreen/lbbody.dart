@@ -158,14 +158,47 @@ class _LeaderboardBodyState extends ConsumerState<LeaderboardBody> {
           const SizedBox(height: 8),
           Divider(color: Theme.of(context).colorScheme.outline, height: 32),
           if (MediaQuery.of(context).size.width <= 565)
-            SizedBox(
-                width: 30.wr,
-                height: 30.wr,
-                child: IconButton(
-                    onPressed: _showFilterOverlay,
-                    icon: speedrunFilter.appliedFilter.isNotEmpty
-                        ? Icon(Icons.filter_alt, size: 16.wr)
-                        : Icon(Icons.filter_alt_off, size: 16.wr)))
+            Wrap(direction: Axis.horizontal, spacing: 4.wr, runSpacing: 8, children: [
+              SizedBox(
+                  width: 30.wr,
+                  height: 30.wr,
+                  child: IconButton(
+                      onPressed: _showFilterOverlay,
+                      icon: speedrunFilter.appliedFilter.isNotEmpty
+                          ? Icon(Icons.filter_alt, size: 16.wr)
+                          : Icon(Icons.filter_alt_off, size: 16.wr))),
+              ..._filterKey.currentState?.appliedDisplayFilter.entries.map((e) {
+                    final key = e.key;
+                    final value = e.value;
+                    String displayValue = '';
+                    if (key == 'Character') {
+                      displayValue = '{Characters: ${value.toString()}}';
+                    } else if (key == 'Domain') {
+                      displayValue = value.toString();
+                    } else if (key == 'Event') {
+                      displayValue = value.toString();
+                    } else if (key == 'Enemy') {
+                      displayValue = '{$key: ${value.toString()}}';
+                    } else if (key == 'Region') {
+                      displayValue = value.toString();
+                    } else if (key == 'Abyss version') {
+                      displayValue = '{$key ${value.toString()}}';
+                    } else if (key == 'Attack Type') {
+                      displayValue = '{Ability: ${value.toString()}}';
+                    } else if (key == 'Floor') {
+                      displayValue = '{$key ${value.toString()}}';
+                    }
+                    return Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.onSecondaryFixedVariant,
+                          border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
+                        ),
+                        height: 30.wr,
+                        child: Text(displayValue,
+                            style: TextStyle(fontSize: 12.wr, color: Theme.of(context).colorScheme.secondaryFixedDim)));
+                  }) ??
+                  []
+            ])
           else
             Filter(
                 key: _filterKey,

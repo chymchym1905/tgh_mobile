@@ -29,6 +29,7 @@ class FilterState extends ConsumerState<Filter> {
   bool _isInitializing = false;
 
   Map<String, dynamic> localFilter = <String, dynamic>{};
+  Map<String, dynamic> appliedDisplayFilter = <String, dynamic>{};
 
   @override
   void initState() {
@@ -55,20 +56,32 @@ class FilterState extends ConsumerState<Filter> {
 
     if (widget.type == 'Speedrun') {
       if (filter == 'Alias') {
-        localFilter['competitor'] =
+        final newFilter = <String, dynamic>{};
+        localFilter.forEach((key, value) {
+          newFilter[key] = value;
+        });
+        newFilter['competitor'] =
             CompetitorSearchResult(alias: nameController.value?.alias ?? '', id: nameController.value?.id ?? '');
+        localFilter = newFilter;
+        appliedDisplayFilter['From competitor'] = nameController.value?.alias;
       } else if (filter == 'Abyss Version') {
         localFilter['abyss_version'] = abyssVersionController.value;
+        appliedDisplayFilter['Abyss version'] = abyssVersionController.value;
       } else if (filter == 'Floor') {
         localFilter['speedrun_subcategory'] = floorController.value;
+        appliedDisplayFilter['Chmaber'] = floorController.value;
       } else if (filter == 'Domain') {
         localFilter['speedrun_subcategory'] = domainController.value;
+        appliedDisplayFilter['Domain'] = domainController.value;
       } else if (filter == 'Event') {
         localFilter['abyss_version'] = eventController.value;
+        appliedDisplayFilter['Event'] = eventController.value;
       } else if (filter == 'Enemy') {
         localFilter['speedrun_subcategory'] = enemyController.value;
+        appliedDisplayFilter['Enemy'] = enemyController.value;
       } else if (filter == 'Region') {
         localFilter['region'] = regionController.value;
+        appliedDisplayFilter['Region'] = regionController.value;
       } else if (filter == 'Characters') {
         log(charactersController.value.toString(), name: 'Character controller');
         final charactersList = List<String?>.from(charactersController.value);
@@ -88,13 +101,21 @@ class FilterState extends ConsumerState<Filter> {
         if (charactersList.isEmpty) {
           localFilter.remove('characters');
         }
+        appliedDisplayFilter['Characters'] = charactersList;
       }
     } else if (widget.type == 'DPS' || widget.type == 'Restricted DPS') {
       if (filter == 'Alias') {
-        localFilter['competitor'] =
+        final newFilter = <String, dynamic>{};
+        localFilter.forEach((key, value) {
+          newFilter[key] = value;
+        });
+        newFilter['competitor'] =
             CompetitorSearchResult(alias: nameController.value?.alias ?? '', id: nameController.value?.id ?? '');
+        localFilter = newFilter;
+        appliedDisplayFilter['From competitor'] = nameController.value?.alias;
       } else if (filter == 'Region') {
         localFilter['region'] = regionController.value;
+        appliedDisplayFilter['Region'] = regionController.value;
       } else if (filter == 'Characters') {
         log(charactersController.value.toString(), name: 'Character controller');
         final charactersList = List<String?>.from(charactersController.value);
@@ -114,14 +135,19 @@ class FilterState extends ConsumerState<Filter> {
         if (charactersList.isEmpty) {
           localFilter.remove('characters');
         }
+        appliedDisplayFilter['Characters'] = charactersList;
       } else if (filter == 'Attack Type') {
         localFilter['attack_type'] = attackTypeController.value;
+        appliedDisplayFilter['Ability'] = attackTypeController.value;
       } else if (filter == 'Enemy') {
-        localFilter['speedrun_subcategory'] = enemyController.value;
+        localFilter['enemy'] = enemyController.value;
+        appliedDisplayFilter['Enemy'] = enemyController.value;
       } else if (filter == 'Domain') {
-        localFilter['speedrun_subcategory'] = domainController.value;
+        localFilter['domain'] = domainController.value;
+        appliedDisplayFilter['Domain'] = domainController.value;
       } else if (filter == 'Event') {
-        localFilter['abyss_version'] = eventController.value;
+        localFilter['event'] = eventController.value;
+        appliedDisplayFilter['Event'] = eventController.value;
       }
     }
     log('$localFilter', name: 'Local Filter');

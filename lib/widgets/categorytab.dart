@@ -18,15 +18,19 @@ class CategoryTab extends StatelessWidget {
                 decoration: BoxDecoration(
                     color: selected
                         ? Theme.of(context).colorScheme.secondaryFixedDim
-                        : Theme.of(context).colorScheme.surfaceContainerHigh,
+                        : Theme.of(context).colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(5.wr)),
                 padding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 4.wr),
-                child: Text(name,
-                    style: TextStyle(
-                        fontSize: 12.wr,
-                        fontWeight: FontWeight.bold,
-                        color: selected
-                            ? Theme.of(context).colorScheme.onPrimary
-                            : Theme.of(context).colorScheme.onSurface)))));
+                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                  Image.asset(ASSET_MAPPING[name]!, width: 20.wr, height: 20.wr),
+                  const SizedBox(width: 8),
+                  Text(name,
+                      style: TextStyle(
+                          fontSize: 12.wr,
+                          fontWeight: FontWeight.bold,
+                          color: selected
+                              ? Theme.of(context).colorScheme.onPrimary
+                              : Theme.of(context).colorScheme.onSurface))
+                ]))));
   }
 }

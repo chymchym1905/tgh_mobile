@@ -29,7 +29,7 @@ class _ThemeSettingsTileState extends ConsumerState<ThemeSettingsTile> {
                       ),
                     )),
                 // Centered overlay
-                const Center(child: ThemeSettingOverlay()),
+                Center(child: ThemeSettingOverlay(popOverlay: () => _showOverlay())),
               ],
             ));
     Overlay.of(context).insert(_overlayEntry!);

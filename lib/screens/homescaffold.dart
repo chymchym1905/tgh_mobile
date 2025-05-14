@@ -10,7 +10,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  SideMenuController sideMenuController = SideMenuController();
+  final _key = GlobalKey<ExpandableFabState>();
   Widget _tabBuilder(int index, bool isActive, double width, double height) {
     switch (index) {
       case 0:
@@ -59,7 +59,73 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             : null,
         body: widget.navigationShell,
         floatingActionButton: MediaQuery.of(context).size.width > kMaxWidthTablet
-            ? null
+            ? (widget.navigationShell.currentIndex == 3
+                ? ExpandableFab(
+                    key: _key,
+                    elevation: 10,
+                    type: ExpandableFabType.up,
+                    openButtonBuilder: RotateFloatingActionButtonBuilder(
+                      child: const Icon(Icons.menu),
+                      fabSize: ExpandableFabSize.regular,
+                      foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
+                      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                      shape: const CircleBorder(),
+                    ),
+                    closeButtonBuilder: DefaultFloatingActionButtonBuilder(
+                      child: const Icon(Icons.close),
+                      fabSize: ExpandableFabSize.regular,
+                      foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
+                      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                      shape: const CircleBorder(),
+                    ),
+                    children: [
+                      FloatingActionButton(
+                        onPressed: () {
+                          if (_key.currentState?.isOpen ?? false) {
+                            _key.currentState?.toggle();
+                          }
+                          widget.navigationShell.goBranch(0);
+                        },
+                        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                        child: _tabBuilder(0, widget.navigationShell.currentIndex == 0, 40, 40),
+                      ),
+                      FloatingActionButton(
+                        onPressed: () {
+                          if (_key.currentState?.isOpen ?? false) {
+                            _key.currentState?.toggle();
+                          }
+                          widget.navigationShell.goBranch(1);
+                        },
+                        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                        child: _tabBuilder(1, widget.navigationShell.currentIndex == 1, 40, 40),
+                      ),
+                      FloatingActionButton(
+                        onPressed: () {
+                          if (_key.currentState?.isOpen ?? false) {
+                            _key.currentState?.toggle();
+                          }
+                          widget.navigationShell.goBranch(2);
+                        },
+                        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                        child: _tabBuilder(2, widget.navigationShell.currentIndex == 2, 40, 40),
+                      ),
+                      FloatingActionButton(
+                        onPressed: () {
+                          if (_key.currentState?.isOpen ?? false) {
+                            _key.currentState?.toggle();
+                          }
+                          widget.navigationShell.goBranch(3);
+                        },
+                        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                        child: _tabBuilder(3, widget.navigationShell.currentIndex == 3, 40, 40),
+                      ),
+                    ],
+                  )
+                : null)
             : FloatingActionButton(
                 onPressed: () {},
                 backgroundColor: Theme.of(context).colorScheme.primaryContainer,
@@ -67,7 +133,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 mini: true,
                 child: const Icon(Icons.add),
               ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        floatingActionButtonLocation:
+            widget.navigationShell.currentIndex == 3 && MediaQuery.of(context).size.width > kMaxWidthTabletLandscape
+                ? ExpandableFab.location
+                : FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: MediaQuery.of(context).size.width > kMaxWidthTablet
             ? null
             : AnimatedBottomNavigationBar.builder(
@@ -81,7 +150,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 notchSmoothness: NotchSmoothness.defaultEdge,
                 gapLocation: GapLocation.center,
                 activeIndex: widget.navigationShell.currentIndex,
-                onTap: (index) => widget.navigationShell.goBranch(index),
+                onTap: (index) {
+                  widget.navigationShell.goBranch(index);
+                },
               ));
   }
 }
