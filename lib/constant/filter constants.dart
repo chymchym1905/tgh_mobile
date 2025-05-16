@@ -34,7 +34,8 @@ const ABYSS_VERSION_HISTORY = [
   '5.3',
   '5.4 A',
   '5.4 B',
-  '5.5'
+  '5.5',
+  '5.6 A'
 ];
 
 const SPEEDRUN_ABYSS_CHAMBERS = [

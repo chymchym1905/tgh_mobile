@@ -25,6 +25,39 @@ Widget rankColumn(BuildContext context) {
               style: TextStyle(fontSize: 10.wr, fontWeight: FontWeight.bold))));
 }
 
+Widget pointsColumn(BuildContext context) {
+  return Expanded(
+      flex: 1,
+      child: Center(
+          child: Text('Points',
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+              style: TextStyle(fontSize: 10.wr, fontWeight: FontWeight.bold))));
+}
+
+Widget breakdownColumn(BuildContext context, int flex) {
+  return Expanded(
+      flex: flex,
+      child: Center(
+          child: Text('Breakdown',
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+              style: TextStyle(fontSize: 10.wr, fontWeight: FontWeight.bold))));
+}
+
+Widget regionColumn(BuildContext context) {
+  return Expanded(
+      flex: 1,
+      child: Center(
+          child: Text('Region',
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+              style: TextStyle(fontSize: 10.wr, fontWeight: FontWeight.bold))));
+}
+
 Widget abyssVersionColumn(BuildContext context) {
   return Expanded(
       flex: 1,
@@ -80,9 +113,9 @@ Widget team1or2Column(BuildContext context, int team) {
               style: TextStyle(fontSize: 10.wr, fontWeight: FontWeight.bold))));
 }
 
-Widget characterUsageColumn(BuildContext context) {
+Widget characterUsageColumn(BuildContext context, {int flex = 4}) {
   return Expanded(
-      flex: 4,
+      flex: flex,
       child: Center(
           child: Text('Character Usage',
               textAlign: TextAlign.center,

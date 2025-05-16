@@ -23,15 +23,10 @@ Future<SpeedrunLeaderboardBoard> fetchSpeedrunLeaderboard(Ref ref, String abyssV
 @riverpod
 Future<(List<SpeedrunLbSpot> spots, List<CharUsageLbDisplay> charUsages)> fetchSpeedrunLeaderboardSpots(
     Ref ref, String instanceId,
-    {required int limit,
-    required int page,
-    int daysElapse = 1,
-    required String sortBy,
-    required String sortDir}) async {
+    {required int page, int daysElapse = 1, required String sortBy, required String sortDir}) async {
   final cancelToken = await ref.cancelToken();
   final result = await ref.watch(standingsApiProvider).fetchSpeedrunLeaderboardSpots(
         instanceId,
-        limit: limit,
         page: page,
         daysElapse: daysElapse,
         sortBy: sortBy,

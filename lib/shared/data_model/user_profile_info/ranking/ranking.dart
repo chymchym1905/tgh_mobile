@@ -21,10 +21,11 @@ class PerformanceDetail with _$PerformanceDetail {
   const factory PerformanceDetail(
       {@JsonKey(name: '_id') required String id,
       @JsonKey(name: 'instance_id') required String instanceId,
+      required int rank,
       required Competitor competitor,
       required String alias,
       required String region,
-      required String points,
+      required double points,
       required Breakdown breakdown,
       @JsonKey(name: 'created_at') DateTime? createdAt,
       @JsonKey(name: 'last_modified_by') String? lastModifiedBy}) = _PerformanceDetail;

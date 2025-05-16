@@ -102,5 +102,23 @@ void main() {
       log(userProfileInfo.toString());
       expect(userProfileInfo, isA<UserProfileInfo>());
     });
+
+    test('fetchPublicAccountInfo with valid competitor Profile', () async {
+      const competitorId = '639e72c9205822c3c5324b4d';
+      // Fetch public account info
+      final states = List<AsyncValue<(User, UserProfileInfo)>>.empty(growable: true);
+      final provider = fetchPublicAccountInfoProvider(competitorId);
+      final subscription = container.listen(
+        provider,
+        (previous, next) => states.add(next),
+        fireImmediately: true,
+      );
+      await container.read(provider.future);
+      subscription.close();
+
+      final userProfileInfo = states.last.value;
+      log(userProfileInfo.toString());
+      expect(userProfileInfo, isA<(User, UserProfileInfo)>());
+    });
   });
 }

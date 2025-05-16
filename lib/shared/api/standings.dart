@@ -10,8 +10,7 @@ abstract class StandingsApiBase {
 
   Future<Either<AppException, (List<SpeedrunLbSpot> spots, List<CharUsageLbDisplay> charUsages)>>
       fetchSpeedrunLeaderboardSpots(String instanceId,
-          {required int limit,
-          required int page,
+          {required int page,
           int daysElapse = 1,
           required String sortBy,
           required String sortDir,
@@ -53,8 +52,7 @@ class StandingsApi implements StandingsApiBase {
   @override
   Future<Either<AppException, (List<SpeedrunLbSpot> spots, List<CharUsageLbDisplay> charUsages)>>
       fetchSpeedrunLeaderboardSpots(String instanceId,
-          {required int limit,
-          required int page,
+          {required int page,
           int daysElapse = 1,
           required String sortBy,
           required sortDir,
@@ -62,7 +60,6 @@ class StandingsApi implements StandingsApiBase {
     const url = '/speedrun-leaderboard-spots/show-change-detailed';
     final response = await _networkService.get(url,
         queryParameters: {
-          'limit': limit,
           'page': page,
           'days_elapse': daysElapse,
           'sort_by': sortBy,

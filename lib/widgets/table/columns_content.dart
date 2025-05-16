@@ -1,3 +1,4 @@
+import '../standingsentry.dart';
 import 'package:tgh_mobile/imports.dart';
 import 'package:collection/collection.dart';
 
@@ -17,6 +18,74 @@ Widget rankColumnContent(BuildContext context, String? rank) {
       flex: 1,
       child: Center(
           child: Text(rank ?? '',
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+              style: TextStyle(fontSize: 10.wr, fontWeight: FontWeight.bold))));
+}
+
+Widget pointsColumnContent(BuildContext context, double? points) {
+  return Expanded(
+      flex: 1,
+      child: Center(
+          child: Text(points?.toStringAsFixed(2).toString() ?? '',
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+              style: TextStyle(fontSize: 10.wr, fontWeight: FontWeight.bold))));
+}
+
+Widget breakdownColumnContent(BuildContext context, Breakdown breakdown, int flex) {
+  final width = MediaQuery.of(context).size.width;
+  return Expanded(
+      flex: flex,
+      child: Center(
+          child: Column(children: [
+        if (width < 533) ...[
+          Row(children: [
+            chamber12_1_1(context, breakdown),
+            chamber12_1_2(context, breakdown),
+          ]),
+          const SizedBox(height: 8),
+          Row(children: [
+            chamber12_2_1(context, breakdown),
+            chamber12_2_2(context, breakdown),
+          ]),
+          const SizedBox(height: 8),
+          Row(children: [
+            chamber12_3_1(context, breakdown),
+            chamber12_3_2(context, breakdown),
+          ])
+        ] else if (width >= 533 && width < 980) ...[
+          Row(children: [
+            chamber12_1_1(context, breakdown),
+            chamber12_1_2(context, breakdown),
+            chamber12_2_1(context, breakdown),
+          ]),
+          const SizedBox(height: 8),
+          Row(children: [
+            chamber12_2_2(context, breakdown),
+            chamber12_3_1(context, breakdown),
+            chamber12_3_2(context, breakdown),
+          ])
+        ] else ...[
+          Row(children: [
+            chamber12_1_1(context, breakdown),
+            chamber12_1_2(context, breakdown),
+            chamber12_2_1(context, breakdown),
+            chamber12_2_2(context, breakdown),
+            chamber12_3_1(context, breakdown),
+            chamber12_3_2(context, breakdown),
+          ])
+        ]
+      ])));
+}
+
+Widget regionColumnContent(BuildContext context, String? region) {
+  return Expanded(
+      flex: 1,
+      child: Center(
+          child: Text(region ?? '',
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
@@ -192,11 +261,11 @@ Widget team2ColumnContent(BuildContext context, List<String?>? team2) {
   });
 }
 
-Widget characterUsageColumnContent(BuildContext context, List<CharacterUsage>? characterUsage) {
+Widget characterUsageColumnContent(BuildContext context, List<CharacterUsage>? characterUsage, {int flex = 4}) {
   return Consumer(builder: (context, ref, child) {
     final assets = ref.read(gameAssetProvider);
     return Expanded(
-        flex: 4,
+        flex: flex,
         child: Center(
             child: characterUsage != null && characterUsage.isNotEmpty
                 ? Wrap(
@@ -363,17 +432,22 @@ Widget attackTypeColumnContent(BuildContext context, String char, String attackT
   });
 }
 
-Widget userColumnContent(BuildContext context, String pfpurl, String alias) {
+Widget userColumnContent(BuildContext context, String competitorId, String alias) {
   return Expanded(
       flex: 2,
       child: Center(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-        UniformCircleAvatar(url: pfpUrl(pfpurl), radius: 13.wr),
-        const SizedBox(height: 6),
-        Text(alias,
-            textAlign: TextAlign.center,
-            overflow: TextOverflow.ellipsis,
-            maxLines: 2,
-            style: TextStyle(fontSize: 10.wr, fontWeight: FontWeight.bold))
-      ])));
+          child: GestureDetector(
+        onTap: () {
+          context.push(Routes.profileNonCurrentWithAlias(alias));
+        },
+        child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+          UniformCircleAvatar(url: pfpUrl(competitorId), radius: 13.wr),
+          const SizedBox(height: 6),
+          Text(alias,
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+              style: TextStyle(fontSize: 10.wr, fontWeight: FontWeight.bold))
+        ]),
+      )));
 }

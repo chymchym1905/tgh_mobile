@@ -158,7 +158,8 @@ class UserApi implements UserApiBase {
   @override
   Future<Either<AppException, UserProfileInfo>> fetchAccountInfo(String userId, {CancelToken? cancelToken}) async {
     final url = '/users/$userId/account-info';
-    final response = await _networkService.get(url, cancelToken: cancelToken);
+    final response =
+        await _networkService.get(url, queryParameters: {'versions': ABYSS_VERSION_HISTORY}, cancelToken: cancelToken);
 
     return response.fold(
       (exception) => left(exception),
@@ -176,7 +177,8 @@ class UserApi implements UserApiBase {
   Future<Either<AppException, (User user, UserProfileInfo accountInfo)>> fetchPublicAccountInfo(String competitorId,
       {CancelToken? cancelToken}) async {
     final url = '/users/$competitorId/public-account-info';
-    final response = await _networkService.get(url, cancelToken: cancelToken);
+    final response =
+        await _networkService.get(url, queryParameters: {'versions': ABYSS_VERSION_HISTORY}, cancelToken: cancelToken);
 
     return response.fold(
       (exception) => left(exception),

@@ -48,7 +48,12 @@ ThemeData light = ThemeData(
         spreadRadius: 0.1,
         color: Color.fromARGB(255, 28, 28, 28),
       )),
-      TextColors(text: Colors.black, textSecondary: Color.fromARGB(255, 97, 96, 97))
+      TextColors(
+          text: Colors.black,
+          textSecondary: Color.fromARGB(255, 97, 96, 97),
+          top5: Color.fromARGB(255, 181, 117, 8),
+          top15: Color.fromARGB(255, 44, 114, 166),
+          below15: Color.fromARGB(255, 50, 141, 103))
     ]);
 
 ThemeData dark = ThemeData(
@@ -101,7 +106,12 @@ ThemeData dark = ThemeData(
         spreadRadius: 0.1,
         color: Color.fromARGB(255, 217, 217, 217),
       )),
-      TextColors(text: Colors.white, textSecondary: Color.fromARGB(255, 170, 171, 171))
+      TextColors(
+          text: Colors.white,
+          textSecondary: Color.fromARGB(255, 170, 171, 171),
+          top5: Color.fromARGB(255, 181, 117, 8),
+          top15: Color.fromARGB(255, 44, 114, 166),
+          below15: Color.fromARGB(255, 50, 141, 103))
     ]);
 
 class ThemeAssets extends ThemeExtension<ThemeAssets> {
@@ -181,12 +191,25 @@ class Shadows extends ThemeExtension<Shadows> {
 class TextColors extends ThemeExtension<TextColors> {
   final Color text;
   final Color textSecondary;
+  final Color top5;
+  final Color top15;
+  final Color below15;
 
-  const TextColors({required this.text, required this.textSecondary});
+  const TextColors(
+      {required this.text,
+      required this.textSecondary,
+      required this.top5,
+      required this.top15,
+      required this.below15});
 
   @override
-  TextColors copyWith({Color? text, Color? textSecondary}) {
-    return TextColors(text: text ?? this.text, textSecondary: textSecondary ?? this.textSecondary);
+  TextColors copyWith({Color? text, Color? textSecondary, Color? top5, Color? top15, Color? below15}) {
+    return TextColors(
+        text: text ?? this.text,
+        textSecondary: textSecondary ?? this.textSecondary,
+        top5: top5 ?? this.top5,
+        top15: top15 ?? this.top15,
+        below15: below15 ?? this.below15);
   }
 
   @override

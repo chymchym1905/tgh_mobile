@@ -18,11 +18,11 @@ class ProfileScreenNonCurrent extends ConsumerWidget {
             userProfileInfo: data.$2,
           ),
           error: (error, stack) => ErrorScreen(error: [error.toString(), stack.toString()]),
-          loading: () => Center(child: Sumerucart(width: 300.wr)),
+          loading: () => Scaffold(body: Center(child: Sumerucart(width: 300.wr))),
         );
       },
       error: (error, stack) => ErrorScreen(error: [error.toString(), stack.toString()]),
-      loading: () => Center(child: Sumerucart(width: 300.wr)),
+      loading: () => Scaffold(body: Center(child: Sumerucart(width: 300.wr))),
     );
   }
 }
@@ -175,9 +175,7 @@ class _ProfileWithUserNonCurrentState extends State<ProfileWithUserNonCurrent> {
                                                             Theme.of(context).extension<TextColors>()!.textSecondary))
                                               ])),
                                         ])
-                                      ])),
-                                      Column(
-                                          children: [IconButton(onPressed: () {}, icon: Icon(Icons.edit, size: 16.wr))])
+                                      ]))
                                     ]),
                                     20.verticalSpace,
                                     Wrap(direction: Axis.horizontal, spacing: 10.wr, children: [

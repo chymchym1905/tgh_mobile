@@ -62,7 +62,6 @@ void main() {
           List<AsyncValue<(List<SpeedrunLbSpot> spots, List<CharUsageLbDisplay> charUsages)>>.empty(growable: true);
       final provider = fetchSpeedrunLeaderboardSpotsProvider(
         boardId,
-        limit: 10,
         page: 0,
         sortBy: 'rank',
         sortDir: 'asc',

@@ -14,13 +14,15 @@ class ProfileBody extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        30.verticalSpace,
+
         ///Standings section
         StandingsSection(userProfileInfo: userProfileInfo),
-        10.verticalSpace,
+        40.verticalSpace,
 
         ///Speedrun section
         SpeedrunSection(competitorId: user.competitor!.id),
-        10.verticalSpace,
+        30.verticalSpace,
 
         ///DPS section
         DpsSection(competitorId: user.competitor!.id),
