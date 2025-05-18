@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:tgh_mobile/theme.dart';
 
 class AsyncTextFormField extends StatefulWidget {
   final Future<bool> Function(String) validator;
@@ -10,7 +11,6 @@ class AsyncTextFormField extends StatefulWidget {
   final String isValidatingMessage;
   final String valueIsEmptyMessage;
   final String valueIsInvalidMessage;
-  final String labelText;
   final Widget? icon;
   final TextInputType keyboardType;
   final InputDecoration? decoration;
@@ -20,6 +20,7 @@ class AsyncTextFormField extends StatefulWidget {
   final bool? canEmpty;
   final Widget? suffixIcon;
   final FocusNode? focusNode;
+  final double? height;
 
   const AsyncTextFormField(
       {super.key,
@@ -30,7 +31,6 @@ class AsyncTextFormField extends StatefulWidget {
       this.valueIsEmptyMessage = 'please enter a value',
       this.valueIsInvalidMessage = 'please enter a valid value',
       this.hintText = '',
-      required this.labelText,
       this.icon,
       required this.keyboardType,
       this.decoration,
@@ -39,6 +39,7 @@ class AsyncTextFormField extends StatefulWidget {
       this.canEmpty,
       this.style,
       this.suffixIcon,
+      this.height,
       this.focusNode});
 
   @override
@@ -97,69 +98,70 @@ class _AsyncTextFormFieldState extends State<AsyncTextFormField> with WidgetsBin
   Widget build(BuildContext context) {
     return Padding(
       padding: widget.padding ?? const EdgeInsets.only(right: 32, left: 32, bottom: 30),
-      child: TextFormField(
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-        keyboardType: widget.keyboardType,
-        focusNode: widget.focusNode,
-        cursorColor: widget.cursorColor ?? Colors.white,
-        validator: (value) {
-          if (value?.isEmpty ?? false) {
-            if (widget.canEmpty == true) return null;
-            return widget.valueIsEmptyMessage;
-          }
-          if (!isWaiting && !isValid) {
-            return widget.valueIsInvalidMessage;
-          }
-          return null;
-        },
-        onChanged: (text) async {
-          isDirty = true;
-          if (text.isEmpty) {
-            setState(() {
-              if (widget.canEmpty == null || widget.canEmpty == false) isValid = false;
-            });
+      child: SizedBox(
+        height: widget.height ?? 56,
+        child: TextFormField(
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          keyboardType: widget.keyboardType,
+          focusNode: widget.focusNode,
+          cursorColor: widget.cursorColor ?? Colors.white,
+          validator: (value) {
+            if (value?.isEmpty ?? false) {
+              if (widget.canEmpty == true) return null;
+              return widget.valueIsEmptyMessage;
+            }
+            if (!isWaiting && !isValid) {
+              return widget.valueIsInvalidMessage;
+            }
+            return null;
+          },
+          onChanged: (text) async {
+            isDirty = true;
+            if (text.isEmpty) {
+              setState(() {
+                if (widget.canEmpty == null || widget.canEmpty == false) isValid = false;
+              });
+              cancelTimer();
+              return;
+            }
+            isWaiting = true;
             cancelTimer();
-            return;
-          }
-          isWaiting = true;
-          cancelTimer();
-          _debounce = Timer(widget.validationDebounce, () async {
-            isWaiting = false;
-            isValid = await validate(text);
-            setState(() {});
-            isValidating = false;
-          });
-        },
-        controller: widget.controller,
-        // maxLines: 1,
-        style: widget.style ?? const TextStyle(color: Colors.white),
-        decoration: widget.decoration?.copyWith(
-                suffixIcon: Padding(
-                  padding: const EdgeInsets.all(14),
-                  child: SizedBox(width: 20, height: 20, child: _normalSuffixIcon()),
-                ),
-                labelText: widget.labelText) ??
-            InputDecoration(
-                filled: true,
-                labelText: widget.labelText,
-                fillColor: Colors.transparent,
-                icon: widget.icon,
-                suffix: SizedBox(
-                  height: 20,
-                  width: 20,
-                  child: _getSuffixIcon(),
-                ),
-                hintText: widget.hintText,
-                // prefixIcon: Icon(Symbols.alternate_email, opticalSize: 24, weight: 700, grade: 0),
-                floatingLabelBehavior: FloatingLabelBehavior.auto,
-                floatingLabelStyle: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.white),
-                labelStyle: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.white),
-                errorStyle: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.red),
-                contentPadding: const EdgeInsets.all(0),
-                errorMaxLines: 3,
-                errorBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.red, width: 2)),
-                focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.white, width: 2)),
-                enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.white))),
+            _debounce = Timer(widget.validationDebounce, () async {
+              isWaiting = false;
+              isValid = await validate(text);
+              setState(() {});
+              isValidating = false;
+            });
+          },
+          controller: widget.controller,
+          // textAlignVertical: TextAlignVertical.center,
+          // maxLines: 1,
+          style: widget.style ?? TextStyle(color: Theme.of(context).extension<TextColors>()!.text, fontSize: 16),
+          decoration: widget.decoration?.copyWith(
+                  suffixIcon: Padding(padding: const EdgeInsetsDirectional.only(end: 10), child: _normalSuffixIcon()),
+                  hintText: widget.hintText) ??
+              InputDecoration(
+                  filled: true,
+                  helperText: ' ',
+                  // labelText: widget.labelText,
+                  fillColor: Colors.transparent,
+                  icon: widget.icon,
+                  suffixIcon: _getSuffixIcon(),
+                  hintText: widget.hintText,
+                  // prefixIcon: Icon(Symbols.alternate_email, opticalSize: 24, weight: 700, grade: 0),
+                  floatingLabelBehavior: FloatingLabelBehavior.auto,
+                  floatingLabelStyle: Theme.of(context)
+                      .textTheme
+                      .titleMedium!
+                      .copyWith(color: Theme.of(context).extension<TextColors>()!.text),
+                  // labelStyle: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.white),
+                  contentPadding: EdgeInsets.only(top: 14),
+                  errorStyle: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.red),
+                  errorMaxLines: 3,
+                  errorBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.red, width: 2)),
+                  focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.white, width: 2)),
+                  enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.white))),
+        ),
       ),
     );
   }
@@ -191,24 +193,34 @@ class _AsyncTextFormFieldState extends State<AsyncTextFormField> with WidgetsBin
 
   Widget _normalSuffixIcon() {
     if (isValidating) {
-      return const CircularProgressIndicator(
-        strokeWidth: 2.0,
+      return Container(
+        padding: const EdgeInsetsDirectional.all(8),
+        width: widget.height != null ? widget.height! : 40,
+        child: const CircularProgressIndicator(strokeWidth: 2),
       );
     } else {
       if (widget.controller.text.isNotEmpty && isDirty) {
-        return GestureDetector(
-            onTap: () => widget.controller.clear(), child: const Icon(Icons.cancel, color: Colors.grey, size: 20));
+        return MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: GestureDetector(
+              onTap: () => widget.controller.clear(), child: const Icon(Icons.cancel, color: Colors.grey, size: 20)),
+        );
       } else {
-        return Container();
+        return widget.suffixIcon ?? const SizedBox.shrink();
       }
     }
   }
 
   Widget _getSuffixIcon() {
     if (isValidating) {
-      return const CircularProgressIndicator(
-        strokeWidth: 2.0,
-        valueColor: AlwaysStoppedAnimation(Colors.blue),
+      return Container(
+        padding: const EdgeInsets.all(8),
+        width: widget.height != null ? widget.height! : 40,
+        height: 20,
+        child: const CircularProgressIndicator(
+          strokeWidth: 2.0,
+          valueColor: AlwaysStoppedAnimation(Colors.blue),
+        ),
       );
     } else {
       if (!isValid && isDirty) {
@@ -217,14 +229,14 @@ class _AsyncTextFormFieldState extends State<AsyncTextFormField> with WidgetsBin
           color: Colors.red,
           size: 20,
         );
-      } else if (isValid) {
+      } else if (isValid && isDirty) {
         return const Icon(
           Icons.check_circle,
           color: Colors.green,
           size: 20,
         );
       } else {
-        return Container();
+        return const SizedBox.shrink();
       }
     }
   }

@@ -11,6 +11,8 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   final _key = GlobalKey<ExpandableFabState>();
+  final customPopupMenuController = CustomPopupMenuController();
+
   Widget _tabBuilder(int index, bool isActive, double width, double height) {
     switch (index) {
       case 0:
@@ -123,16 +125,33 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                         child: _tabBuilder(3, widget.navigationShell.currentIndex == 3, 40, 40),
                       ),
+                      AddFloatingActionButton(
+                          fab: FloatingActionButton(
+                            onPressed: () {
+                              // if (_key.currentState?.isOpen ?? false) {
+                              //   _key.currentState?.toggle();
+                              // }
+                              customPopupMenuController.showMenu();
+                            },
+                            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                            child: const Icon(Icons.add, size: 40),
+                          ),
+                          controller: customPopupMenuController)
                     ],
                   )
                 : null)
-            : FloatingActionButton(
-                onPressed: () {},
-                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-                shape: const CircleBorder(),
-                mini: true,
-                child: const Icon(Icons.add),
-              ),
+            : AddFloatingActionButton(
+                controller: customPopupMenuController,
+                fab: FloatingActionButton(
+                  onPressed: () {
+                    customPopupMenuController.showMenu();
+                  },
+                  backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                  shape: const CircleBorder(),
+                  mini: true,
+                  child: const Icon(Icons.add),
+                )),
         floatingActionButtonLocation:
             widget.navigationShell.currentIndex == 3 && MediaQuery.of(context).size.width > kMaxWidthTabletLandscape
                 ? ExpandableFab.location
@@ -154,5 +173,95 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   widget.navigationShell.goBranch(index);
                 },
               ));
+  }
+}
+
+class AddFloatingActionButton extends StatefulWidget {
+  const AddFloatingActionButton({super.key, required this.fab, required this.controller});
+  final Widget fab;
+  final CustomPopupMenuController controller;
+
+  @override
+  State<AddFloatingActionButton> createState() => _AddFloatingActionButtonState();
+}
+
+class _AddFloatingActionButtonState extends State<AddFloatingActionButton> {
+  @override
+  Widget build(BuildContext context) {
+    return CustomPopupMenu(
+        controller: widget.controller,
+        materialShape: const CircleBorder(),
+        hoverColor: Colors.transparent,
+        arrowColor: Theme.of(context).colorScheme.surfaceContainerHigh,
+        menuBuilder: () => Container(
+            decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surfaceContainerHigh, borderRadius: BorderRadius.circular(5.wr)),
+            child: Consumer(
+              builder: (context, ref, child) {
+                return Material(
+                    color: Colors.transparent,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.wr)),
+                    child: IntrinsicWidth(
+                        child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                          InkWell(
+                              onTap: () {
+                                context.push(Routes.submitSpeedrun);
+                                widget.controller.hideMenu();
+                              },
+                              highlightColor: Theme.of(context).colorScheme.surfaceContainerHigh,
+                              splashColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(5.wr),
+                                topRight: Radius.circular(5.wr),
+                              ),
+                              child: Padding(
+                                  padding: EdgeInsets.only(right: 10.wr, left: 10.wr, top: 10.wr, bottom: 5.wr),
+                                  child: Row(children: [
+                                    // Icon(Icons.timer, size: 24.wr),
+                                    // SizedBox(width: 5.wr),
+                                    Text('Submit Speedrun',
+                                        style: TextStyle(fontSize: 12.wr, fontWeight: FontWeight.bold))
+                                  ]))),
+                          InkWell(
+                              onTap: () {
+                                context.push(Routes.submitDps);
+                                widget.controller.hideMenu();
+                              },
+                              highlightColor: Theme.of(context).colorScheme.surfaceContainerHigh,
+                              splashColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                              borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(5.wr), bottomRight: Radius.circular(5.wr)),
+                              child: Ink(
+                                  padding: EdgeInsets.symmetric(vertical: 5.wr, horizontal: 10.wr),
+                                  child: Row(children: [
+                                    // SvgPicture.asset('assets/icons/whale.svg', width: 24.wr, height: 24.wr),
+                                    // SizedBox(width: 5.wr),
+                                    Text('Submit DPS', style: TextStyle(fontSize: 12.wr, fontWeight: FontWeight.bold))
+                                  ]))),
+                          InkWell(
+                              onTap: () {
+                                context.push(Routes.submitRestrictedDps);
+                                widget.controller.hideMenu();
+                              },
+                              highlightColor: Theme.of(context).colorScheme.surfaceContainerHigh,
+                              splashColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                              borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(5.wr), bottomRight: Radius.circular(5.wr)),
+                              child: Padding(
+                                  padding: EdgeInsets.only(right: 10.wr, left: 10.wr, top: 5.wr, bottom: 10.wr),
+                                  child: Row(children: [
+                                    // SvgPicture.asset('assets/icons/fish.svg', width: 24.wr, height: 24.wr),
+                                    // SizedBox(width: 5.wr),
+                                    Text('Submit Restricted DPS',
+                                        style: TextStyle(fontSize: 12.wr, fontWeight: FontWeight.bold))
+                                  ])))
+                        ])));
+              },
+            )),
+        pressType: PressType.singleClick,
+        child: widget.fab);
   }
 }

@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tgh_mobile/imports.dart';
-import 'package:tgh_mobile/shared/data_model/game_asset/game_asset_state.dart';
 import 'package:tgh_mobile/shared/exception.dart';
 import 'package:tgh_mobile/shared/network.dart';
 

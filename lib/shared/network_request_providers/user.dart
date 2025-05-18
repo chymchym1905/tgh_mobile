@@ -112,3 +112,25 @@ Future<UserProfileInfo> fetchAccountInfo(Ref ref, String userId) async {
     (success) => success,
   );
 }
+
+@riverpod
+Future<List<User>> searchUsers(
+  Ref ref,
+  String query, {
+  bool? verified = true,
+  String? sortBy = 'name',
+  String? sortDir = 'asc',
+}) async {
+  final cancelToken = await ref.cancelToken();
+  final result = await ref.watch(userApiProvider).searchUsers(query,
+      queryParameters: {
+        'verified': verified ?? true,
+        'sortBy': sortBy ?? 'name',
+        'sortDir': sortDir ?? 'asc',
+      },
+      cancelToken: cancelToken);
+  return result.fold(
+    (failure) => throw failure,
+    (success) => success,
+  );
+}

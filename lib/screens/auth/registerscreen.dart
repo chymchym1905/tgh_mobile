@@ -82,7 +82,7 @@ class _LoginScreenState extends ConsumerState<SignUpScreen> {
                               grade: 0,
                               size: 30,
                               color: Theme.of(context).colorScheme.primary)),
-                      labelText: "Name",
+                      hintText: "Name",
                       isValidatingMessage: "",
                       valueIsEmptyMessage: "Please enter a name",
                       valueIsInvalidMessage: "Name is not available",
@@ -106,6 +106,7 @@ class _LoginScreenState extends ConsumerState<SignUpScreen> {
                           return false;
                         }
                       },
+                      hintText: "Email",
                       validationDebounce: const Duration(milliseconds: 500),
                       controller: emailController,
                       icon: SizedBox(
@@ -116,7 +117,6 @@ class _LoginScreenState extends ConsumerState<SignUpScreen> {
                               grade: 0,
                               size: 30,
                               color: Theme.of(context).colorScheme.primary)),
-                      labelText: "Email",
                       isValidatingMessage: "",
                       valueIsEmptyMessage: "Please enter a valid email address",
                       valueIsInvalidMessage: emailErrorMessage,

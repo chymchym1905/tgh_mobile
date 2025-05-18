@@ -35,24 +35,25 @@ class CustomPopupMenuController extends ChangeNotifier {
 Rect _menuRect = Rect.zero;
 
 class CustomPopupMenu extends StatefulWidget {
-  const CustomPopupMenu({
-    super.key,
-    required this.menuBuilder,
-    required this.pressType,
-    required this.child,
-    this.onTap,
-    this.onLongPress,
-    this.controller,
-    this.arrowColor = const Color(0xFF4C4C4C),
-    this.showArrow = true,
-    this.barrierColor = Colors.black12,
-    this.arrowSize = 10.0,
-    this.horizontalMargin = 10.0,
-    this.verticalMargin = 10.0,
-    this.position,
-    this.menuOnChange,
-    this.enablePassEvent = true,
-  });
+  const CustomPopupMenu(
+      {super.key,
+      required this.menuBuilder,
+      required this.pressType,
+      required this.child,
+      this.onTap,
+      this.onLongPress,
+      this.controller,
+      this.arrowColor = const Color(0xFF4C4C4C),
+      this.showArrow = true,
+      this.barrierColor = Colors.black12,
+      this.arrowSize = 10.0,
+      this.horizontalMargin = 10.0,
+      this.verticalMargin = 10.0,
+      this.position,
+      this.menuOnChange,
+      this.enablePassEvent = true,
+      this.materialShape,
+      this.hoverColor});
 
   final Widget child;
   final PressType pressType;
@@ -68,6 +69,8 @@ class CustomPopupMenu extends StatefulWidget {
   final Widget Function() menuBuilder;
   final PreferredPosition? position;
   final void Function(bool)? menuOnChange;
+  final ShapeBorder? materialShape;
+  final Color? hoverColor;
 
   /// Pass tap event to the widgets below the mask.
   /// It only works when [barrierColor] is transparent.
@@ -212,8 +215,9 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
   Widget build(BuildContext context) {
     var child = Material(
       color: Colors.transparent,
+      shape: widget.materialShape,
       child: InkWell(
-        hoverColor: Theme.of(context).colorScheme.surfaceContainerLow,
+        hoverColor: widget.hoverColor ?? Theme.of(context).colorScheme.surfaceContainerLow,
         focusColor: Colors.transparent,
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,

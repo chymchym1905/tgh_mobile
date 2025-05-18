@@ -3,7 +3,8 @@ enum SortBy {
   updatedAt('updated_at'),
   time('time'),
   damageDealt('damage_dealt'),
-  rank('rank');
+  rank('rank'),
+  name('name');
 
   const SortBy(this.value);
   final String value;

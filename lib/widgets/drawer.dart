@@ -8,7 +8,7 @@ class DrawerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        decoration: BoxDecoration(color: Theme.of(context).colorScheme.surfaceContainerLowest),
+        decoration: BoxDecoration(color: Colors.transparent),
         child: ListView(
             padding: EdgeInsets.zero,
             physics: const PageScrollPhysics(),

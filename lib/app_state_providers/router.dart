@@ -3,9 +3,7 @@ import 'package:tgh_mobile/imports.dart';
 import 'package:tgh_mobile/screens/homescreen/homebody.dart';
 import 'package:tgh_mobile/screens/profilescreen/profilescreen_not_current.dart';
 import 'package:tgh_mobile/screens/settingscreen/cachesetting.dart';
-import 'package:tgh_mobile/screens/videoscreen/videoscreen.dart';
 import 'package:tgh_mobile/utils/observer.dart';
-
 part 'router.g.dart';
 
 // Custom observer to track navigation event
@@ -34,7 +32,7 @@ GoRouter router(Ref ref) {
       // ignore: body_might_complete_normally_nullable
       redirect: (context, state) {
         if (authStateNotifier.value is AuthStateLoggedOut && RouteMap.private.allowedRoutes.contains(state.uri.path)) {
-          return Routes.login;
+          return '${Routes.login}?redirectedFrom=${state.uri.path}';
         } else if (authStateNotifier.value is AuthStateAuthenticated && state.uri.path == Routes.login) {
           return RouteMap.public.redirectPath;
         } else if (authStateNotifier.value is AuthStateError) {
@@ -127,7 +125,10 @@ GoRouter router(Ref ref) {
             final alias = state.pathParameters['alias'] ?? '';
             return ProfileScreenNonCurrent(competitorAlias: alias);
           },
-        )
+        ),
+        GoRoute(path: Routes.submitSpeedrun, builder: (context, state) => const SubmitSpeedrunScreen()),
+        GoRoute(path: Routes.submitDps, builder: (context, state) => const SubmitDpsScreen()),
+        GoRoute(path: Routes.submitRestrictedDps, builder: (context, state) => const SubmitRestrictedDpsScreen()),
       ],
       extraCodec: const MyExtraCodec());
   ref.onDispose(router.dispose);

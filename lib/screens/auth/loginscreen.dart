@@ -17,12 +17,25 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController passwordResetController = TextEditingController();
+  FToast fToast = FToast();
 
   @override
   void initState() {
+    fToast.init(context);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       final email = ref.read(sharedPrefsServiceProvider).get('email').toString();
       emailController.text = email == 'null' ? '' : email;
+
+      // Check if redirected from a protected route
+      final router = GoRouter.of(context);
+      final redirectedFrom = router.routeInformationProvider.value.uri.queryParameters['redirectedFrom'];
+
+      if (redirectedFrom != null) {
+        fToast.showToast(
+            child: toast(context, "Please Login to access this feature"),
+            gravity: ToastGravity.BOTTOM,
+            toastDuration: const Duration(seconds: 5));
+      }
     });
     super.initState();
   }
@@ -111,9 +124,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             ? null // Disable the button while loading
                             : () async {
                                 FocusManager.instance.primaryFocus?.unfocus();
-                                await ref
+                                final state = await ref
                                     .read(authNotifierProvider.notifier)
                                     .login(emailController.text, passwordController.text);
+                                if (state is AuthStateError && context.mounted) {
+                                  fToast.showToast(
+                                      child: toast(context, state.exception.message),
+                                      gravity: ToastGravity.BOTTOM,
+                                      toastDuration: const Duration(seconds: 5));
+                                }
                               },
                         style: ButtonStyle(
                             backgroundColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.primary),

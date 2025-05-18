@@ -15,6 +15,8 @@ abstract class UserApiBase {
   Future<Either<AppException, UserProfileInfo>> fetchAccountInfo(String userId, {CancelToken? cancelToken});
   Future<Either<AppException, (User user, UserProfileInfo accountInfo)>> fetchPublicAccountInfo(String competitorId,
       {CancelToken? cancelToken});
+  Future<Either<AppException, List<User>>> searchUsers(String query,
+      {Map<String, dynamic>? queryParameters, CancelToken? cancelToken});
 }
 
 class UserApi implements UserApiBase {
@@ -188,6 +190,26 @@ class UserApi implements UserApiBase {
             User.fromJson(response.data['user'] as Map<String, dynamic>),
             UserProfileInfo.fromJson(response.data['userProfileInformation'] as Map<String, dynamic>)
           ));
+        } else {
+          return left(AppException(message: response.data.toString(), code: response.statusCode.toString()));
+        }
+      },
+    );
+  }
+
+  @override
+  Future<Either<AppException, List<User>>> searchUsers(String query,
+      {Map<String, dynamic>? queryParameters, CancelToken? cancelToken}) async {
+    const url = '/users/all';
+    final response = await _networkService.get(url,
+        queryParameters: {'search': query, ...queryParameters ?? {}}, cancelToken: cancelToken);
+
+    return response.fold(
+      (exception) => left(exception),
+      (response) {
+        if (response.statusCode == 200 && (response.data as Map).containsKey('users')) {
+          return right(
+              (response.data['users']['rows'] as List).map((e) => User.fromJson(e as Map<String, dynamic>)).toList());
         } else {
           return left(AppException(message: response.data.toString(), code: response.statusCode.toString()));
         }

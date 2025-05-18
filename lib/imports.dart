@@ -14,6 +14,7 @@ export 'package:youtube_player_iframe/youtube_player_iframe.dart';
 export 'package:animated_custom_dropdown/custom_dropdown.dart';
 export 'package:easy_sidemenu/easy_sidemenu.dart';
 export 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
+export 'package:fluttertoast/fluttertoast.dart';
 //----------------------------------- FILES -----------------------------------
 export 'utils/extension.dart';
 export './screens/index.dart';

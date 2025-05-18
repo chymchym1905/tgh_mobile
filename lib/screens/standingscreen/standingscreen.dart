@@ -43,7 +43,7 @@ class _StandingsScreenState extends State<StandingsScreen> {
               if (MediaQuery.of(context).size.width > kMaxWidthTabletLandscape) ...[
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 300),
-                  width: _expanded ? 200 : 56,
+                  width: _expanded ? 200 : 70,
                   child: AnimatedSwitcher(
                     duration: _expanded ? const Duration(milliseconds: 200) : const Duration(milliseconds: 500),
                     child: DrawerWidget(
@@ -52,11 +52,11 @@ class _StandingsScreenState extends State<StandingsScreen> {
                     ),
                   ),
                 ),
-                SizedBox(width: 10.wr)
+                SizedBox(width: 8)
               ] else if (MediaQuery.of(context).size.width > kMaxWidthTablet &&
                   MediaQuery.of(context).size.width < kMaxWidthTabletLandscape) ...[
                 const SizedBox(width: 56, child: DrawerWidget(expanded: false)),
-                SizedBox(width: 10.wr)
+                SizedBox(width: 8)
               ],
               Expanded(
                   child: CustomScrollView(
@@ -64,7 +64,7 @@ class _StandingsScreenState extends State<StandingsScreen> {
                   SliverToBoxAdapter(
                     child: Center(
                         child: ConstrainedBox(
-                            constraints: BoxConstraints(maxWidth: 1680 - (_expanded ? 200 : 56)),
+                            constraints: BoxConstraints(maxWidth: 1680 - (_expanded ? 200 : 70)),
                             child: Padding(
                                 padding: EdgeInsets.symmetric(
                                     horizontal: MediaQuery.of(context).size.width > kMaxWidthMobile ? 32.wr : 16.wr),
