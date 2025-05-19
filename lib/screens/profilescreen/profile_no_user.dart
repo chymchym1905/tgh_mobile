@@ -11,6 +11,7 @@ class ProfileNoUser extends StatefulWidget {
 class _ProfileNoUserState extends State<ProfileNoUser> {
   double _scrollProgress = 0.0;
   final double _scrollThreshold = 100.0;
+  bool _isHovered = false;
   // bool _expanded = false;
 
   late final ScrollController _mainScrollController = ScrollController()
@@ -63,6 +64,14 @@ class _ProfileNoUserState extends State<ProfileNoUser> {
           surfaceTintColor: Colors.transparent,
           shadowColor: Colors.transparent,
           backgroundColor: backgroundColor,
+          leading: MediaQuery.of(context).size.width > kMaxWidthTablet &&
+                  MediaQuery.of(context).size.width <= kMaxWidthTabletLandscape
+              ? IconButton(
+                  onPressed: () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                  icon: const Icon(Icons.dehaze, size: 30, weight: 700, grade: 200, opticalSize: 24))
+              : null,
           actions: [
             IconButton(
               onPressed: () {
@@ -132,7 +141,46 @@ class _ProfileNoUserState extends State<ProfileNoUser> {
               text: widget.name == null ? 'Create account' : 'Create competitor profile',
               fontSize: 16.wr),
         ])))
-      ])
+      ]),
+      if (MediaQuery.of(context).size.width > kMaxWidthTabletLandscape) ...[
+        MouseRegion(
+          onEnter: (_) => setState(() => _isHovered = true),
+          onExit: (p) {
+            // Only exit if mouse is actually leaving the left edge area
+            // and not just entering the drawer
+            if (!_isHovered) return;
+            final RenderBox box = context.findRenderObject() as RenderBox;
+            final position = box.globalToLocal(p.position);
+            if (position.dx > 200) {
+              setState(() => _isHovered = false);
+            }
+          },
+          child: Container(
+            width: 30, // small strip to the left
+            color: Colors.transparent,
+          ),
+        ),
+        AnimatedPositioned(
+            duration: const Duration(milliseconds: 300),
+            left: _isHovered ? 0 : -200, // hide when not hovered
+            top: 0,
+            bottom: 0,
+            child: MouseRegion(
+                // This ensures the drawer stays visible when mouse is over it
+                onEnter: (_) => setState(() => _isHovered = true),
+                onExit: (p) {
+                  // Only exit if mouse is actually leaving the drawer area
+                  final RenderBox box = context.findRenderObject() as RenderBox;
+                  final position = box.globalToLocal(p.position);
+                  if (position.dx < 0 || position.dx > 200) {
+                    setState(() => _isHovered = false);
+                  }
+                },
+                child: const Drawer(
+                    width: 200,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(0))),
+                    child: DrawerWidget(expanded: true))))
+      ]
     ]);
   }
 }

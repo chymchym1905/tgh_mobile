@@ -1,49 +1,98 @@
-import 'package:flutter/gestures.dart';
-
 import '../../imports.dart';
 
-class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const MyAppBar({super.key, required this.profile, this.onTap});
-  final bool profile;
-  final void Function()? onTap;
+class MyAppBar extends StatefulWidget {
+  const MyAppBar({super.key, required this.title, required this.leading});
+  final Widget title;
+  final Widget leading;
+
+  @override
+  State<MyAppBar> createState() => _MyAppBarState();
+}
+
+class _MyAppBarState extends State<MyAppBar> {
+  bool _appBarExpanded = false;
 
   @override
   Widget build(BuildContext context) {
-    return SliverAppBar(
-      title: GestureDetector(
-          onTap: onTap,
-          child: Padding(
-              padding: EdgeInsets.only(top: 8.h),
-              child: RichText(
-                  text: TextSpan(
-                      text: 'The Golden House',
-                      style: GoogleFonts.inter(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.primary,
-                        letterSpacing: -2,
-                      ),
-                      recognizer: TapGestureRecognizer()..onTap = () {})))),
-      pinned: true,
-      floating: true,
-      centerTitle: false,
-      leading: IconButton(onPressed: () {}, icon: const Icon(Icons.menu)),
-      elevation: 0,
-      shadowColor: Colors.transparent,
-      surfaceTintColor: Colors.transparent,
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      actions: [
-        8.horizontalSpace,
-        IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
-        if (profile) IconButton(onPressed: () {}, icon: const Icon(Icons.settings)),
-      ],
+    return PinnedHeaderSliver(
+      child: SizedBox(
+          height: kToolbarHeight,
+          child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              child: _appBarExpanded == false
+                  ? Row(children: [
+                      Row(mainAxisAlignment: MainAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
+                        if (MediaQuery.of(context).size.width > kMaxWidthTablet) widget.leading,
+                        const SizedBox(width: 8),
+                        Padding(
+                            padding: EdgeInsets.only(
+                                top: 0, left: MediaQuery.of(context).size.width > kMaxWidthTablet ? 0 : 8, right: 10),
+                            child: widget.title)
+                      ]),
+                      if (MediaQuery.of(context).size.width > 460)
+                        Expanded(
+                            child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: ConstrainedBox(
+                              constraints: const BoxConstraints(maxWidth: 460),
+                              child: const Padding(padding: EdgeInsets.symmetric(horizontal: 10), child: SearchBox())),
+                        ))
+                      else
+                        const Spacer(),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            if (MediaQuery.of(context).size.width <= 460) ...[
+                              SizedBox(
+                                  width: 40,
+                                  height: 40,
+                                  child: Center(
+                                      child: IconButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              _appBarExpanded = true;
+                                            });
+                                          },
+                                          icon: const Icon(Icons.search, size: 30)))),
+                              SizedBox(width: 10.wr)
+                            ] else ...[
+                              const SizedBox(width: 10)
+                            ],
+                            Consumer(builder: (context, ref, child) {
+                              final auth = ref.watch(authNotifierProvider);
+                              return auth.maybeWhen(
+                                  orElse: () => const UniformCircleAvatar(url: '', radius: 20),
+                                  data: (data) {
+                                    switch (data) {
+                                      case AuthStateAuthenticated(:final user):
+                                        return UniformCircleAvatar(url: pfpUrl(user.competitor?.id ?? ''), radius: 20);
+                                      default:
+                                        return const UniformCircleAvatar(url: '', radius: 20);
+                                    }
+                                  });
+                            }),
+                            const SizedBox(width: 10)
+                          ])
+                    ])
+                  : ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width),
+                      child: Row(children: [
+                        SizedBox(width: 5.wr),
+                        IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _appBarExpanded = false;
+                              });
+                            },
+                            icon: const Icon(Icons.arrow_back, size: 24)),
+                        SizedBox(width: 5.wr),
+                        SizedBox(
+                            width: MediaQuery.of(context).size.width - 40 - 10.wr - 16.wr, child: const SearchBox())
+                      ]),
+                    ))),
     );
-  }
-
-  @override
-  Size get preferredSize {
-    final height = AppBar().preferredSize.height;
-    return Size.fromHeight(height);
   }
 }
 

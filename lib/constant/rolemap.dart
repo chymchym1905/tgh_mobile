@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const Map roleMapping = {'ADMIN': 'Admin', 'AGENT': 'Falcon', 'MEMBER': 'Pigeon'};
+const Map<String, String> roleMapping = {'ADMIN': 'Admin', 'AGENT': 'Falcon', 'MEMBER': 'Pigeon'};
 
 const Map<String, Color> roleColorMapping = {
   'ADMIN': Color.fromARGB(255, 245, 161, 93),

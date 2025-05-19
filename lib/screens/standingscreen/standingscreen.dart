@@ -13,29 +13,30 @@ class _StandingsScreenState extends State<StandingsScreen> {
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(slivers: [
-      SliverAppBar(
-          centerTitle: false,
-          pinned: true,
-          floating: true,
-          leading: MediaQuery.of(context).size.width > kMaxWidthTablet
-              ? IconButton(
-                  onPressed: () {
-                    if (MediaQuery.of(context).size.width > kMaxWidthTabletLandscape) {
-                      setState(() {
-                        _expanded = !_expanded;
-                      });
-                    } else {
-                      Scaffold.of(context).openDrawer();
-                    }
-                  },
-                  icon: const Icon(Icons.dehaze, size: 30, weight: 700, grade: 200, opticalSize: 24))
-              : null,
+      MyAppBar(
           title: Text('Abyss Standings',
               style: GoogleFonts.inter(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).colorScheme.primary,
-                  letterSpacing: -2))),
+                  letterSpacing: -2)),
+          leading: SizedBox(
+              width: 70,
+              child: Center(
+                  child: SizedBox(
+                      width: 56,
+                      height: 56,
+                      child: IconButton(
+                          onPressed: () {
+                            if (MediaQuery.of(context).size.width > kMaxWidthTabletLandscape) {
+                              setState(() {
+                                _expanded = !_expanded;
+                              });
+                            } else {
+                              Scaffold.of(context).openDrawer();
+                            }
+                          },
+                          icon: const Icon(Icons.dehaze, size: 30, weight: 700, grade: 200, opticalSize: 24)))))),
       SliverToBoxAdapter(
         child: SizedBox(
             height: MediaQuery.of(context).size.height - kToolbarHeight,
