@@ -59,3 +59,32 @@ class RoleChip extends StatelessWidget {
     );
   }
 }
+
+class RemoveableChip extends StatelessWidget {
+  final String label;
+  final Function() onDeleted;
+  const RemoveableChip({super.key, required this.label, required this.onDeleted});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        height: 32,
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surfaceContainerHigh,
+          borderRadius: BorderRadius.circular(5),
+        ),
+        padding: EdgeInsets.only(left: 12, right: 8, top: 4, bottom: 4),
+        child: Row(mainAxisSize: MainAxisSize.min, children: [
+          Text(label,
+              style: TextStyle(
+                  fontSize: 14, fontWeight: FontWeight.bold, color: Theme.of(context).extension<TextColors>()!.text)),
+          const SizedBox(width: 4),
+          Container(
+            decoration: BoxDecoration(shape: BoxShape.circle),
+            width: 20,
+            height: 20,
+            child: IconButton(onPressed: onDeleted, padding: EdgeInsets.zero, icon: Icon(Icons.close, size: 14)),
+          )
+        ]));
+  }
+}

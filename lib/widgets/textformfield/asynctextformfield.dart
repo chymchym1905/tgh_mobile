@@ -21,6 +21,8 @@ class AsyncTextFormField extends StatefulWidget {
   final Widget? suffixIcon;
   final FocusNode? focusNode;
   final double? height;
+  final Color? colorTheme;
+  final GlobalKey<FormFieldState>? fieldKey;
 
   const AsyncTextFormField(
       {super.key,
@@ -40,7 +42,9 @@ class AsyncTextFormField extends StatefulWidget {
       this.style,
       this.suffixIcon,
       this.height,
-      this.focusNode});
+      this.colorTheme,
+      this.focusNode,
+      this.fieldKey});
 
   @override
   State<AsyncTextFormField> createState() => _AsyncTextFormFieldState();
@@ -101,6 +105,7 @@ class _AsyncTextFormFieldState extends State<AsyncTextFormField> with WidgetsBin
       child: SizedBox(
         height: widget.height ?? 56,
         child: TextFormField(
+          key: widget.fieldKey,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           keyboardType: widget.keyboardType,
           focusNode: widget.focusNode,
@@ -136,7 +141,8 @@ class _AsyncTextFormFieldState extends State<AsyncTextFormField> with WidgetsBin
           controller: widget.controller,
           // textAlignVertical: TextAlignVertical.center,
           // maxLines: 1,
-          style: widget.style ?? TextStyle(color: Theme.of(context).extension<TextColors>()!.text, fontSize: 16),
+          style: widget.style ??
+              TextStyle(color: widget.colorTheme ?? Theme.of(context).extension<TextColors>()!.text, fontSize: 16),
           decoration: widget.decoration?.copyWith(
                   suffixIcon: Padding(padding: const EdgeInsetsDirectional.only(end: 10), child: _normalSuffixIcon()),
                   hintText: widget.hintText) ??
@@ -153,14 +159,22 @@ class _AsyncTextFormFieldState extends State<AsyncTextFormField> with WidgetsBin
                   floatingLabelStyle: Theme.of(context)
                       .textTheme
                       .titleMedium!
-                      .copyWith(color: Theme.of(context).extension<TextColors>()!.text),
+                      .copyWith(color: widget.colorTheme ?? Theme.of(context).extension<TextColors>()!.text),
+                  hintStyle: Theme.of(context)
+                      .textTheme
+                      .titleMedium!
+                      .copyWith(color: Theme.of(context).extension<TextColors>()!.textSecondary),
                   // labelStyle: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.white),
-                  contentPadding: EdgeInsets.only(top: 14),
+                  contentPadding: const EdgeInsets.only(top: 14),
                   errorStyle: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.red),
                   errorMaxLines: 3,
                   errorBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.red, width: 2)),
-                  focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.white, width: 2)),
-                  enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Colors.white))),
+                  focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                          color: widget.colorTheme ?? Theme.of(context).extension<TextColors>()!.text, width: 2)),
+                  enabledBorder: UnderlineInputBorder(
+                      borderSide:
+                          BorderSide(color: widget.colorTheme ?? Theme.of(context).extension<TextColors>()!.text))),
         ),
       ),
     );

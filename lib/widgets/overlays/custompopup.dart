@@ -52,8 +52,9 @@ class CustomPopupMenu extends StatefulWidget {
       this.position,
       this.menuOnChange,
       this.enablePassEvent = true,
-      this.materialShape,
-      this.hoverColor});
+      this.radius,
+      this.hoverColor,
+      this.childPadding});
 
   final Widget child;
   final PressType pressType;
@@ -69,8 +70,9 @@ class CustomPopupMenu extends StatefulWidget {
   final Widget Function() menuBuilder;
   final PreferredPosition? position;
   final void Function(bool)? menuOnChange;
-  final ShapeBorder? materialShape;
+  final double? radius;
   final Color? hoverColor;
+  final EdgeInsets? childPadding;
 
   /// Pass tap event to the widgets below the mask.
   /// It only works when [barrierColor] is transparent.
@@ -215,8 +217,9 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
   Widget build(BuildContext context) {
     var child = Material(
       color: Colors.transparent,
-      shape: widget.materialShape,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(widget.radius ?? 0)),
       child: InkWell(
+        borderRadius: BorderRadius.circular(widget.radius ?? 0),
         hoverColor: widget.hoverColor ?? Theme.of(context).colorScheme.surfaceContainerLow,
         focusColor: Colors.transparent,
         splashColor: Colors.transparent,
@@ -233,7 +236,7 @@ class _CustomPopupMenuState extends State<CustomPopupMenu> {
                 _controller?.showMenu();
               }
             },
-        child: widget.child,
+        child: Ink(padding: widget.childPadding ?? EdgeInsets.zero, child: widget.child),
       ),
     );
     if (defaultTargetPlatform == TargetPlatform.iOS) {

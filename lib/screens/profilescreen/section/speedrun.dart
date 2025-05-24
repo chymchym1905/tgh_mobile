@@ -270,7 +270,7 @@ class _SpeedrunSectionState extends ConsumerState<SpeedrunSection> {
             children: [
               Row(
                 children: [
-                  Text('Rows per page:', style: TextStyle(fontSize: 12.wr)),
+                  Text('Rows per page:', style: TextStyle(fontSize: 10.wr)),
                   SizedBox(width: 5.wr),
                   SizedBox(
                     width: 60.wr,
@@ -287,8 +287,8 @@ class _SpeedrunSectionState extends ConsumerState<SpeedrunSection> {
                           closedBorder: Border.all(color: Theme.of(context).colorScheme.outline),
                           expandedBorder: Border.all(color: Theme.of(context).colorScheme.outline),
                           expandedFillColor: Theme.of(context).colorScheme.surfaceContainerHigh,
-                          listItemStyle: TextStyle(fontSize: 12.wr),
-                          headerStyle: TextStyle(fontSize: 12.wr),
+                          listItemStyle: TextStyle(fontSize: 10.wr),
+                          headerStyle: TextStyle(fontSize: 10.wr),
                           expandedSuffixIcon: Icon(Icons.arrow_drop_up, size: 10.wr),
                           closedSuffixIcon: Icon(Icons.arrow_drop_down, size: 10.wr),
                         ),
@@ -326,7 +326,7 @@ class _SpeedrunSectionState extends ConsumerState<SpeedrunSection> {
                                   : null,
                               icon: const Icon(Icons.chevron_left))),
                       SizedBox(width: 2.wr),
-                      Text('${pageSpeedrun + 1}', style: TextStyle(fontSize: 12.wr)),
+                      Text('${pageSpeedrun + 1}', style: TextStyle(fontSize: 10.wr)),
                       SizedBox(width: 2.wr),
                       SizedBox(
                           width: 20.wr,
@@ -342,7 +342,7 @@ class _SpeedrunSectionState extends ConsumerState<SpeedrunSection> {
                               icon: const Icon(Icons.chevron_right))),
                       Text(
                           '${(pageSpeedrun * limitSpeedrun) + 1}-${(pageSpeedrun + 1) * limitSpeedrun > data.$1 ? data.$1 : (pageSpeedrun + 1) * limitSpeedrun} of ${data.$1}',
-                          style: TextStyle(fontSize: 12.wr))
+                          style: TextStyle(fontSize: 10.wr))
                     ],
                   );
                 },

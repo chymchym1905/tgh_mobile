@@ -16,7 +16,7 @@ final _shellNavigatorProfileKey = GlobalKey<NavigatorState>(debugLabel: 'shellPr
 @riverpod
 GoRouter router(Ref ref) {
   final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'rootNavigatorKey');
-  final authStateNotifier = ValueNotifier<AuthState?>(const AuthStateLoggedOut());
+  final authStateNotifier = ValueNotifier<AuthState?>(null); // Start with null instead of LoggedOut
   ref.onDispose(authStateNotifier.dispose);
   ref.listen(authNotifierProvider, (_, next) {
     next.whenData((authState) {
@@ -31,10 +31,20 @@ GoRouter router(Ref ref) {
       refreshListenable: authStateNotifier,
       // ignore: body_might_complete_normally_nullable
       redirect: (context, state) {
+        if (authStateNotifier.value == null) {
+          return null;
+        }
+        print(state.uri.path);
         if (authStateNotifier.value is AuthStateLoggedOut && RouteMap.private.allowedRoutes.contains(state.uri.path)) {
-          return '${Routes.login}?redirectedFrom=${state.uri.path}';
-        } else if (authStateNotifier.value is AuthStateAuthenticated && state.uri.path == Routes.login) {
-          return RouteMap.public.redirectPath;
+          // Store the requested path in query parameter for later redirection
+          final uri = Uri(path: Routes.login, queryParameters: {'from': state.uri.path});
+          return uri.toString();
+        } else if (authStateNotifier.value is AuthStateAuthenticated) {
+          if (state.uri.path == Routes.login) {
+            // If there's a 'from' parameter, redirect to that path after login
+            final fromPath = state.uri.queryParameters['from'];
+            return fromPath ?? RouteMap.public.redirectPath;
+          }
         } else if (authStateNotifier.value is AuthStateError) {
           return null;
         }

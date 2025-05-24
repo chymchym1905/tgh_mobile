@@ -22,7 +22,7 @@ ThemeData light = ThemeData(
     //       systemNavigationBarColor: Colors.transparent,
     //       systemNavigationBarIconBrightness: Brightness.dark),
     // ),
-    textTheme: Typography.englishLike2018.apply(bodyColor: Colors.black),
+    textTheme: GoogleFonts.interTextTheme(Typography.englishLike2018).apply(bodyColor: Colors.black),
     extensions: const [
       ThemeAssets(
         //home
@@ -80,7 +80,7 @@ ThemeData dark = ThemeData(
     //       systemNavigationBarColor: Colors.transparent,
     //       systemNavigationBarIconBrightness: Brightness.light),
     // ),
-    textTheme: Typography.englishLike2018.apply(bodyColor: Colors.white),
+    textTheme: GoogleFonts.interTextTheme(Typography.englishLike2018).apply(bodyColor: Colors.white),
     extensions: const [
       ThemeAssets(
         //home

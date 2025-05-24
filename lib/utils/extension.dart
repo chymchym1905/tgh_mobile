@@ -64,6 +64,13 @@ extension ResponsiveSize on num {
     // }
     return math.min(responsiveSize, bound);
   }
+
+  double get swr {
+    final screenWidth = ScreenUtil().screenWidth;
+    final responsiveSize = this * screenWidth / 375;
+    double bound = this * 1;
+    return math.min(responsiveSize, bound);
+  }
 }
 
 extension StringExtension on String {

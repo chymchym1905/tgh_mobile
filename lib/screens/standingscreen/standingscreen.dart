@@ -56,7 +56,7 @@ class _StandingsScreenState extends State<StandingsScreen> {
                 SizedBox(width: 8)
               ] else if (MediaQuery.of(context).size.width > kMaxWidthTablet &&
                   MediaQuery.of(context).size.width < kMaxWidthTabletLandscape) ...[
-                const SizedBox(width: 56, child: DrawerWidget(expanded: false)),
+                const SizedBox(width: 70, child: DrawerWidget(expanded: false)),
                 SizedBox(width: 8)
               ],
               Expanded(

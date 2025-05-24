@@ -132,9 +132,8 @@ class DrawerItemExpanded extends StatelessWidget {
               height: 48,
               child: Row(
                 children: [
-                  const SizedBox(width: 16),
-                  icon,
-                  const SizedBox(width: 16),
+                  SizedBox(width: 70, child: Center(child: icon)),
+                  const SizedBox(width: 8),
                   Text(title),
                 ],
               ),

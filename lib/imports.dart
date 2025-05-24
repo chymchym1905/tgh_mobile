@@ -16,7 +16,7 @@ export 'package:easy_sidemenu/easy_sidemenu.dart';
 export 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 export 'package:fluttertoast/fluttertoast.dart';
 //----------------------------------- FILES -----------------------------------
-export 'utils/extension.dart';
+
 export './screens/index.dart';
 export './widgets/overlays/index.dart';
 export './widgets/spines/index.dart';
@@ -29,5 +29,7 @@ export 'theme.dart';
 export './widgets/index.dart';
 export './utils/pfp&bannerurl.dart';
 export './utils/entrycard.dart';
+export 'utils/extension.dart';
+export 'utils/uidtoregion.dart';
 export './utils/date.dart';
 export 'configs.dart';

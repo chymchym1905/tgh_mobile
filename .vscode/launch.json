@@ -25,10 +25,17 @@
       "args": ["--debug"]
     },
     {
-      "name": "iPhone",
+      "name": "iPhone 6",
       "request": "launch",
       "type": "dart",
       "deviceId": "a1e11a41a0f0a7348db11fadcf5437eb404463cd",
+      "args": ["--debug"]
+    },
+    {
+      "name": "iPhoneXS",
+      "request": "launch",
+      "type": "dart",
+      "deviceId": "00008020-000945000228003A",
       "args": ["--debug"]
     },
     {
@@ -42,7 +49,7 @@
   "compounds": [
     {
       "name": "All Devices",
-      "configurations": ["Android", "iPhone", "Web"]
+      "configurations": ["Android", "iPhone 6", "iPhoneXS", "Web"]
     }
   ]
 }

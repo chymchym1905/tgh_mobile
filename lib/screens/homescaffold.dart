@@ -190,7 +190,7 @@ class _AddFloatingActionButtonState extends State<AddFloatingActionButton> {
   Widget build(BuildContext context) {
     return CustomPopupMenu(
         controller: widget.controller,
-        materialShape: const CircleBorder(),
+        radius: 25,
         hoverColor: Colors.transparent,
         arrowColor: Theme.of(context).colorScheme.surfaceContainerHigh,
         menuBuilder: () => Container(
