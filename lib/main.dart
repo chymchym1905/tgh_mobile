@@ -10,7 +10,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   debugPrint(defaultTargetPlatform.toString());
   if (kIsWeb) {
-    usePathUrlStrategy();
+    setUrlStrategy(const HashUrlStrategy());
     GoRouter.optionURLReflectsImperativeAPIs = true;
   }
   final prefs = await SharedPreferences.getInstance();
