@@ -248,16 +248,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                         title: Text('Reset Password', style: Theme.of(context).textTheme.titleLarge),
                                         backgroundColor: Theme.of(context).colorScheme.surfaceBright,
                                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                        content: defaultTargetPlatform == TargetPlatform.android
-                                            ? UniformTextFormField(
-                                                padding: EdgeInsets.zero,
-                                                controller: passwordResetController,
-                                                keyboardType: TextInputType.emailAddress,
-                                                labelText: 'Email',
-                                                icon: Icon(Icons.alternate_email,
-                                                    color: Theme.of(context).colorScheme.primary),
-                                              )
-                                            : CupertinoTextFormFieldRow(
+                                        content: defaultTargetPlatform == TargetPlatform.iOS ||
+                                                defaultTargetPlatform == TargetPlatform.macOS
+                                            ? CupertinoTextFormFieldRow(
                                                 controller: passwordResetController,
                                                 padding: EdgeInsets.zero,
                                                 keyboardType: TextInputType.emailAddress,
@@ -265,7 +258,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                                 prefix: Icon(Icons.alternate_email,
                                                     color: Theme.of(context).colorScheme.primary),
                                                 style:
-                                                    TextStyle(color: Theme.of(context).extension<TextColors>()!.text)),
+                                                    TextStyle(color: Theme.of(context).extension<TextColors>()!.text))
+                                            : UniformTextFormField(
+                                                padding: EdgeInsets.zero,
+                                                controller: passwordResetController,
+                                                keyboardType: TextInputType.emailAddress,
+                                                labelText: 'Email',
+                                                icon: Icon(Icons.alternate_email,
+                                                    color: Theme.of(context).colorScheme.primary),
+                                              ),
                                         titlePadding: const EdgeInsets.all(16),
                                         actionsPadding: const EdgeInsets.all(16),
                                         contentPadding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
