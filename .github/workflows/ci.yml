@@ -33,7 +33,7 @@ jobs:
       #   run: flutter test --coverage -r github
 
       - name: Build Web
-        run: flutter build web --web-renderer html --base-href=/#/
+        run: flutter build web --web-renderer html --base-href=/#/ --pwa-strategy=none
       
       - name: Deploy pages
         uses: peaceiris/actions-gh-pages@v4
