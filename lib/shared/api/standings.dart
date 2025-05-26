@@ -14,6 +14,7 @@ abstract class StandingsApiBase {
           int daysElapse = 1,
           required String sortBy,
           required String sortDir,
+          int limit = 50,
           CancelToken? cancelToken});
 }
 
@@ -56,6 +57,7 @@ class StandingsApi implements StandingsApiBase {
           int daysElapse = 1,
           required String sortBy,
           required sortDir,
+          int limit = 50,
           CancelToken? cancelToken}) async {
     const url = '/speedrun-leaderboard-spots/show-change-detailed';
     final response = await _networkService.get(url,
@@ -65,6 +67,7 @@ class StandingsApi implements StandingsApiBase {
           'sort_by': sortBy,
           'sort_dir': sortDir,
           'instance_id': instanceId,
+          'limit': limit,
         },
         cancelToken: cancelToken);
 

@@ -20,6 +20,8 @@ class UniformTextFormField extends StatelessWidget {
   final int? maxLines;
   final TextAlignVertical? textAlignVertical;
   final GlobalKey<FormFieldState>? fieldKey;
+  final void Function(String)? onFieldSubmitted;
+  final TextInputAction? textInputAction;
 
   const UniformTextFormField({
     super.key,
@@ -41,6 +43,8 @@ class UniformTextFormField extends StatelessWidget {
     this.maxLines = 1,
     this.textAlignVertical,
     this.fieldKey,
+    this.onFieldSubmitted,
+    this.textInputAction = TextInputAction.next,
   });
 
   @override
@@ -53,6 +57,7 @@ class UniformTextFormField extends StatelessWidget {
               key: fieldKey,
               keyboardType: keyboardType,
               autovalidateMode: AutovalidateMode.onUserInteraction,
+              onFieldSubmitted: onFieldSubmitted,
               cursorColor: colorTheme ?? Theme.of(context).extension<TextColors>()!.text,
               obscureText: obscureText ?? false,
               obscuringCharacter: obscuringCharacter ?? '•',
@@ -62,6 +67,7 @@ class UniformTextFormField extends StatelessWidget {
               maxLines: expands == true ? null : maxLines,
               minLines: expands == true ? null : 1,
               textAlignVertical: textAlignVertical ?? TextAlignVertical.center,
+              textInputAction: textInputAction,
               style: TextStyle(color: colorTheme ?? Theme.of(context).extension<TextColors>()!.text, fontSize: 16),
               enabled: enabled,
               decoration: decoration ??

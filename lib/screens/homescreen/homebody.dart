@@ -116,6 +116,7 @@ class _HomeBodyState extends ConsumerState<HomeBody> {
                                                 crossAxisAlignment: CrossAxisAlignment.center,
                                                 children: [
                                               const Text('Error loading data'),
+                                              const SizedBox(height: 16),
                                               ElevatedButton(
                                                   onPressed: () {
                                                     _pagingController.refresh();

@@ -63,14 +63,27 @@ class _StandingsScreenState extends State<StandingsScreen> {
                   child: CustomScrollView(
                 slivers: [
                   SliverToBoxAdapter(
-                    child: Center(
-                        child: ConstrainedBox(
-                            constraints: BoxConstraints(maxWidth: 1680 - (_expanded ? 200 : 70)),
-                            child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: MediaQuery.of(context).size.width > kMaxWidthMobile ? 32.wr : 16.wr),
-                                child: const StandingsBody()))),
-                  ),
+                      child: Center(
+                          child: ConstrainedBox(
+                              constraints: BoxConstraints(maxWidth: 1680 - (_expanded ? 200 : 70)),
+                              child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: MediaQuery.of(context).size.width > kMaxWidthMobile ? 32.wr : 16.wr),
+                                  child: const StandingsBody())))),
+                  const SliverToBoxAdapter(child: SizedBox(height: 25)),
+                  SliverToBoxAdapter(
+                      child: Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.surfaceContainerLow,
+                          ),
+                          height: 200,
+                          padding: EdgeInsets.symmetric(horizontal: 20.wr, vertical: 16.wr),
+                          child: Center(
+                              child: Text(
+                                  '© 2022 BY THE GOLDEN HOUSE. THE GOLDEN HOUSE is not affiliated with miHoYo. Genshin Impact, game content and materials are trademarks and copyrights of miHoYo.',
+                                  style: TextStyle(fontSize: 10.swr),
+                                  textAlign: TextAlign.center))))
                 ],
               ))
             ])),

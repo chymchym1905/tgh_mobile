@@ -23,28 +23,33 @@ class AsyncTextFormField extends StatefulWidget {
   final double? height;
   final Color? colorTheme;
   final GlobalKey<FormFieldState>? fieldKey;
+  final void Function(String)? onFieldSubmitted;
+  final TextInputAction? textInputAction;
 
-  const AsyncTextFormField(
-      {super.key,
-      required this.validator,
-      required this.validationDebounce,
-      required this.controller,
-      this.isValidatingMessage = "please wait for the validation to complete",
-      this.valueIsEmptyMessage = 'please enter a value',
-      this.valueIsInvalidMessage = 'please enter a valid value',
-      this.hintText = '',
-      this.icon,
-      required this.keyboardType,
-      this.decoration,
-      this.cursorColor,
-      this.padding,
-      this.canEmpty,
-      this.style,
-      this.suffixIcon,
-      this.height,
-      this.colorTheme,
-      this.focusNode,
-      this.fieldKey});
+  const AsyncTextFormField({
+    super.key,
+    required this.validator,
+    required this.validationDebounce,
+    required this.controller,
+    this.isValidatingMessage = "please wait for the validation to complete",
+    this.valueIsEmptyMessage = 'please enter a value',
+    this.valueIsInvalidMessage = 'please enter a valid value',
+    this.hintText = '',
+    this.icon,
+    required this.keyboardType,
+    this.decoration,
+    this.cursorColor,
+    this.padding,
+    this.canEmpty,
+    this.style,
+    this.suffixIcon,
+    this.height,
+    this.colorTheme,
+    this.focusNode,
+    this.fieldKey,
+    this.onFieldSubmitted,
+    this.textInputAction,
+  });
 
   @override
   State<AsyncTextFormField> createState() => _AsyncTextFormFieldState();
@@ -139,6 +144,8 @@ class _AsyncTextFormFieldState extends State<AsyncTextFormField> with WidgetsBin
             });
           },
           controller: widget.controller,
+          onFieldSubmitted: widget.onFieldSubmitted,
+          textInputAction: widget.textInputAction,
           // textAlignVertical: TextAlignVertical.center,
           // maxLines: 1,
           style: widget.style ??

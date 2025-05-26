@@ -435,8 +435,246 @@ class _LeaderboardBodyState extends ConsumerState<LeaderboardBody> {
                                             error: (error, stackTrace) => Center(
                                                 child:
                                                     AppErrorWidget(message: [error.toString(), stackTrace.toString()])),
-                                            loading: () => _shimmerTable())))
-                      ]))))
+                                            loading: () => _shimmerTable()))),
+                      ])))),
+          10.verticalSpace,
+          widget.currentLeaderboardCategory == 'Speedrun'
+              ? Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                  Row(children: [
+                    Text('Rows per page:', style: TextStyle(fontSize: 10.wr)),
+                    SizedBox(width: 5.wr),
+                    SizedBox(
+                        width: 60.wr,
+                        child: CustomDropdown(
+                            decoration: CustomDropdownDecoration(
+                              expandedShadow: [
+                                BoxShadow(
+                                    color: Theme.of(context).colorScheme.shadow,
+                                    offset: const Offset(0, 3),
+                                    blurRadius: 6,
+                                    spreadRadius: 0)
+                              ],
+                              closedFillColor: Theme.of(context).colorScheme.surfaceContainerLow,
+                              closedBorder: Border.all(color: Theme.of(context).colorScheme.outline),
+                              expandedBorder: Border.all(color: Theme.of(context).colorScheme.outline),
+                              expandedFillColor: Theme.of(context).colorScheme.surfaceContainerHigh,
+                              listItemStyle: TextStyle(fontSize: 10.wr),
+                              headerStyle: TextStyle(fontSize: 10.wr),
+                              expandedSuffixIcon: Icon(Icons.arrow_drop_up, size: 10.wr),
+                              closedSuffixIcon: Icon(Icons.arrow_drop_down, size: 10.wr),
+                            ),
+                            // hideSelectedFieldWhenExpanded: true,
+                            closedHeaderPadding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 5.wr),
+                            expandedHeaderPadding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 5.wr),
+                            itemsListPadding: const EdgeInsets.all(0),
+                            listItemPadding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 5.wr),
+                            items: const [10, 20, 50, 100],
+                            onChanged: (p0) {
+                              setState(() {
+                                limitSpeedrun = p0!;
+                                pageSpeedrun = 0;
+                              });
+                            },
+                            initialItem: limitSpeedrun))
+                  ]),
+                  speedruns.when(
+                      data: (data) {
+                        final hasNextPage = (pageSpeedrun + 1) * limitSpeedrun < data.$1;
+                        return Row(children: [
+                          SizedBox(
+                              width: 20.wr,
+                              height: 20.wr,
+                              child: IconButton(
+                                  padding: const EdgeInsets.all(0),
+                                  iconSize: 16.wr,
+                                  onPressed: pageSpeedrun > 0
+                                      ? () => setState(() {
+                                            pageSpeedrun--;
+                                          })
+                                      : null,
+                                  icon: const Icon(Icons.chevron_left))),
+                          SizedBox(width: 2.wr),
+                          Text('${pageSpeedrun + 1}', style: TextStyle(fontSize: 10.wr)),
+                          SizedBox(width: 2.wr),
+                          SizedBox(
+                              width: 20.wr,
+                              height: 20.wr,
+                              child: IconButton(
+                                  padding: const EdgeInsets.all(0),
+                                  iconSize: 16.wr,
+                                  onPressed: hasNextPage
+                                      ? () => setState(() {
+                                            pageSpeedrun++;
+                                          })
+                                      : null,
+                                  icon: const Icon(Icons.chevron_right))),
+                          Text(
+                              '${(pageSpeedrun * limitSpeedrun) + 1}-${(pageSpeedrun + 1) * limitSpeedrun > data.$1 ? data.$1 : (pageSpeedrun + 1) * limitSpeedrun} of ${data.$1}',
+                              style: TextStyle(fontSize: 10.wr))
+                        ]);
+                      },
+                      error: (_, __) => const SizedBox.shrink(),
+                      loading: () => SizedBox(width: 20.wr, height: 20.wr, child: const CircularProgressIndicator()))
+                ])
+              : widget.currentLeaderboardCategory == 'DPS'
+                  ? Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                      Row(children: [
+                        Text('Rows per page:', style: TextStyle(fontSize: 10.wr)),
+                        SizedBox(width: 5.wr),
+                        SizedBox(
+                            width: 60.wr,
+                            child: CustomDropdown(
+                                decoration: CustomDropdownDecoration(
+                                  expandedShadow: [
+                                    BoxShadow(
+                                        color: Theme.of(context).colorScheme.shadow,
+                                        offset: const Offset(0, 3),
+                                        blurRadius: 6,
+                                        spreadRadius: 0)
+                                  ],
+                                  closedFillColor: Theme.of(context).colorScheme.surfaceContainerLow,
+                                  closedBorder: Border.all(color: Theme.of(context).colorScheme.outline),
+                                  expandedBorder: Border.all(color: Theme.of(context).colorScheme.outline),
+                                  expandedFillColor: Theme.of(context).colorScheme.surfaceContainerHigh,
+                                  listItemStyle: TextStyle(fontSize: 10.wr),
+                                  headerStyle: TextStyle(fontSize: 10.wr),
+                                  expandedSuffixIcon: Icon(Icons.arrow_drop_up, size: 10.wr),
+                                  closedSuffixIcon: Icon(Icons.arrow_drop_down, size: 10.wr),
+                                ),
+                                closedHeaderPadding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 5.wr),
+                                expandedHeaderPadding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 5.wr),
+                                itemsListPadding: const EdgeInsets.all(0),
+                                listItemPadding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 5.wr),
+                                items: const [10, 20, 50, 100],
+                                onChanged: (p0) {
+                                  setState(() {
+                                    limitDps = p0!;
+                                    pageDps = 0;
+                                  });
+                                },
+                                initialItem: limitDps))
+                      ]),
+                      dps.when(
+                          data: (data) {
+                            final hasNextPage = (pageDps + 1) * limitDps < data.$1;
+                            return Row(
+                              children: [
+                                SizedBox(
+                                    width: 20.wr,
+                                    height: 20.wr,
+                                    child: IconButton(
+                                        padding: const EdgeInsets.all(0),
+                                        iconSize: 16.wr,
+                                        onPressed: pageDps > 0
+                                            ? () => setState(() {
+                                                  pageDps--;
+                                                })
+                                            : null,
+                                        icon: const Icon(Icons.chevron_left))),
+                                SizedBox(width: 2.wr),
+                                Text('${pageDps + 1}', style: TextStyle(fontSize: 10.wr)),
+                                SizedBox(width: 2.wr),
+                                SizedBox(
+                                    width: 20.wr,
+                                    height: 20.wr,
+                                    child: IconButton(
+                                        padding: const EdgeInsets.all(0),
+                                        iconSize: 16.wr,
+                                        onPressed: hasNextPage
+                                            ? () => setState(() {
+                                                  pageDps++;
+                                                })
+                                            : null,
+                                        icon: const Icon(Icons.chevron_right))),
+                                Text(
+                                    '${(pageDps * limitDps) + 1}-${(pageDps + 1) * limitDps > data.$1 ? data.$1 : (pageDps + 1) * limitDps} of ${data.$1}',
+                                    style: TextStyle(fontSize: 10.wr))
+                              ],
+                            );
+                          },
+                          error: (_, __) => const SizedBox.shrink(),
+                          loading: () =>
+                              SizedBox(width: 20.wr, height: 20.wr, child: const CircularProgressIndicator()))
+                    ])
+                  : Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                      Row(children: [
+                        Text('Rows per page:', style: TextStyle(fontSize: 10.wr)),
+                        SizedBox(width: 5.wr),
+                        SizedBox(
+                            width: 60.wr,
+                            child: CustomDropdown(
+                                decoration: CustomDropdownDecoration(
+                                  expandedShadow: [
+                                    BoxShadow(
+                                        color: Theme.of(context).colorScheme.shadow,
+                                        offset: const Offset(0, 3),
+                                        blurRadius: 6,
+                                        spreadRadius: 0)
+                                  ],
+                                  closedFillColor: Theme.of(context).colorScheme.surfaceContainerLow,
+                                  closedBorder: Border.all(color: Theme.of(context).colorScheme.outline),
+                                  expandedBorder: Border.all(color: Theme.of(context).colorScheme.outline),
+                                  expandedFillColor: Theme.of(context).colorScheme.surfaceContainerHigh,
+                                  listItemStyle: TextStyle(fontSize: 10.wr),
+                                  headerStyle: TextStyle(fontSize: 10.wr),
+                                  expandedSuffixIcon: Icon(Icons.arrow_drop_up, size: 10.wr),
+                                  closedSuffixIcon: Icon(Icons.arrow_drop_down, size: 10.wr),
+                                ),
+                                closedHeaderPadding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 5.wr),
+                                expandedHeaderPadding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 5.wr),
+                                itemsListPadding: const EdgeInsets.all(0),
+                                listItemPadding: EdgeInsets.symmetric(horizontal: 10.wr, vertical: 5.wr),
+                                items: const [10, 20, 50, 100],
+                                onChanged: (p0) {
+                                  setState(() {
+                                    limitRestrictedDps = p0!;
+                                    pageRestrictedDps = 0;
+                                  });
+                                },
+                                initialItem: limitRestrictedDps))
+                      ]),
+                      restrictedDps.when(
+                          data: (data) {
+                            final hasNextPage = (pageRestrictedDps + 1) * limitRestrictedDps < data.$1;
+                            return Row(
+                              children: [
+                                SizedBox(
+                                    width: 20.wr,
+                                    height: 20.wr,
+                                    child: IconButton(
+                                        padding: const EdgeInsets.all(0),
+                                        iconSize: 16.wr,
+                                        onPressed: pageRestrictedDps > 0
+                                            ? () => setState(() {
+                                                  pageRestrictedDps--;
+                                                })
+                                            : null,
+                                        icon: const Icon(Icons.chevron_left))),
+                                SizedBox(width: 2.wr),
+                                Text('${pageDps + 1}', style: TextStyle(fontSize: 10.wr)),
+                                SizedBox(width: 2.wr),
+                                SizedBox(
+                                    width: 20.wr,
+                                    height: 20.wr,
+                                    child: IconButton(
+                                        padding: const EdgeInsets.all(0),
+                                        iconSize: 16.wr,
+                                        onPressed: hasNextPage
+                                            ? () => setState(() {
+                                                  pageRestrictedDps++;
+                                                })
+                                            : null,
+                                        icon: const Icon(Icons.chevron_right))),
+                                Text(
+                                    '${(pageRestrictedDps * limitRestrictedDps) + 1}-${(pageRestrictedDps + 1) * limitRestrictedDps > data.$1 ? data.$1 : (pageRestrictedDps + 1) * limitRestrictedDps} of ${data.$1}',
+                                    style: TextStyle(fontSize: 10.wr))
+                              ],
+                            );
+                          },
+                          error: (_, __) => const SizedBox.shrink(),
+                          loading: () =>
+                              SizedBox(width: 20.wr, height: 20.wr, child: const CircularProgressIndicator()))
+                    ]),
         ]));
   }
 

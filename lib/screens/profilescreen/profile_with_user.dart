@@ -257,16 +257,24 @@ class _ProfileWithUserState extends State<ProfileWithUser> {
                                   padding: EdgeInsets.symmetric(horizontal: 20.wr, vertical: 16.wr),
                                   child: ProfileBody(user: widget.user, userProfileInfo: widget.userProfileInfo),
                                 ),
-                                10.verticalSpace,
-                                Container(
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context).colorScheme.surfaceContainer,
-                                    borderRadius: BorderRadius.circular(15.wr),
-                                  ),
-                                  height: 1000,
-                                )
-                              ])))))
+                                25.verticalSpace,
+                              ]))))),
+              SliverToBoxAdapter(
+                  child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surfaceContainerLow,
+                ),
+                height: 200,
+                padding: EdgeInsets.symmetric(horizontal: 20.wr, vertical: 16.wr),
+                child: Center(
+                  child: Text(
+                    '© 2022 BY THE GOLDEN HOUSE. THE GOLDEN HOUSE is not affiliated with miHoYo. Genshin Impact, game content and materials are trademarks and copyrights of miHoYo.',
+                    style: TextStyle(fontSize: 10.swr),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ))
             ],
           ),
         ],

@@ -108,21 +108,22 @@ class _ProfileNoUserState extends State<ProfileNoUser> {
                                 radius: 26.wr,
                               )),
                           10.horizontalSpace,
-                          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                            Text(widget.name ?? 'Guest User', style: TextStyle(fontSize: 16.wr)),
-                            5.wr.verticalSpace,
-                            widget.name == null
-                                ? Text('Create account to get started',
-                                    style: TextStyle(
-                                        fontSize: 12.wr,
-                                        color: Theme.of(context).extension<TextColors>()!.textSecondary),
-                                    overflow: TextOverflow.ellipsis)
-                                : Text('Create a competitor profile to get started',
-                                    style: TextStyle(
-                                        fontSize: 12.wr,
-                                        color: Theme.of(context).extension<TextColors>()!.textSecondary),
-                                    overflow: TextOverflow.ellipsis),
-                          ])
+                          Expanded(
+                            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                              Text(widget.name ?? 'Guest User', style: TextStyle(fontSize: 16.wr)),
+                              5.wr.verticalSpace,
+                              widget.name == null
+                                  ? Text('Create account to get started',
+                                      style: TextStyle(
+                                          fontSize: 12.wr,
+                                          color: Theme.of(context).extension<TextColors>()!.textSecondary),
+                                      overflow: TextOverflow.ellipsis)
+                                  : Text('Create a competitor profile to get started',
+                                      style: TextStyle(
+                                          fontSize: 12.wr,
+                                          color: Theme.of(context).extension<TextColors>()!.textSecondary)),
+                            ]),
+                          )
                         ],
                       ),
                     ))),
