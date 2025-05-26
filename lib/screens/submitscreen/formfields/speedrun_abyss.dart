@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:tgh_mobile/imports.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 
@@ -12,7 +14,7 @@ class SpeedrunAbyssFields extends ConsumerStatefulWidget {
 class _SpeedrunAbyssFieldsState extends ConsumerState<SpeedrunAbyssFields> {
   bool _hasSegment = false;
   bool _initRegion = false;
-  final TextEditingController _abyssVersionController = TextEditingController();
+  final TextEditingController _abyssVersionController = TextEditingController(text: ABYSS_VERSION_HISTORY.last);
   final TextEditingController _gameVersionController = TextEditingController();
   final TextEditingController _videoLinkController = TextEditingController();
   final _abyssFloorKey = GlobalKey<DropdownSearchState<String>>();

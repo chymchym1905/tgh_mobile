@@ -217,20 +217,17 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                       const SliverToBoxAdapter(child: SizedBox(height: 25)),
                       SliverToBoxAdapter(
                           child: Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surfaceContainerLow,
-                        ),
-                        height: 200,
-                        padding: EdgeInsets.symmetric(horizontal: 20.wr, vertical: 16.wr),
-                        child: Center(
-                          child: Text(
-                            '© 2022 BY THE GOLDEN HOUSE. THE GOLDEN HOUSE is not affiliated with miHoYo. Genshin Impact, game content and materials are trademarks and copyrights of miHoYo.',
-                            style: TextStyle(fontSize: 10.swr),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ))
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                  // color: Theme.of(context).colorScheme.surfaceContainerLow,
+                                  color: Colors.transparent),
+                              height: 200,
+                              padding: EdgeInsets.symmetric(horizontal: 20.wr, vertical: 16.wr),
+                              child: Center(
+                                  child: Text(
+                                      '© 2022 BY THE GOLDEN HOUSE. THE GOLDEN HOUSE is not affiliated with miHoYo. Genshin Impact, game content and materials are trademarks and copyrights of miHoYo.',
+                                      style: TextStyle(fontSize: 10.swr),
+                                      textAlign: TextAlign.center))))
                     ],
                   ))
                 ])),

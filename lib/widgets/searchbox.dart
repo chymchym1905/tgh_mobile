@@ -94,101 +94,110 @@ class _SearchBoxState extends ConsumerState<SearchBox> {
     final double height = widgetSize.height;
     final right = MediaQuery.of(context).size.width - widgetPosition.dx - widgetSize.width;
     _searchOverlay = OverlayEntry(
-        builder: (context) => Stack(children: [
-              // Top area
-              Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  height: top,
-                  child: GestureDetector(
-                      onTap: () {
-                        _searchOverlay?.remove();
-                        _searchOverlay = null;
-                      },
-                      child: Container(color: Theme.of(context).colorScheme.surfaceContainerLowest.withOpacity(0.5)))),
+        builder: (context) => Material(
+              type: MaterialType.transparency,
+              child: Stack(children: [
+                // Top area
+                Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: top,
+                    child: GestureDetector(
+                        onTap: () {
+                          _searchOverlay?.remove();
+                          _searchOverlay = null;
+                        },
+                        child:
+                            Container(color: Theme.of(context).colorScheme.surfaceContainerLowest.withOpacity(0.5)))),
 
-              // Bottom area
-              Positioned(
-                  top: top + height,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  child: GestureDetector(
-                      onTap: () {
-                        _searchOverlay?.remove();
-                        _searchOverlay = null;
-                      },
-                      child: Container(color: Theme.of(context).colorScheme.surfaceContainerLowest.withOpacity(0.5)))),
+                // Bottom area
+                Positioned(
+                    top: top + height,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: GestureDetector(
+                        onTap: () {
+                          _searchOverlay?.remove();
+                          _searchOverlay = null;
+                        },
+                        child:
+                            Container(color: Theme.of(context).colorScheme.surfaceContainerLowest.withOpacity(0.5)))),
 
-              // Left area
-              Positioned(
-                  top: top,
-                  left: 0,
-                  width: left,
-                  height: height,
-                  child: GestureDetector(
-                      onTap: () {
-                        _searchOverlay?.remove();
-                        _searchOverlay = null;
-                      },
-                      child: Container(color: Theme.of(context).colorScheme.surfaceContainerLowest.withOpacity(0.5)))),
+                // Left area
+                Positioned(
+                    top: top,
+                    left: 0,
+                    width: left,
+                    height: height,
+                    child: GestureDetector(
+                        onTap: () {
+                          _searchOverlay?.remove();
+                          _searchOverlay = null;
+                        },
+                        child:
+                            Container(color: Theme.of(context).colorScheme.surfaceContainerLowest.withOpacity(0.5)))),
 
-              // Right area
-              Positioned(
-                  top: top,
-                  left: left + width,
-                  right: 0,
-                  height: height,
-                  child: GestureDetector(
-                      onTap: () {
-                        _searchOverlay?.remove();
-                        _searchOverlay = null;
-                      },
-                      child: Container(color: Theme.of(context).colorScheme.surfaceContainerLowest.withOpacity(0.5)))),
-              Positioned(
-                  top: kToolbarHeight,
-                  left: left,
-                  right: right,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surfaceContainerHigh,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          ValueListenableBuilder(
-                              valueListenable: _resultsNotifier,
-                              builder: (context, value, child) {
-                                if (value.isEmpty) return const ListTile(title: Text('No Information to display'));
-                                return Column(
-                                  children: value
-                                      .map((e) => ListTile(
-                                          onTap: () async {
-                                            if (e.competitor == null) {
-                                              fToast.showToast(
-                                                  child: toast(context, "This user does not have a competitor profile"),
-                                                  gravity: ToastGravity.BOTTOM,
-                                                  toastDuration: const Duration(seconds: 5));
-                                              return;
-                                            }
-                                            if (context.mounted) {
-                                              context.push(Routes.profileNonCurrentWithAlias(e.competitor!.alias));
-                                            }
-                                          },
-                                          leading: UniformCircleAvatar(url: pfpUrl(e.competitor?.id ?? ''), radius: 20),
-                                          trailing: RoleChip(roleMapping[e.role]!, roleColorMapping[e.role]!),
-                                          title: Text(e.name)))
-                                      .toList(),
-                                );
-                              }),
-                        ],
+                // Right area
+                Positioned(
+                    top: top,
+                    left: left + width,
+                    right: 0,
+                    height: height,
+                    child: GestureDetector(
+                        onTap: () {
+                          _searchOverlay?.remove();
+                          _searchOverlay = null;
+                        },
+                        child:
+                            Container(color: Theme.of(context).colorScheme.surfaceContainerLowest.withOpacity(0.5)))),
+                Positioned(
+                    top: kToolbarHeight,
+                    left: left,
+                    right: right,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surfaceContainerHigh,
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                    ),
-                  ))
-            ]));
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            ValueListenableBuilder(
+                                valueListenable: _resultsNotifier,
+                                builder: (context, value, child) {
+                                  if (value.isEmpty) return const ListTile(title: Text('No Information to display'));
+                                  return Column(
+                                    children: value
+                                        .map((e) => ListTile(
+                                            onTap: () async {
+                                              if (e.competitor == null) {
+                                                fToast.showToast(
+                                                    child:
+                                                        toast(context, "This user does not have a competitor profile"),
+                                                    gravity: ToastGravity.BOTTOM,
+                                                    toastDuration: const Duration(seconds: 5));
+                                                return;
+                                              }
+                                              if (context.mounted) {
+                                                context.push(Routes.profileNonCurrentWithAlias(e.competitor!.alias));
+                                              }
+                                            },
+                                            leading:
+                                                UniformCircleAvatar(url: pfpUrl(e.competitor?.id ?? ''), radius: 20),
+                                            trailing: RoleChip(roleMapping[e.role]!, roleColorMapping[e.role]!),
+                                            title: Text(e.name)))
+                                        .toList(),
+                                  );
+                                }),
+                          ],
+                        ),
+                      ),
+                    ))
+              ]),
+            ));
     Overlay.of(context).insert(_searchOverlay!);
   }
 }

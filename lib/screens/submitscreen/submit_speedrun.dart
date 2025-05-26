@@ -13,11 +13,92 @@ class SubmitSpeedrunScreen extends ConsumerStatefulWidget {
 class _SubmitSpeedrunScreenState extends ConsumerState<SubmitSpeedrunScreen> {
   bool _isHovered = false;
   final GlobalKey _drawerKey = GlobalKey();
+  final _key = GlobalKey<ExpandableFabState>();
+  final customPopupMenuController = CustomPopupMenuController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      floatingActionButtonLocation: ExpandableFab.location,
+      floatingActionButton: ExpandableFab(
+          key: _key,
+          elevation: 10,
+          type: ExpandableFabType.up,
+          openButtonBuilder: RotateFloatingActionButtonBuilder(
+            child: const Icon(Icons.menu),
+            fabSize: ExpandableFabSize.regular,
+            foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
+            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+            shape: const CircleBorder(),
+          ),
+          closeButtonBuilder: DefaultFloatingActionButtonBuilder(
+            child: const Icon(Icons.close),
+            fabSize: ExpandableFabSize.regular,
+            foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
+            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+            shape: const CircleBorder(),
+          ),
+          children: [
+            FloatingActionButton(
+              onPressed: () {
+                if (_key.currentState?.isOpen ?? false) {
+                  _key.currentState?.toggle();
+                }
+                context.go(Routes.home);
+              },
+              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+              child: SvgPicture.asset(Theme.of(context).extension<ThemeAssets>()!.homeIconSvg, height: 40, width: 40),
+            ),
+            FloatingActionButton(
+              onPressed: () {
+                if (_key.currentState?.isOpen ?? false) {
+                  _key.currentState?.toggle();
+                }
+                context.go(Routes.leaderboard);
+              },
+              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+              child: SvgPicture.asset(Theme.of(context).extension<ThemeAssets>()!.lbIconSvg, height: 40, width: 40),
+            ),
+            FloatingActionButton(
+              onPressed: () {
+                if (_key.currentState?.isOpen ?? false) {
+                  _key.currentState?.toggle();
+                }
+                context.go(Routes.standings);
+              },
+              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+              child: SvgPicture.asset(Theme.of(context).extension<ThemeAssets>()!.trophyIconSvg, height: 40, width: 40),
+            ),
+            FloatingActionButton(
+              onPressed: () {
+                if (_key.currentState?.isOpen ?? false) {
+                  _key.currentState?.toggle();
+                }
+                context.go(Routes.profile);
+              },
+              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+              child:
+                  SvgPicture.asset(Theme.of(context).extension<ThemeAssets>()!.profileIconSvg, height: 40, width: 40),
+            ),
+            AddFloatingActionButton(
+                fab: FloatingActionButton(
+                  onPressed: () {
+                    // if (_key.currentState?.isOpen ?? false) {
+                    //   _key.currentState?.toggle();
+                    // }
+                    customPopupMenuController.showMenu();
+                  },
+                  backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                  child: const Icon(Icons.add, size: 40),
+                ),
+                controller: customPopupMenuController)
+          ]),
       body: Stack(children: [
         CustomScrollView(slivers: [
           MyAppBar(
@@ -66,7 +147,20 @@ class _SubmitSpeedrunScreenState extends ConsumerState<SubmitSpeedrunScreen> {
               ),
             ),
           )),
-          SliverToBoxAdapter(child: const SizedBox(height: 500))
+          const SliverToBoxAdapter(child: SizedBox(height: 25)),
+          SliverToBoxAdapter(
+              child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                      // color: Theme.of(context).colorScheme.surfaceContainerLow,
+                      color: Colors.transparent),
+                  height: 200,
+                  padding: EdgeInsets.symmetric(horizontal: 20.wr, vertical: 16.wr),
+                  child: Center(
+                      child: Text(
+                          '© 2022 BY THE GOLDEN HOUSE. THE GOLDEN HOUSE is not affiliated with miHoYo. Genshin Impact, game content and materials are trademarks and copyrights of miHoYo.',
+                          style: TextStyle(fontSize: 10.swr),
+                          textAlign: TextAlign.center))))
         ]),
         if (MediaQuery.of(context).size.width > kMaxWidthTabletLandscape) ...[
           Align(

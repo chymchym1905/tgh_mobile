@@ -4,6 +4,9 @@ import 'package:collection/collection.dart';
 import 'package:flutter/gestures.dart';
 import 'package:tgh_mobile/imports.dart';
 import 'package:tgh_mobile/screens/submitscreen/formfields/speedrun_abyss.dart';
+import 'package:tgh_mobile/screens/submitscreen/formfields/speedrun_boss.dart';
+import 'package:tgh_mobile/screens/submitscreen/formfields/speedrun_domain.dart';
+import 'package:tgh_mobile/screens/submitscreen/formfields/speedrun_event.dart';
 import 'package:tgh_mobile/screens/submitscreen/profileinfo.dart';
 
 class SubmitSpeedrunBody extends ConsumerStatefulWidget {
@@ -88,9 +91,28 @@ class _SubmitSpeedrunBodyState extends ConsumerState<SubmitSpeedrunBody> {
                                   submitInformation['speedrun_category'] = SPEEDRUN_CATEGORY_ORDER[index];
                                   submitInformation.removeWhere((key, value) => key == 'speedrun_subcategory');
                                   submitInformation.removeWhere((key, value) => key == 'abyss_version');
+                                  submitInformation.removeWhere((key, value) => key == 'video_segment');
+                                  submitInformation.removeWhere((key, value) => key == '12_1_1');
+                                  submitInformation.removeWhere((key, value) => key == '12_1_2');
+                                  submitInformation.removeWhere((key, value) => key == '12_2_1');
+                                  submitInformation.removeWhere((key, value) => key == '12_2_2');
+                                  submitInformation.removeWhere((key, value) => key == '12_3_1');
+                                  submitInformation.removeWhere((key, value) => key == '12_3_2');
                                   if (_currentSpeedrunCategory == 'Abyss') {
                                     submitInformation['abyss_version'] = ABYSS_VERSION_HISTORY.last;
                                     submitInformation['speedrun_subcategory'] = SPEEDRUN_ABYSS_CHAMBERS.first;
+                                  }
+                                  if (_currentSpeedrunCategory == 'Domain') {
+                                    submitInformation['speedrun_subcategory'] = DOMAIN.first;
+                                  }
+                                  if (_currentSpeedrunCategory == 'Event') {
+                                    submitInformation['abyss_version'] = SUBMITABLE_EVENTS.first;
+                                  }
+                                  if (_currentSpeedrunCategory == 'World Boss') {
+                                    submitInformation['speedrun_subcategory'] = WORLD_BOSSES.first;
+                                  }
+                                  if (_currentSpeedrunCategory == 'Weekly Boss') {
+                                    submitInformation['speedrun_subcategory'] = WEEKLY_BOSSES.first;
                                   }
                                 })))),
               ),
@@ -136,6 +158,12 @@ class _SubmitSpeedrunBodyState extends ConsumerState<SubmitSpeedrunBody> {
                   ]))),
               const SizedBox(height: 20),
               if (_currentSpeedrunCategory == 'Abyss') SpeedrunAbyssFields(updateSubmitInfo: updateSubmitInfo),
+              if (_currentSpeedrunCategory == 'Domain') SpeedrunDomainFields(updateSubmitInfo: updateSubmitInfo),
+              if (_currentSpeedrunCategory == 'World Boss')
+                SpeedrunBossFields(updateSubmitInfo: updateSubmitInfo, category: 'World Boss'),
+              if (_currentSpeedrunCategory == 'Weekly Boss')
+                SpeedrunBossFields(updateSubmitInfo: updateSubmitInfo, category: 'Weekly Boss'),
+              if (_currentSpeedrunCategory == 'Event') SpeedrunEventFields(updateSubmitInfo: updateSubmitInfo),
               if (MediaQuery.of(context).size.width <= 600) ...[
                 team1Field(context),
                 const SizedBox(height: 20),
@@ -204,22 +232,24 @@ class _SubmitSpeedrunBodyState extends ConsumerState<SubmitSpeedrunBody> {
 
                               // Proceed with submission
                               print('Form is valid, submitting: $submitInformation');
-                              final submitInitial = Map<String, dynamic>.from(submitInformation);
-                              final submitInfoCopy = Map<String, dynamic>.from(submitInformation)
-                                ..removeWhere((key, value) => [
-                                      '12_1_1',
-                                      '12_1_2',
-                                      '12_2_1',
-                                      '12_2_2',
-                                      '12_3_1',
-                                      '12_3_2',
-                                      'video_segment'
-                                    ].contains(key));
-                              submitInfoCopy['video_segment'] = determineSegment(submitInformation);
-                              setState(() {
-                                submitInformation = submitInitial;
-                                submitInformation['video_segment'] = submitInfoCopy['video_segment'];
-                              });
+                              if (_currentSpeedrunCategory == 'Abyss') {
+                                final submitInitial = Map<String, dynamic>.from(submitInformation);
+                                final submitInfoCopy = Map<String, dynamic>.from(submitInformation)
+                                  ..removeWhere((key, value) => [
+                                        '12_1_1',
+                                        '12_1_2',
+                                        '12_2_1',
+                                        '12_2_2',
+                                        '12_3_1',
+                                        '12_3_2',
+                                        'video_segment'
+                                      ].contains(key));
+                                submitInfoCopy['video_segment'] = determineSegment(submitInformation);
+                                setState(() {
+                                  submitInformation = submitInitial;
+                                  submitInformation['video_segment'] = submitInfoCopy['video_segment'];
+                                });
+                              }
                               // Submit with submitInfoCopy
                             } else {
                               // Show error if form is invalid
@@ -378,7 +408,19 @@ class _SubmitSpeedrunBodyState extends ConsumerState<SubmitSpeedrunBody> {
                       )),
                       popupProps: PopupPropsMultiSelection.menu(
                         showSearchBox: true,
-                        searchFieldProps: TextFieldProps(controller: _team1Controller),
+                        searchFieldProps: TextFieldProps(
+                            controller: _team1Controller,
+                            decoration: InputDecoration(
+                                filled: true,
+                                fillColor: Theme.of(context).colorScheme.surfaceContainerLow,
+                                hintText: 'Search characters',
+                                suffixIcon: const Icon(Icons.search, size: 24),
+                                border: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1)),
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2)),
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Theme.of(context).colorScheme.outline, width: 2)))),
                         validationBuilder: (context, items) {
                           return const SizedBox.shrink();
                         },
@@ -416,6 +458,9 @@ class _SubmitSpeedrunBodyState extends ConsumerState<SubmitSpeedrunBody> {
                         ),
                         menuProps: MenuProps(
                           backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1)),
                         ),
                         fit: FlexFit.loose,
                         onItemAdded: (selectedItems, addedItem) {
@@ -482,7 +527,19 @@ class _SubmitSpeedrunBodyState extends ConsumerState<SubmitSpeedrunBody> {
                       )),
                       popupProps: PopupPropsMultiSelection.menu(
                         showSearchBox: true,
-                        searchFieldProps: TextFieldProps(controller: _team2Controller),
+                        searchFieldProps: TextFieldProps(
+                            controller: _team2Controller,
+                            decoration: InputDecoration(
+                                filled: true,
+                                fillColor: Theme.of(context).colorScheme.surfaceContainerLow,
+                                hintText: 'Search characters',
+                                suffixIcon: const Icon(Icons.search, size: 24),
+                                border: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1)),
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2)),
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Theme.of(context).colorScheme.outline, width: 2)))),
                         validationBuilder: (context, items) {
                           return const SizedBox.shrink();
                         },

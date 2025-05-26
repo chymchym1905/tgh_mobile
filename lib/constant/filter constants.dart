@@ -158,6 +158,15 @@ const SPEEDRUN_EVENTS = [
   '1.6 Legend of the Vagabond Sword'
 ];
 
+const SUBMITABLE_EVENTS = [
+  // 'The Chasm Call - F2P',
+  // 'The Chasm Call - Unrestricted',
+  '2.4 A Study in Potions',
+  '2.3 Energy Amplifier Fruition',
+  '2.0 Phantom Flow',
+  '1.6 Legend of the Vagabond Sword'
+];
+
 const DPS_EVENTS = [
   'A Study in Potions',
   'Energy Amplifier Fruition',
@@ -191,3 +200,66 @@ const ATTACK_TYPES_MAP = {
   'a4_talent': 'a4_talent',
   'other': 'other'
 };
+
+const ABYSS_FLOORS = [
+  '12-3-2',
+  '12-3-1',
+  '12-2-2',
+  '12-2-1',
+  '12-1-2',
+  '12-1-1',
+  '11-3-2',
+  '11-3-1',
+  '11-2-2',
+  '11-2-1',
+  '11-1-2',
+  '11-1-1',
+  '10-3-2',
+  '10-3-1',
+  '10-2-2',
+  '10-2-1',
+  '10-1-2',
+  '10-1-1',
+  '9-3-2',
+  '9-3-1',
+  '9-2-2',
+  '9-2-1',
+  '9-1-2',
+  '9-1-1',
+  '8-3-2',
+  '8-3-1',
+  '8-2-2',
+  '8-2-1',
+  '8-1-2',
+  '8-1-1',
+  '7-3-2',
+  '7-3-1',
+  '7-2-2',
+  '7-2-1',
+  '7-1-2',
+  '7-1-1',
+  '6-3-2',
+  '6-3-1',
+  '6-2-2',
+  '6-2-1',
+  '6-1-2',
+  '6-1-1',
+  '5-3-2',
+  '5-3-1',
+  '5-2-2',
+  '5-2-1',
+  '5-1-2',
+  '5-1-1',
+  '4-3',
+  '4-2',
+  '4-1',
+  '3-3',
+  '3-2',
+  '3-1',
+  '2-3',
+  '2-2',
+  '2-1',
+  '1-3',
+  '1-2',
+  '1-1'
+];
