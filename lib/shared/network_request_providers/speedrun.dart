@@ -85,3 +85,17 @@ Future<(int count, List<Speedrun> speedruns)> fetchSpeedrunAgent(Ref ref,
     (success) => success,
   );
 }
+
+@riverpod
+Future<SpeedrunSubmitResponse> submitSpeedrun(Ref ref, SpeedrunSubmit submission) async {
+  final speedrunApi = ref.watch(speedrunApiProvider);
+  final cancelToken = await ref.cancelToken();
+  final result = await speedrunApi.submitSpeedrun(
+    submission: submission,
+    cancelToken: cancelToken,
+  );
+  return result.fold(
+    (failure) => throw failure,
+    (success) => success,
+  );
+}

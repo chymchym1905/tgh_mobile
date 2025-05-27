@@ -40,6 +40,9 @@ abstract class SpeedrunApiBase {
   Future<Either<AppException, Speedrun>> fetchSpeedrunById(String id);
   // Future<Either<AppException, List<Speedrun>>> getSpeedrunCountInPeriod(String startDate, String endDate,
   //     [bool? day, bool? week, bool? month, bool? year]);
+
+  Future<Either<AppException, SpeedrunSubmitResponse>> submitSpeedrun(
+      {required SpeedrunSubmit submission, CancelToken? cancelToken});
 }
 
 class SpeedrunApi implements SpeedrunApiBase {
@@ -172,6 +175,27 @@ class SpeedrunApi implements SpeedrunApiBase {
       (response) {
         if (response.statusCode == 200 && (response.data as Map).containsKey('speedrunEntry')) {
           return right(Speedrun.fromJson(response.data['speedrunEntry'] as Map<String, dynamic>));
+        } else {
+          return left(AppException(
+            message: response.data.toString(),
+            code: response.statusCode.toString(),
+          ));
+        }
+      },
+    );
+  }
+
+  @override
+  Future<Either<AppException, SpeedrunSubmitResponse>> submitSpeedrun(
+      {required SpeedrunSubmit submission, CancelToken? cancelToken}) async {
+    const url = '/speedrun-entries/create';
+    final response = await _networkService.post(url, body: submission.toJson(), cancelToken: cancelToken);
+    return response.fold(
+      (exception) => left(exception),
+      (response) {
+        if (response.statusCode == 200 && (response.data as Map).containsKey('entry')) {
+          return right(SpeedrunSubmitResponse.fromJson(response.data['entry'] as Map<String, dynamic>).copyWith(
+              accountSnapshot: AccountSnapshot.fromJson(response.data['accountSnapshot'] as Map<String, dynamic>)));
         } else {
           return left(AppException(
             message: response.data.toString(),

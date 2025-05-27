@@ -218,7 +218,7 @@ class _SubmitSpeedrunBodyState extends ConsumerState<SubmitSpeedrunBody> {
                     child: Material(
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                       child: InkWell(
-                          onTap: () {
+                          onTap: () async {
                             // Validate the form
                             if (_formKey.currentState?.validate() ?? false) {
                               if (!_agree) {
@@ -250,6 +250,8 @@ class _SubmitSpeedrunBodyState extends ConsumerState<SubmitSpeedrunBody> {
                                   submitInformation['video_segment'] = submitInfoCopy['video_segment'];
                                 });
                               }
+                              await ref
+                                  .watch(submitSpeedrunProvider(SpeedrunSubmit.fromJson(submitInformation)).future);
                               // Submit with submitInfoCopy
                             } else {
                               // Show error if form is invalid

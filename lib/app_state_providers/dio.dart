@@ -8,5 +8,5 @@ part 'dio.g.dart';
 @riverpod
 NetworkService dioNetworkService(Ref ref) {
   final dio = Dio();
-  return DioNetworkService(dio);
+  return DioNetworkService(dio, AppConfig.apiUrl);
 }

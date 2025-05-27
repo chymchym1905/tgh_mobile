@@ -97,3 +97,16 @@ Future<(int count, List<DPS> dps)> fetchDpsAgent(
     (dpsEntries) => dpsEntries,
   );
 }
+
+@riverpod
+Future<DpsSubmitResponse> submitDps(Ref ref, DpsSubmit submission) async {
+  final cancelToken = await ref.cancelToken();
+  final result = await ref.watch(dpsApiProvider).submitDps(
+        submission: submission,
+        cancelToken: cancelToken,
+      );
+  return result.fold(
+    (failure) => throw failure,
+    (success) => success,
+  );
+}

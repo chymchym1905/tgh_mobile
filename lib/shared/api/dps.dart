@@ -36,6 +36,8 @@ abstract class DpsApiBase {
   });
 
   Future<Either<AppException, DPS>> fetchDpsById(String id);
+
+  Future<Either<AppException, DpsSubmitResponse>> submitDps({required DpsSubmit submission, CancelToken? cancelToken});
 }
 
 class DpsApi implements DpsApiBase {
@@ -175,6 +177,26 @@ class DpsApi implements DpsApiBase {
       (response) {
         if (response.statusCode == 200 && (response.data as Map).containsKey('dpsEntry')) {
           return right(DPS.fromJson(response.data['dpsEntry'] as Map<String, dynamic>));
+        } else {
+          return left(AppException(
+            message: response.data.toString(),
+            code: response.statusCode.toString(),
+          ));
+        }
+      },
+    );
+  }
+
+  @override
+  Future<Either<AppException, DpsSubmitResponse>> submitDps(
+      {required DpsSubmit submission, CancelToken? cancelToken}) async {
+    const url = '/dps-entries/create';
+    final response = await _networkService.post(url, body: submission.toJson(), cancelToken: cancelToken);
+    return response.fold(
+      (exception) => left(exception),
+      (response) {
+        if (response.statusCode == 200 && (response.data as Map).containsKey('dpsEntry')) {
+          return right(DpsSubmitResponse.fromJson(response.data['dpsEntry'] as Map<String, dynamic>));
         } else {
           return left(AppException(
             message: response.data.toString(),

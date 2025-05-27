@@ -30,7 +30,7 @@ void main() {
       container = createContainer(
         overrides: [
           sharedPrefInstanceProvider.overrideWithValue(prefs),
-          dioNetworkServiceProvider.overrideWithValue(DioNetworkService(Dio())),
+          dioNetworkServiceProvider.overrideWithValue(DioNetworkService(Dio(), AppConfig.apiUrl)),
         ],
       );
     });
@@ -136,6 +136,62 @@ void main() {
         expect(dps.enemy, isNotNull);
         expect(dps.videolink, isNotNull);
       }
+    });
+
+    test('submitDps returns valid dps', () async {
+      // First ensure we have a valid auth token
+      final authStates = List<AsyncValue<AuthState>>.empty(growable: true);
+      final authStateSubscription = container.listen(authNotifierProvider, (previous, next) => authStates.add(next));
+      await container
+          .read(authNotifierProvider.notifier)
+          .login('leyeuttoteuhau-8698@yopmail.com', 'SecurePassword123\\');
+      final Competitor? competitor = authStates.last.value?.map(
+        authenticated: (authenticated) => authenticated.user.competitor,
+        error: (error) => null,
+        loggedOut: (loggedOut) => null,
+      );
+      log(authStates.toString());
+      expect(authStates.last.value, isA<AuthStateAuthenticated>());
+      authStateSubscription.close();
+
+      // Now test the speedrun agent provider
+      final states = List<AsyncValue<DpsSubmitResponse>>.empty(growable: true);
+      final provider = submitDpsProvider(DpsSubmit(
+          accountUid: competitor!.uid.toString(),
+          alias: competitor.alias,
+          discordTag: competitor.discordtag!,
+          gameVersion: '5.6',
+          abyssVersion: ABYSS_VERSION_HISTORY.last,
+          abyssFloor: '12-3-1',
+          notes: 'Test notes',
+          region: 'America',
+          dpsCategory: 'Abyss',
+          videolink: 'https://www.youtube.com/watch?v=ljAZomFegHk',
+          deletedAt: DateTime.now().subtract(const Duration(days: 29, hours: 23, minutes: 57)),
+          enemy: 'Pyro Slime',
+          enemyLevel: 100,
+          attackType: 'charged_attack',
+          damageDealt: 1000000,
+          dpsCharacter: 'Yelan'));
+      final subscription = container.listen(
+        provider,
+        (previous, next) => states.add(next),
+        fireImmediately: true,
+      );
+
+      // Wait for the first data emission
+      await container.read(provider.future);
+      subscription.close();
+
+      final dps = states.last.value;
+      log(states.toString());
+      expect(dps, isNotNull);
+      expect(dps, isA<DpsSubmitResponse>());
+
+      expect(dps?.id, isNotEmpty);
+      expect(dps?.dpsCategory, equals('Abyss'));
+      log('Category: ${dps?.dpsCategory}');
+      log('Video: ${dps?.videolink}');
     });
   });
 }

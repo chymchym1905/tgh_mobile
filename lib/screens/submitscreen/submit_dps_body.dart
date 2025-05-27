@@ -209,7 +209,7 @@ class _SubmitDpsBodyState extends ConsumerState<SubmitDpsBody> {
                     child: Material(
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                       child: InkWell(
-                          onTap: () {
+                          onTap: () async {
                             // Validate the form
                             if (_formKey.currentState?.validate() ?? false) {
                               if (!_agree) {
@@ -223,7 +223,8 @@ class _SubmitDpsBodyState extends ConsumerState<SubmitDpsBody> {
 
                               // Proceed with submission
                               print('Form is valid, submitting: $submitInformation');
-                              // Submit with submitInfoCopy
+                              final submitInfo = DpsSubmit.fromJson(Map<String, dynamic>.from(submitInformation));
+                              await ref.watch(submitDpsProvider(submitInfo).future);
                             } else {
                               // Show error if form is invalid
                               fToast.showToast(

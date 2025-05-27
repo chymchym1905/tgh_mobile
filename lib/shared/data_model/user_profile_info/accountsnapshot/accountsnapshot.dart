@@ -12,7 +12,7 @@ class AccountSnapshot with _$AccountSnapshot {
     required String signature,
     @JsonKey(name: 'world_level') required int worldLevel,
     @JsonKey(name: 'achievement_count') required int achievementCount,
-    required int ttl,
+    int? ttl,
     @JsonKey(name: 'created_at') DateTime? createdAt,
     @JsonKey(name: 'last_modified_by') String? lastModifiedBy,
   }) = _AccountSnapshot;

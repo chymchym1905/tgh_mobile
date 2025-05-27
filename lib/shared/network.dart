@@ -21,9 +21,11 @@ abstract class NetworkService {
 
 class DioNetworkService with NetworkException implements NetworkService {
   final Dio _dio;
+  final String baseUrl;
 
-  DioNetworkService(this._dio) {
-    _dio.options.baseUrl = AppConfig.apiUrl;
+  DioNetworkService(this._dio, this.baseUrl) {
+    // _dio.options.baseUrl = AppConfig.apiUrl;
+    _dio.options.baseUrl = baseUrl;
     if (kDebugMode) {
       _dio.interceptors.add(LogInterceptor(
           requestBody: true, error: true, request: true, logPrint: (o) => log(o.toString(), name: 'Dio')));

@@ -19,3 +19,5 @@ export 'user_profile_info/character_snapshot/character_snapshot_all.dart';
 export 'user_profile_info/userprofileinfo.dart';
 export 'user_profile_info/char_usage_lb_display/char_usage_lb_display.dart';
 export 'standings/speedrun_lb_spot.dart';
+export 'submit/speedrun.dart';
+export 'submit/dps.dart';

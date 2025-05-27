@@ -28,7 +28,7 @@ void main() {
       container = createContainer(
         overrides: [
           sharedPrefInstanceProvider.overrideWithValue(await SharedPreferences.getInstance()),
-          dioNetworkServiceProvider.overrideWithValue(DioNetworkService(Dio())),
+          dioNetworkServiceProvider.overrideWithValue(DioNetworkService(Dio(), AppConfig.apiUrl)),
         ],
       );
     });
