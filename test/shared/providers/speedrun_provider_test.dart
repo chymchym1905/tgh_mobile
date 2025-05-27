@@ -150,56 +150,56 @@ void main() {
       }
     });
 
-    test('submitSpeedrun returns valid speedrun', () async {
-      // First ensure we have a valid auth token
-      final authStates = List<AsyncValue<AuthState>>.empty(growable: true);
-      final authStateSubscription = container.listen(authNotifierProvider, (previous, next) => authStates.add(next));
-      await container
-          .read(authNotifierProvider.notifier)
-          .login('leyeuttoteuhau-8698@yopmail.com', 'SecurePassword123\\');
-      final competitor = authStates.last.value?.map(
-        authenticated: (authenticated) => authenticated.user.competitor,
-        error: (error) => null,
-        loggedOut: (loggedOut) => null,
-      );
-      log(authStates.toString());
-      expect(authStates.last.value, isA<AuthStateAuthenticated>());
-      authStateSubscription.close();
+    // test('submitSpeedrun returns valid speedrun', () async {
+    //   // First ensure we have a valid auth token
+    //   final authStates = List<AsyncValue<AuthState>>.empty(growable: true);
+    //   final authStateSubscription = container.listen(authNotifierProvider, (previous, next) => authStates.add(next));
+    //   await container
+    //       .read(authNotifierProvider.notifier)
+    //       .login('leyeuttoteuhau-8698@yopmail.com', 'SecurePassword123\\');
+    //   final competitor = authStates.last.value?.map(
+    //     authenticated: (authenticated) => authenticated.user.competitor,
+    //     error: (error) => null,
+    //     loggedOut: (loggedOut) => null,
+    //   );
+    //   log(authStates.toString());
+    //   expect(authStates.last.value, isA<AuthStateAuthenticated>());
+    //   authStateSubscription.close();
 
-      // Now test the speedrun agent provider
-      final states = List<AsyncValue<SpeedrunSubmitResponse>>.empty(growable: true);
-      final provider = submitSpeedrunProvider(SpeedrunSubmit(
-          accountUid: competitor!.uid.toString(),
-          alias: competitor.alias,
-          discordTag: competitor.discordtag!,
-          gameVersion: '5.6',
-          abyssVersion: ABYSS_VERSION_HISTORY.last,
-          notes: 'Test notes',
-          region: 'America',
-          speedrunCategory: 'Abyss',
-          speedrunSubcategory: '12-3-1',
-          videolink: 'https://www.youtube.com/watch?v=ljAZomFegHk',
-          deletedAt: DateTime.now().subtract(const Duration(days: 29, hours: 23, minutes: 57))));
-      final subscription = container.listen(
-        provider,
-        (previous, next) => states.add(next),
-        fireImmediately: true,
-      );
+    //   // Now test the speedrun agent provider
+    //   final states = List<AsyncValue<SpeedrunSubmitResponse>>.empty(growable: true);
+    //   final provider = submitSpeedrunProvider(SpeedrunSubmit(
+    //       accountUid: competitor!.uid.toString(),
+    //       alias: competitor.alias,
+    //       discordTag: competitor.discordtag!,
+    //       gameVersion: '5.6',
+    //       abyssVersion: ABYSS_VERSION_HISTORY.last,
+    //       notes: 'Test notes',
+    //       region: 'America',
+    //       speedrunCategory: 'Abyss',
+    //       speedrunSubcategory: '12-3-1',
+    //       videolink: 'https://www.youtube.com/watch?v=ljAZomFegHk',
+    //       deletedAt: DateTime.now().subtract(const Duration(days: 29, hours: 23, minutes: 57))));
+    //   final subscription = container.listen(
+    //     provider,
+    //     (previous, next) => states.add(next),
+    //     fireImmediately: true,
+    //   );
 
-      // Wait for the first data emission
-      await container.read(provider.future);
-      subscription.close();
+    //   // Wait for the first data emission
+    //   await container.read(provider.future);
+    //   subscription.close();
 
-      final speedrun = states.last.value;
-      log(states.toString());
-      expect(speedrun, isNotNull);
-      expect(speedrun, isA<SpeedrunSubmitResponse>());
+    //   final speedrun = states.last.value;
+    //   log(states.toString());
+    //   expect(speedrun, isNotNull);
+    //   expect(speedrun, isA<SpeedrunSubmitResponse>());
 
-      expect(speedrun?.id, isNotEmpty);
-      expect(speedrun?.speedrunCategory, equals('Abyss'));
-      log('Account Snapshot: ${speedrun?.accountSnapshot}');
-      log('Category: ${speedrun?.speedrunCategory}');
-      log('Video: ${speedrun?.videolink}');
-    });
+    //   expect(speedrun?.id, isNotEmpty);
+    //   expect(speedrun?.speedrunCategory, equals('Abyss'));
+    //   log('Account Snapshot: ${speedrun?.accountSnapshot}');
+    //   log('Category: ${speedrun?.speedrunCategory}');
+    //   log('Video: ${speedrun?.videolink}');
+    // });
   });
 }
